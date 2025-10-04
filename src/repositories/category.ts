@@ -1,0 +1,19 @@
+import { Category } from 'entities/category'
+import { apiConnector } from 'utils/api'
+
+export type ListCategoriesResponse = {
+	categories: Category[]
+	totalSize: number
+}
+
+export type CategoryRepository = {
+	listCategories: () => Promise<ListCategoriesResponse>
+}
+
+export const getCategoryRepository = (): CategoryRepository => ({
+	listCategories: async () => {
+		const response = await apiConnector.get<ListCategoriesResponse>('/v1/clubs/categories')
+
+		return response
+	},
+})

@@ -1,0 +1,30 @@
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { SCREEN_TYPE, StackParamList } from 'entities/screen'
+import React from 'react'
+import ClubDetailScreen from 'screens/ClubDetailScreen'
+import ClubRankingScreen from 'screens/ClubRankingScreen'
+import ClubReviewScreen from 'screens/ClubReviewScreen'
+
+const Stack = createNativeStackNavigator<StackParamList>()
+
+export function RankingTab() {
+	return (
+		<Stack.Navigator screenOptions={{ headerBackTitleVisible: false, headerShown: false }}>
+			<Stack.Screen
+				key={SCREEN_TYPE.CLUB_RANKING}
+				name={SCREEN_TYPE.CLUB_RANKING}
+				component={ClubRankingScreen}
+			/>
+			<Stack.Screen
+				key={SCREEN_TYPE.CLUB_DETAIL}
+				name={SCREEN_TYPE.CLUB_DETAIL}
+				component={ClubDetailScreen}
+			/>
+			<Stack.Screen
+				key={SCREEN_TYPE.CLUB_REVIEW}
+				name={SCREEN_TYPE.CLUB_REVIEW}
+				component={ClubReviewScreen}
+			/>
+		</Stack.Navigator>
+	)
+}
