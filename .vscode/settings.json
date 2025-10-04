@@ -1,0 +1,14 @@
+{
+  "files.associations": {
+    "*.tsx": "typescriptreact",
+    "*.yaml": "yaml",
+    "*.html": "html",
+    "*.css": "css",
+    "*.md": "markdown",
+    "*.json": "jsonc",
+    "*.ts": "typescript",
+    "*.feature": "feature",
+    "*.ttml": "xml",
+    "*.ttss": "css"
+  }
+}

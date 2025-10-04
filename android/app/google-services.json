@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "571321676803",
+    "project_id": "allclear-7ddee",
+    "storage_bucket": "allclear-7ddee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571321676803:android:17b8f69bff7f776d630a36",
+        "android_client_info": {
+          "package_name": "com.padocorp.clubhouse.applicationId"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD48XxTwv5YLnJ25bs3tHfZsB83OHGMYm0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571321676803:android:8fef9d4dc3bac18a630a36",
+        "android_client_info": {
+          "package_name": "com.padocorp.clubhouse.applicationId.debug"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD48XxTwv5YLnJ25bs3tHfZsB83OHGMYm0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

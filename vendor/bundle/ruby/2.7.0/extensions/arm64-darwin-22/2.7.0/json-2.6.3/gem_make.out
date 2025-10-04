@@ -1,0 +1,13 @@
+current directory: /Users/gimchiho/Desktop/mobile/template/clubhouse/vendor/bundle/ruby/2.7.0/gems/json-2.6.3/ext/json
+/Users/gimchiho/.rbenv/versions/2.7.6/bin/ruby -I /Users/gimchiho/.rbenv/versions/2.7.6/lib/ruby/2.7.0 -r ./siteconf20230607-55073-5aadxs.rb extconf.rb
+creating Makefile
+
+current directory: /Users/gimchiho/Desktop/mobile/template/clubhouse/vendor/bundle/ruby/2.7.0/gems/json-2.6.3/ext/json
+make "DESTDIR=" clean
+
+current directory: /Users/gimchiho/Desktop/mobile/template/clubhouse/vendor/bundle/ruby/2.7.0/gems/json-2.6.3/ext/json
+make "DESTDIR="
+make: Nothing to be done for `all'.
+
+current directory: /Users/gimchiho/Desktop/mobile/template/clubhouse/vendor/bundle/ruby/2.7.0/gems/json-2.6.3/ext/json
+make "DESTDIR=" install
