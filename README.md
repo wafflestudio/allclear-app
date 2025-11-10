@@ -3,10 +3,11 @@
 ## 📋 목차
 
 - [프로젝트 구조](#-프로젝트-구조)
-- [시작하기](#-시작하기)  
+- [시작하기](#-시작하기)
 - [아키텍처](#-아키텍처)
 - [자체 ORM](#-자체-orm)
 - [데이터 플로우](#-데이터-플로우)
+- [웹뷰 기능](#-웹뷰-기능)
 - [개발 가이드](#-개발-가이드)
 - [빌드 및 배포](#-빌드-및-배포)
 
@@ -192,6 +193,108 @@ export const ProfileProvider = ({ children }) => {
   
   return <profileContext.Provider value={{ user }}>{children}</profileContext.Provider>
 }
+```
+
+## 🌐 웹뷰 기능
+
+**React Native WebView를 활용한 하이브리드 기능 제공**
+
+### 개요
+앱 내에서 웹 페이지를 표시할 수 있는 WebView 화면을 제공합니다. 주로 동아리 정보 편집과 같이 복잡한 폼이 필요한 기능을 웹으로 구현하여 앱에서 사용합니다.
+
+### 주요 기능
+
+**1. 인앱 브라우저**
+```typescript
+// 파일: src/screens/WebviewScreen/index.tsx:12-54
+<WebView
+  source={{
+    uri,
+    headers: authorization ? { 'x-authorization': `Bearer ${authorization}` } : {},
+  }}
+  javaScriptEnabled
+  domStorageEnabled
+  sharedCookiesEnabled
+/>
+```
+
+**2. 인증 헤더 지원**
+- Authorization 토큰을 `x-authorization` 헤더로 전달
+- 로그인이 필요한 웹 페이지 접근 가능
+
+**3. 웹-네이티브 통신**
+```typescript
+// 웹에서 앱으로 메시지 전송
+// 파일: src/screens/WebviewScreen/index.tsx:17-24
+const onMessage = (e: WebViewMessageEvent) => {
+  const event = JSON.parse(e.nativeEvent.data)
+
+  switch (event.method) {
+    case 'CLOSE_WEBVIEW':
+      return navigation.goBack()
+  }
+}
+```
+
+**4. 로딩 상태 표시**
+- 웹 페이지 로딩 중 ActivityIndicator 표시
+- `onLoadStart`, `onLoadEnd` 이벤트로 로딩 상태 관리
+
+**5. 네비게이션**
+- 커스텀 헤더 with 뒤로가기 버튼
+- 웹에서 `CLOSE_WEBVIEW` 메시지로 화면 닫기 가능
+
+### 사용 예시
+
+**동아리 편집 페이지 열기**
+```typescript
+// 파일: src/screens/MyPageScreen/index.tsx:69-71
+navigation.navigate(SCREEN_TYPE.WEBVIEW, {
+  uri: ENV.WEB_URL + '/c/edit/' + club.uuid,
+  authorization,  // 사용자 토큰
+})
+```
+
+### 라우트 파라미터
+
+```typescript
+// 파일: src/entities/screen.ts:37
+type WebViewParams = {
+  uri: string              // 표시할 웹 페이지 URL
+  authorization?: string   // 선택적 인증 토큰
+}
+```
+
+### 웹에서 앱으로 메시지 전송 방법
+
+**웹 페이지에서 다음과 같이 메시지 전송:**
+```javascript
+// 웹 페이지 JavaScript 코드
+window.ReactNativeWebView.postMessage(JSON.stringify({
+  method: 'CLOSE_WEBVIEW'
+}))
+```
+
+### 지원 기능
+- JavaScript 실행
+- DOM Storage
+- 쿠키 공유 (앱과 웹 간)
+- Third-party 쿠키
+- 자동 창 열기
+- Bounce 효과 비활성화 (iOS)
+- OverScroll 비활성화 (Android)
+
+### 활용 사례
+- **동아리 관리**: 동아리 정보 편집 폼 (`/c/edit/:uuid`)
+- **복잡한 폼**: 여러 필드와 검증이 필요한 입력 폼
+- **외부 연동**: 웹에서만 제공되는 서비스 통합
+
+### 파일 구조
+```
+src/screens/WebviewScreen/
+├── index.tsx           # WebView 메인 화면
+└── Header/
+    └── index.tsx       # 커스텀 네비게이션 헤더
 ```
 
 ## 🛠️ 개발 가이드
