@@ -16,8 +16,8 @@
 
 ```
 src/
-├── entities/            # 도메인 타입 정의
-├── repositories/        # 데이터 계층 (자체 ORM)  
+├── entities/           # 도메인 타입 정의
+├── repositories/       # 데이터 계층 (자체 ORM)  
 ├── usecases/           # 비즈니스 로직
 ├── screens/            # UI 컴포넌트
 ├── contexts/           # 상태 관리 (서비스 DI, 프로필 등)
@@ -285,17 +285,17 @@ yarn codepush:ios:list / yarn codepush:android:list
 
 ```
 src/
-├── assets/                          # 정적 리소스
+├── assets/                         # 정적 리소스
 │   ├── icons/                      # 앱 아이콘 (apple, kakao, trophy 등)
 │   └── images/                     # 이미지 리소스 (로고, 기본 이미지, 탭 아이콘)
 │
-├── constants/                       # 전역 상수 정의
+├── constants/                      # 전역 상수 정의
 │   ├── colors.ts                   # 앱 전체 컬러 팔레트
 │   ├── constants.ts                # 화면 크기, 기본 설정값
 │   ├── fixtures.ts                 # 목업 데이터, 테스트 데이터
 │   └── ENV.ts                      # 환경변수 검증 및 관리
 │
-├── entities/                        # 도메인 모델 (타입 정의)
+├── entities/                       # 도메인 모델 (타입 정의)
 │   ├── user.ts                     # 사용자 정보 (User, CollegeMajor)
 │   ├── club.ts                     # 동아리 정보 (Club, ClubRanking, ReviewKeyword)
 │   ├── category.ts                 # 동아리 카테고리 (9개 카테고리별 색상/이미지)
@@ -303,7 +303,7 @@ src/
 │   ├── eventLog.ts                 # 사용자 행동 로깅 (view, click, expose)
 │   └── screen.ts                   # React Navigation 스크린 타입
 │
-├── repositories/                    # 데이터 접근 계층 (자체 ORM)
+├── repositories/                   # 데이터 접근 계층 (자체 ORM)
 │   ├── auth.ts                     # 인증 (카카오/애플 로그인, 회원탈퇴)
 │   ├── category.ts                 # 카테고리 데이터 관리
 │   ├── club.ts                     # 동아리 CRUD (검색, 목록, 상세, 저장, 랭킹)
