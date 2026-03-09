@@ -375,11 +375,6 @@ yarn ios:local / yarn android:local
 # 릴리스  
 yarn build:ios:prod:release / yarn build:android:release
 
-# CodePush 배포
-yarn codepush:ios:prod / yarn codepush:android:prod
-
-# 배포 현황 확인
-yarn codepush:ios:list / yarn codepush:android:list
 ```
 
 ---
