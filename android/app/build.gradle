@@ -20,6 +20,8 @@ import com.android.build.OutputFile
  * By default you don't need to apply any configuration, just uncomment the lines you need.
  */
 react {
+    autolinkLibrariesWithApp()
+
     /* Folders */
     //   The root of your project, i.e. where "package.json" lives. Default is '..'
     // root = file("../")
@@ -114,7 +116,6 @@ android {
         versionCode 21
         versionName "2.1"
         resValue "string", "build_config_package", "com.padocorp.clubhouse"
-        resValue "string", "CODE_PUSH_APK_BUILD_TIME", String.format("\"%d\"", System.currentTimeMillis())
     }
 
     bundle {
@@ -153,7 +154,6 @@ android {
             versionNameSuffix "-DEBUG"
             applicationIdSuffix ".debug"
             resValue "string", "app_name", "@string/app_name_debug"
-            resValue "string", "CodePushDeploymentKey", ""
             debuggable true
         }
         staging {
@@ -161,7 +161,6 @@ android {
             matchingFallbacks = ['release']
             applicationIdSuffix ".staging"
             resValue "string", "app_name", "@string/app_name_staging"
-            resValue "string", "CodePushDeploymentKey", CODEPUSH_DEPLOYMENT_KEY_STAGING
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
@@ -170,7 +169,6 @@ android {
 //             minifyEnabled enableProguardInReleaseBuilds
 //             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             resValue "string", "app_name", "@string/app_name_release"
-            resValue "string", "CodePushDeploymentKey", CODEPUSH_DEPLOYMENT_KEY_PRODUCTION
         }
     }
 
@@ -194,9 +192,10 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    implementation("com.facebook.react:flipper-integration")
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
+
+    implementation project(':react-native-config')
 
     implementation project(':react-native-splash-screen')
 
@@ -206,7 +205,3 @@ dependencies {
         implementation jscFlavor
     }
 }
-
-apply from: file("../../node_modules/react-native-code-push/android/codepush.gradle")
-apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-
