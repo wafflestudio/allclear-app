@@ -228,7 +228,7 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 						<View style={styles.container}>
 							<View style={styles.detailTitleWrapper}>
 								<Text style={styles.detailTitle}>모집공고</Text>
-								<TouchableOpacity onPress={() => Linking.openURL('https://tally.so/r/woegzN')}>
+								<TouchableOpacity onPress={() => Linking.openURL('https://tally.so/r/EkQrQN')}>
 									<Text style={{ color: '#8F8686', fontSize: 12, textDecorationLine: 'underline' }}>
 										모집 공고 업데이트 요청하기
 									</Text>
