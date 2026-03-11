@@ -113,9 +113,16 @@ android {
         applicationId "com.padocorp.clubhouse.applicationId"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 22
+        versionCode 25
         versionName "2.1.1"
         resValue "string", "build_config_package", "com.padocorp.clubhouse"
+
+        // Enable 16KB page size compatible shared library build on NDK r27+.
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+            }
+        }
     }
 
     bundle {
