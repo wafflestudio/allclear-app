@@ -21,7 +21,7 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.21.0",
     "@gorhom/bottom-sheet": "^4.6.0",
-    "@homielab/react-native-auto-scroll": "^0.0.10",
+    "@homielab/react-native-auto-scroll": "^1.1.2",
     "@invertase/react-native-apple-authentication": "^2.3.0",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-community/blur": "^4.3.2",
@@ -42,7 +42,7 @@
     "react-native": "0.76.9",
     "react-native-blurhash": "^1.1.11",
     "react-native-config": "^1.5.0",
-    "react-native-device-info": "^10.12.0",
+    "react-native-device-info": "14",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "2.20.2",
@@ -55,8 +55,8 @@
     "react-native-splash-screen": "^3.3.0",
     "react-native-store-review": "^0.4.3",
     "react-native-toast-message": "^2.2.0",
-    "react-native-vector-icons": "^9.2.0",
-    "react-native-webview": "^11.26.1"
+    "react-native-vector-icons": "^10.3.0",
+    "react-native-webview": "^13.16.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -71,11 +71,11 @@
     "@types/react-native-elements": "^0.18.0",
     "@types/react-native-vector-icons": "^6.4.13",
     "babel-plugin-module-resolver": "^5.0.0",
-    "eslint": "^8.19.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "prettier": "^2.8.8",
+    "eslint": "^10.0.3",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
     "react-native-url-polyfill": "^2.0.0",
-    "typescript": "5.0.4"
+    "typescript": "^5.9.3"
   },
   "jest": {
     "preset": "react-native"
