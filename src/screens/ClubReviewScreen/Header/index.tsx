@@ -30,7 +30,7 @@ const Header = ({ club, onBack }: Props) => {
 					zIndex: 3,
 				}}>
 				<TouchableOpacity style={{ marginBottom: 12 }} onPress={onBack}>
-					<Icon color={Colors.WHITE} name="arrow-left" size={24} />
+					<Icon color={Colors.WHITE} name="chevron-left" size={24} />
 				</TouchableOpacity>
 				<View style={{ marginLeft: 12 }}>
 					<Text
