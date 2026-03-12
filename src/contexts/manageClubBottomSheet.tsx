@@ -4,7 +4,7 @@ import {
 	BottomSheetModal,
 } from '@gorhom/bottom-sheet'
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react'
-import { BackHandler, KeyboardAvoidingView } from 'react-native'
+import { BackHandler, Platform } from 'react-native'
 import ManageClubView from 'screens/components/ManageClubView'
 
 const ManageClubBottomSheetContext = createContext<{
@@ -70,14 +70,12 @@ export const ManageClubBottomSheetProvider = ({ children }: Props) => {
 			<BottomSheetModal
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={[300]}
+				snapPoints={[Platform.OS === 'ios' ? 420 : 400]}
 				onDismiss={() => {
 					isBottomSheetOpenRef.current = false
 				}}
 				backdropComponent={renderBackdrop}>
-				<KeyboardAvoidingView behavior="height">
-					<ManageClubView closeBottomSheet={closeBottomSheet} />
-				</KeyboardAvoidingView>
+				<ManageClubView closeBottomSheet={closeBottomSheet} />
 			</BottomSheetModal>
 		</ManageClubBottomSheetContext.Provider>
 	)
