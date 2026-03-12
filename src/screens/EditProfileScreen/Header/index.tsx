@@ -21,7 +21,7 @@ const Header = ({ onBack }: Props) => {
 			<TouchableOpacity
 				style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
 				onPress={onBack}>
-				<Icon name="arrow-left" size={24} />
+				<Icon name="chevron-left" size={24} />
 			</TouchableOpacity>
 			<View style={{ flex: 1 }}>
 				<Text
