@@ -10,8 +10,8 @@ export type EventLogParameter<T extends EventLogParameterType> = {
 	parameters: T extends 'view'
 		? ViewParameter
 		: T extends 'click'
-		? ClickParameter
-		: ExposeParameter
+			? ClickParameter
+			: ExposeParameter
 }
 
 type BaseParameter = {

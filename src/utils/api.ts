@@ -28,7 +28,7 @@ export class APIConnector {
 			? {
 					'x-authorization': `Bearer ${token}`,
 					Authorization: `Bearer ${token}`,
-			  }
+				}
 			: {}
 
 		return this.request(path, 'GET', {
@@ -47,7 +47,7 @@ export class APIConnector {
 			? {
 					'x-authorization': `Bearer ${token}`,
 					Authorization: `Bearer ${token}`,
-			  }
+				}
 			: {}
 
 		return this.request(path, 'POST', {
@@ -67,7 +67,7 @@ export class APIConnector {
 			? {
 					'x-authorization': `Bearer ${token}`,
 					Authorization: `Bearer ${token}`,
-			  }
+				}
 			: {}
 
 		return this.request(path, 'PUT', {
@@ -86,7 +86,7 @@ export class APIConnector {
 			? {
 					'x-authorization': `Bearer ${token}`,
 					Authorization: `Bearer ${token}`,
-			  }
+				}
 			: {}
 		return this.request(path, 'DELETE', {
 			headers: {
