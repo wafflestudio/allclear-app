@@ -26,7 +26,7 @@ const Header = ({ onBack }: Props) => {
 					alignItems: 'center',
 				}}
 				onPress={onBack}>
-				<Icon name="arrow-left" size={24} />
+				<Icon name="chevron-left" size={24} />
 			</TouchableOpacity>
 			<View style={{ marginLeft: 12 }}>
 				<Text

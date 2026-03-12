@@ -28,15 +28,17 @@ const Header = ({ category, onBack }: Props) => {
 			<View
 				style={{
 					position: 'relative',
-					flex: 1,
 					display: 'flex',
 					flexDirection: 'row',
-					alignItems: 'flex-start',
+					alignItems: 'center',
 					justifyContent: 'space-between',
+					minHeight: 28,
 					zIndex: 3,
 				}}>
-				<TouchableOpacity style={{ marginBottom: 12 }} onPress={onBack}>
-					<Icon color={Colors.WHITE} name="arrow-left" size={24} />
+				<TouchableOpacity
+					style={{ width: 28, height: 28, alignItems: 'center', justifyContent: 'center' }}
+					onPress={onBack}>
+					<Icon color={Colors.WHITE} name="chevron-left" size={24} />
 				</TouchableOpacity>
 			</View>
 
