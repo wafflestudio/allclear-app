@@ -46,6 +46,7 @@ const CategoryCard = ({ category }: Props) => {
 					style={{
 						position: 'relative',
 						borderRadius: 8,
+						overflow: 'hidden',
 						width: '100%',
 						height: 90,
 						display: 'flex',
@@ -56,11 +57,8 @@ const CategoryCard = ({ category }: Props) => {
 					{!isFadeInFinished && (
 						<View
 							style={{
-								elevation: 5,
-								borderRadius: 8,
-								zIndex: 100,
-								overflow: 'hidden',
 								position: 'absolute',
+								zIndex: 1,
 								width: '100%',
 								left: 0,
 								top: 0,
@@ -76,31 +74,43 @@ const CategoryCard = ({ category }: Props) => {
 							/>
 						</View>
 					)}
-					<Animated.Image
+					<Animated.View
+						pointerEvents="none"
 						style={{
-							width: '100%',
-							height: 90,
-							borderRadius: 8,
 							position: 'absolute',
+							left: 0,
+							top: 0,
+							right: 0,
+							bottom: 0,
+							zIndex: 2,
 							opacity: animatedOpacityValue,
-						}}
-						source={{ uri: category.thumbnailUri }}
-						onLoad={() => {
-							if (isFadeInFinished) return
-							Animated.timing(animatedOpacityValue, {
-								toValue: 1,
-								delay: 0,
-								isInteraction: false,
-								useNativeDriver: true,
-								easing: Easing.in(Easing.ease),
-							}).start(() => setIsFadeInFinished(true))
-						}}
-					/>
+						}}>
+						<Image
+							source={{ uri: category.thumbnailUri }}
+							style={{
+								width: '100%',
+								height: 90,
+							}}
+							onLoad={() => {
+								if (isFadeInFinished) return
+								Animated.timing(animatedOpacityValue, {
+									toValue: 1,
+									delay: 0,
+									isInteraction: false,
+									useNativeDriver: false,
+									easing: Easing.in(Easing.ease),
+								}).start(() => setIsFadeInFinished(true))
+							}}
+						/>
+					</Animated.View>
 					<View
+						pointerEvents="none"
 						style={{
-							marginLeft: 8,
-							marginBottom: 8,
-							zIndex: 200,
+							position: 'absolute',
+							left: 8,
+							bottom: 8,
+							zIndex: 3,
+							elevation: 12,
 							display: 'flex',
 							flexDirection: 'row',
 							alignItems: 'center',
