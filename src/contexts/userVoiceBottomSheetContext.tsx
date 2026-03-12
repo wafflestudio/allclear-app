@@ -3,8 +3,8 @@ import {
 	BottomSheetBackdropProps,
 	BottomSheetModal,
 } from '@gorhom/bottom-sheet'
-import React, { createContext, useCallback, useContext, useRef } from 'react'
-import { Platform } from 'react-native'
+import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react'
+import { BackHandler, Platform } from 'react-native'
 import UserVoiceView from 'screens/components/UserVoiceView'
 
 const UserVoiceBottomSheetContext = createContext<{
@@ -23,6 +23,7 @@ type Props = {
 
 export const UserVoiceBottomSheetProvider = ({ children }: Props) => {
 	const bottomSheetModalRef = useRef<BottomSheetModal>(null)
+	const isBottomSheetOpenRef = useRef(false)
 
 	const renderBackdrop = useCallback(
 		(props: BottomSheetBackdropProps) => (
@@ -37,12 +38,27 @@ export const UserVoiceBottomSheetProvider = ({ children }: Props) => {
 	)
 
 	const openBottomSheet = useCallback(() => {
+		isBottomSheetOpenRef.current = true
 		bottomSheetModalRef.current?.present()
 	}, [])
 
 	const closeBottomSheet = useCallback(() => {
+		isBottomSheetOpenRef.current = false
 		bottomSheetModalRef.current?.close()
 	}, [])
+
+	useEffect(() => {
+		const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+			if (!isBottomSheetOpenRef.current) {
+				return false
+			}
+
+			closeBottomSheet()
+			return true
+		})
+
+		return () => subscription.remove()
+	}, [closeBottomSheet])
 
 	return (
 		<UserVoiceBottomSheetContext.Provider
@@ -55,6 +71,9 @@ export const UserVoiceBottomSheetProvider = ({ children }: Props) => {
 				ref={bottomSheetModalRef}
 				index={0}
 				snapPoints={[Platform.OS === 'ios' ? 400 : 350]}
+				onDismiss={() => {
+					isBottomSheetOpenRef.current = false
+				}}
 				backdropComponent={renderBackdrop}>
 				<UserVoiceView closeBottomSheet={closeBottomSheet} />
 			</BottomSheetModal>
