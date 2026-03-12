@@ -1,11 +1,19 @@
-rootProject.name = 'clubhouse'
-apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
+pluginManagement {
+    includeBuild("../node_modules/@react-native/gradle-plugin")
+}
 
-include ':app'
-includeBuild('../node_modules/@react-native/gradle-plugin')
+plugins {
+    id("com.facebook.react.settings")
+}
 
-include ':react-native-splash-screen'
-project(':react-native-splash-screen').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-splash-screen/android')
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+    ex.autolinkLibrariesFromCommand()
+}
 
-include ':react-native-code-push'
-project(':react-native-code-push').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-code-push/android/app')
+rootProject.name = "clubhouse"
+
+include(":app")
+includeBuild("../node_modules/@react-native/gradle-plugin")
+
+include(":react-native-config")
+project(":react-native-config").projectDir = new File(rootProject.projectDir, "../node_modules/react-native-config/android")

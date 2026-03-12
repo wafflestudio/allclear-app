@@ -7,7 +7,6 @@ import { ProfileProvider } from 'contexts/profileContext'
 import { serviceContext } from 'contexts/serviceContext'
 import { UserVoiceBottomSheetProvider } from 'contexts/userVoiceBottomSheetContext'
 import React, { useEffect } from 'react'
-import { default as CodePush, RemotePackage, default as codePush } from 'react-native-code-push'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import SplashScreen from 'react-native-splash-screen'
@@ -25,7 +24,6 @@ import { getEventLogService } from 'usecases/eventLog'
 import { getReviewService } from 'usecases/review'
 import { getUserService } from 'usecases/user'
 import { _navigationRef, setIsNavigationReady } from 'utils/navigation'
-import InstallMode = CodePush.InstallMode
 
 // OneSignal Initialization
 // ENV.ONESIGNAL_APP_ID && OneSignal.initialize(ENV.ONESIGNAL_APP_ID)
@@ -40,10 +38,6 @@ import InstallMode = CodePush.InstallMode
 // })
 
 const queryClient = new QueryClient()
-
-const updateCheck = (): Promise<RemotePackage | null> => {
-	return codePush.checkForUpdate()
-}
 
 function App(): React.JSX.Element {
 	const { Provider: ServiceProvider } = serviceContext
@@ -70,24 +64,8 @@ function App(): React.JSX.Element {
 		userService,
 	}
 
-	const updateBundle = async (remotePackage: RemotePackage | null) => {
-		if (!remotePackage) return
-
-		try {
-			const newPackage = await remotePackage.download()
-
-			if (!newPackage) return
-
-			await newPackage.install(InstallMode.ON_NEXT_RESUME)
-			codePush.restartApp()
-		} catch (err) {
-			console.log('updateBundle error', err)
-		}
-	}
-
 	useEffect(() => {
 		setIsNavigationReady(true)
-		updateCheck().then(newPackage => updateBundle(newPackage))
 		setTimeout(() => SplashScreen.hide(), 1000)
 	}, [])
 
