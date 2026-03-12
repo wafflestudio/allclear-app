@@ -129,7 +129,7 @@ const Header = ({ club, onBack }: Props) => {
 				zIndex: 3,
 			}}>
 			<TouchableOpacity onPress={handleBack}>
-				<Icon color={Colors.WHITE} name="arrow-left" size={24} />
+				<Icon color={Colors.WHITE} name="chevron-left" size={24} />
 			</TouchableOpacity>
 			{isSaved ? (
 				<TouchableOpacity onPress={handleRemoveSavedClub}>

@@ -129,7 +129,7 @@ const ClubReviewScreen = ({ route }: Props) => {
 															? {
 																	backgroundColor: `${categoryDetail.safeArea}`,
 																	borderColor: `${categoryDetail.safeArea}`,
-															  }
+																}
 															: null,
 													]}>
 													<Text
@@ -146,7 +146,7 @@ const ClubReviewScreen = ({ route }: Props) => {
 																? {
 																		color: '#ffffff',
 																		fontWeight: 'bold',
-																  }
+																	}
 																: null,
 														]}>
 														{keyword.title}

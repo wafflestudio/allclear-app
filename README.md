@@ -18,7 +18,7 @@
 ```
 src/
 ├── entities/           # 도메인 타입 정의
-├── repositories/       # 데이터 계층 (자체 ORM)  
+├── repositories/       # 데이터 계층 (자체 ORM)
 ├── usecases/           # 비즈니스 로직
 ├── screens/            # UI 컴포넌트
 ├── contexts/           # 상태 관리 (서비스 DI, 프로필 등)
@@ -29,6 +29,7 @@ src/
 ```
 
 ### 주요 파일 구조
+
 - `entities/`: user.ts, club.ts, review.ts, category.ts
 - `repositories/`: 각 도메인별 CRUD + API 통신
 - `usecases/`: 비즈니스 로직 + Repository DI
@@ -40,6 +41,7 @@ src/
 **Node.js 18+ 환경에서 React Native 앱 실행**
 
 ### 설치 및 실행
+
 ```bash
 # 의존성 설치
 yarn install && cd ios && pod install && cd ..
@@ -51,7 +53,9 @@ yarn android:local # Android
 ```
 
 ### 환경 변수 설정
+
 `.env.local`, `.env.staging`, `.env.prod` 파일에 설정:
+
 ```env
 API_SERVER_BASE_URL=https://your-api-server.com
 ONESIGNAL_APP_ID=your-onesignal-app-id
@@ -63,13 +67,13 @@ PROFILE=local|staging|prod
 **Clean Architecture 4계층으로 의존성 역전과 계층 분리 달성**
 
 ```
-┌─────────────────┐ 
+┌─────────────────┐
 │   Presentation  │ ← screens/, contexts/ (UI + 상태)
 ├─────────────────┤
-│    Use Cases    │ ← usecases/ (비즈니스 로직)  
+│    Use Cases    │ ← usecases/ (비즈니스 로직)
 ├─────────────────┤
 │   Repositories  │ ← repositories/ (데이터 접근)
-├─────────────────┤  
+├─────────────────┤
 │    Entities     │ ← entities/ (도메인 모델)
 └─────────────────┘
 ```
@@ -77,34 +81,38 @@ PROFILE=local|staging|prod
 ### 계층별 역할
 
 **1. Entities** - 순수 TypeScript 타입
+
 ```typescript
 export type User = {
-  id: string
-  nickname: string
-  college: string    // 단과대
-  major: string     // 학과  
-  grade: number | null
+	id: string
+	nickname: string
+	college: string // 단과대
+	major: string // 학과
+	grade: number | null
 }
 ```
 
 **2. Repositories** - 데이터 추상화 + 자체 ORM
+
 ```typescript
 export const getUserRepository = (): UserRepository => ({
-  getUser: async () => {
-    const token = await AsyncStorage.getItem(LOGIN_TOKEN)
-    return apiConnector.get<GetUserResponse>('/v1/users/me')
-  }
+	getUser: async () => {
+		const token = await AsyncStorage.getItem(LOGIN_TOKEN)
+		return apiConnector.get<GetUserResponse>('/v1/users/me')
+	},
 })
 ```
 
 **3. Use Cases** - 비즈니스 로직 + DI
+
 ```typescript
 export const getUserService = ({ repositories }: Deps): UserService => ({
-  getUser: () => repositories[0].getUser()
+	getUser: () => repositories[0].getUser(),
 })
 ```
 
 **4. Presentation** - UI + 이벤트 로깅
+
 ```typescript
 const HomeScreen = () => {
   const { logClickEvent } = useClickEventLog()
@@ -121,34 +129,37 @@ const HomeScreen = () => {
 **TypeScript + Repository 패턴으로 별도 ORM 라이브러리 없이 타입 안전한 데이터 계층 구현**
 
 ### 1. APIConnector 클래스
+
 ```typescript
 export class APIConnector {
-  async get<T>(path: string, params?: any): Promise<T> {
-    const token = await AsyncStorage.getItem(LOGIN_TOKEN)
-    const headers = token ? { Authorization: `Bearer ${token}` } : {}
-    return this.request(path, 'GET', { params, headers })
-  }
+	async get<T>(path: string, params?: any): Promise<T> {
+		const token = await AsyncStorage.getItem(LOGIN_TOKEN)
+		const headers = token ? { Authorization: `Bearer ${token}` } : {}
+		return this.request(path, 'GET', { params, headers })
+	}
 }
 
 export const apiConnector = new APIConnector()
 ```
 
 ### 2. Repository 패턴
+
 ```typescript
 // 인터페이스 정의
 export type ClubRepository = {
-  searchClubs: (req: SearchClubsRequest) => Promise<SearchClubsResponse>
-  getClub: (req: GetClubRequest) => Promise<Club>
+	searchClubs: (req: SearchClubsRequest) => Promise<SearchClubsResponse>
+	getClub: (req: GetClubRequest) => Promise<Club>
 }
 
 // 구현체
 export const getClubRepository = (): ClubRepository => ({
-  searchClubs: async req => apiConnector.get(`/v1/clubs/search`, req),
-  getClub: async req => apiConnector.get(`/v1/clubs/${req.uuid}`)
+	searchClubs: async req => apiConnector.get(`/v1/clubs/search`, req),
+	getClub: async req => apiConnector.get(`/v1/clubs/${req.uuid}`),
 })
 ```
 
 ### 3. 타입 안전성
+
 모든 Request/Response에 TypeScript 타입 정의로 컴파일타임 검증
 
 **장점**: 타입 안전성 + 경량화 + 테스트 용이성 + 명확한 계층 분리
@@ -158,6 +169,7 @@ export const getClubRepository = (): ClubRepository => ({
 **App.tsx에서 전체 의존성 주입 후 Context로 전파하는 구조**
 
 ### 의존성 주입 패턴
+
 ```typescript
 // App.tsx
 function App() {
@@ -165,13 +177,13 @@ function App() {
   const userRepository = getUserRepository()
   const clubRepository = getClubRepository()
 
-  // 2. Service에 Repository 주입  
+  // 2. Service에 Repository 주입
   const userService = getUserService({ repositories: [userRepository] })
   const clubService = getClubService({ repositories: [clubRepository] })
 
   // 3. Context로 서비스 제공
   const services = { userService, clubService }
-  
+
   return (
     <ServiceProvider value={services}>
       <ProfileProvider>
@@ -183,14 +195,15 @@ function App() {
 ```
 
 ### 컴포넌트에서 사용
+
 ```typescript
 export const ProfileProvider = ({ children }) => {
   const { userService } = useContext(serviceContext)
-  
+
   useEffect(() => {
     userService.getUser().then(setUser)
   }, [])
-  
+
   return <profileContext.Provider value={{ user }}>{children}</profileContext.Provider>
 }
 ```
@@ -200,11 +213,13 @@ export const ProfileProvider = ({ children }) => {
 **React Native WebView를 활용한 하이브리드 기능 제공**
 
 ### 개요
+
 앱 내에서 웹 페이지를 표시할 수 있는 WebView 화면을 제공합니다. 주로 동아리 정보 편집과 같이 복잡한 폼이 필요한 기능을 웹으로 구현하여 앱에서 사용합니다.
 
 ### 주요 기능
 
 **1. 인앱 브라우저**
+
 ```typescript
 // 파일: src/screens/WebviewScreen/index.tsx:12-54
 <WebView
@@ -219,39 +234,44 @@ export const ProfileProvider = ({ children }) => {
 ```
 
 **2. 인증 헤더 지원**
+
 - Authorization 토큰을 `x-authorization` 헤더로 전달
 - 로그인이 필요한 웹 페이지 접근 가능
 
 **3. 웹-네이티브 통신**
+
 ```typescript
 // 웹에서 앱으로 메시지 전송
 // 파일: src/screens/WebviewScreen/index.tsx:17-24
 const onMessage = (e: WebViewMessageEvent) => {
-  const event = JSON.parse(e.nativeEvent.data)
+	const event = JSON.parse(e.nativeEvent.data)
 
-  switch (event.method) {
-    case 'CLOSE_WEBVIEW':
-      return navigation.goBack()
-  }
+	switch (event.method) {
+		case 'CLOSE_WEBVIEW':
+			return navigation.goBack()
+	}
 }
 ```
 
 **4. 로딩 상태 표시**
+
 - 웹 페이지 로딩 중 ActivityIndicator 표시
 - `onLoadStart`, `onLoadEnd` 이벤트로 로딩 상태 관리
 
 **5. 네비게이션**
+
 - 커스텀 헤더 with 뒤로가기 버튼
 - 웹에서 `CLOSE_WEBVIEW` 메시지로 화면 닫기 가능
 
 ### 사용 예시
 
 **동아리 편집 페이지 열기**
+
 ```typescript
 // 파일: src/screens/MyPageScreen/index.tsx:69-71
 navigation.navigate(SCREEN_TYPE.WEBVIEW, {
-  uri: ENV.WEB_URL + '/c/edit/' + club.uuid,
-  authorization,  // 사용자 토큰
+	uri: ENV.WEB_URL + '/c/edit/' + club.uuid,
+	authorization, // 사용자 토큰
 })
 ```
 
@@ -260,22 +280,26 @@ navigation.navigate(SCREEN_TYPE.WEBVIEW, {
 ```typescript
 // 파일: src/entities/screen.ts:37
 type WebViewParams = {
-  uri: string              // 표시할 웹 페이지 URL
-  authorization?: string   // 선택적 인증 토큰
+	uri: string // 표시할 웹 페이지 URL
+	authorization?: string // 선택적 인증 토큰
 }
 ```
 
 ### 웹에서 앱으로 메시지 전송 방법
 
 **웹 페이지에서 다음과 같이 메시지 전송:**
+
 ```javascript
 // 웹 페이지 JavaScript 코드
-window.ReactNativeWebView.postMessage(JSON.stringify({
-  method: 'CLOSE_WEBVIEW'
-}))
+window.ReactNativeWebView.postMessage(
+	JSON.stringify({
+		method: 'CLOSE_WEBVIEW',
+	}),
+)
 ```
 
 ### 지원 기능
+
 - JavaScript 실행
 - DOM Storage
 - 쿠키 공유 (앱과 웹 간)
@@ -285,11 +309,13 @@ window.ReactNativeWebView.postMessage(JSON.stringify({
 - OverScroll 비활성화 (Android)
 
 ### 활용 사례
+
 - **동아리 관리**: 동아리 정보 편집 폼 (`/c/edit/:uuid`)
 - **복잡한 폼**: 여러 필드와 검증이 필요한 입력 폼
 - **외부 연동**: 웹에서만 제공되는 서비스 통합
 
 ### 파일 구조
+
 ```
 src/screens/WebviewScreen/
 ├── index.tsx           # WebView 메인 화면
@@ -304,61 +330,69 @@ src/screens/WebviewScreen/
 ### 새 기능 개발 플로우
 
 1. **Entity 타입 정의**
+
 ```typescript
 export type NewFeature = { id: string; name: string }
 ```
 
-2. **Repository 구현**  
+2. **Repository 구현**
+
 ```typescript
 export const getNewFeatureRepository = (): NewFeatureRepository => ({
-  getFeature: async (id) => apiConnector.get(`/v1/features/${id}`)
+	getFeature: async id => apiConnector.get(`/v1/features/${id}`),
 })
 ```
 
 3. **UseCase 구현**
+
 ```typescript
 export const getNewFeatureService = ({ repositories }) => ({
-  getFeature: (id) => repositories[0].getFeature(id)
+	getFeature: id => repositories[0].getFeature(id),
 })
 ```
 
 4. **의존성 주입 + UI 사용**
+
 ```typescript
 // App.tsx에서 서비스 추가 후 Context에서 사용
 const { newFeatureService } = useContext(serviceContext)
 ```
 
 ### 코드 스타일
+
 ```bash
 yarn lint           # ESLint 검사
 npx tsc --noEmit   # TypeScript 타입 체크
 ```
 
 ### 주요 라이브러리
+
 - **네비게이션**: `@react-navigation/native`
-- **상태관리**: `@tanstack/react-query` + React Context  
+- **상태관리**: `@tanstack/react-query` + React Context
 - **UI**: `react-native-elements`, `@gorhom/bottom-sheet`
 - **HTTP**: `axios`
 - **스토리지**: `@react-native-async-storage/async-storage`
 - **로그인**: `@react-native-seoul/kakao-login`, `@invertase/react-native-apple-authentication`
 
 ### 테스트 예시
+
 ```typescript
 const mockRepository: UserRepository = {
-  getUser: jest.fn().mockResolvedValue(mockUser)
+	getUser: jest.fn().mockResolvedValue(mockUser),
 }
 const userService = getUserService({ repositories: [mockRepository] })
 
 test('should get user', async () => {
-  const user = await userService.getUser()
-  expect(user).toEqual(mockUser)
+	const user = await userService.getUser()
+	expect(user).toEqual(mockUser)
 })
 ```
 
 ### 트러블슈팅
+
 ```bash
 npx react-native start --reset-cache  # Metro 캐시 클리어
-cd ios && pod deintegrate && pod install  # iOS 의존성 재설치  
+cd ios && pod deintegrate && pod install  # iOS 의존성 재설치
 cd android && ./gradlew clean          # Android 클리어
 yarn reset                             # 전체 리셋
 ```
@@ -368,11 +402,12 @@ yarn reset                             # 전체 리셋
 **CodePush를 활용한 실시간 업데이트 지원**
 
 ### 빌드 명령어
+
 ```bash
 # 디버그
 yarn ios:local / yarn android:local
 
-# 릴리스  
+# 릴리스
 yarn build:ios:prod:release / yarn build:android:release
 
 ```
