@@ -64,8 +64,12 @@ const ManageClubView = ({ closeBottomSheet }: Props) => {
 			</View>
 			<View style={styles.buttonWrapper}>
 				<TouchableOpacity
+					disabled={!input.trim()}
 					onPress={handleSubmit}
-					style={[styles.button, { backgroundColor: Colors.GRAY_50, marginTop: 'auto' }]}>
+					style={[
+						styles.button,
+						{ backgroundColor: input.trim() ? Colors.GRAY_50 : Colors.GRAY_30 },
+					]}>
 					<Text
 						style={{
 							color: Colors.WHITE,
@@ -124,11 +128,8 @@ const styles = StyleSheet.create({
 	},
 
 	buttonWrapper: {
-		marginTop: 'auto',
-		bottom: 0,
+		marginTop: 20,
 		width: '100%',
-		left: 0,
-		right: 0,
 	},
 
 	button: {
