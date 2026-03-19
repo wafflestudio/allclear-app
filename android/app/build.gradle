@@ -4,11 +4,16 @@ apply plugin: "com.facebook.react"
 apply plugin: 'com.google.gms.google-services'
 
 // react-native-config 설정
+// 의도적으로 소문자 사용
 project.ext.envConfigFiles = [
-    debug: ".env.local",
-    staging: ".env.staging",
-    release: ".env.prod",
-    anothercustombuild: ".env",
+    devdebug: ".env.dev",
+    devrelease: ".env.dev",
+
+    stagingdebug: ".env.staging",
+    stagingrelease: ".env.staging",
+
+    proddebug: ".env.prod",
+    prodrelease: ".env.prod",
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
@@ -36,7 +41,7 @@ react {
     //   The list of variants to that are debuggable. For those we're going to
     //   skip the bundling of the JS bundle and the assets. By default is just 'debug'.
     //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
-    // debuggableVariants = ["liteDebug", "prodDebug"]
+    debuggableVariants = ["devDebug", "stagingDebug", "prodDebug"]
 
     /* Bundling */
     //   A list containing the node command and its flags. Default is just 'node'.
@@ -139,19 +144,31 @@ android {
             keyPassword 'android'
         }
     }
+
+    flavorDimensions "environment"
+    productFlavors {
+        dev {
+            dimension "environment"
+            applicationIdSuffix ".dev"
+            resValue "string", "app_name", "(dev)올클"
+        }
+        staging {
+            dimension "environment"
+            applicationIdSuffix ".staging"
+            resValue "string", "app_name", "(staging)올클"
+        }
+        prod {
+            dimension "environment"
+            resValue "string", "app_name", "올클"
+        }
+    }
+    
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
             versionNameSuffix "-DEBUG"
             applicationIdSuffix ".debug"
-            resValue "string", "app_name", "@string/app_name_debug"
             debuggable true
-        }
-        staging {
-            initWith release
-            matchingFallbacks = ['release']
-            applicationIdSuffix ".staging"
-            resValue "string", "app_name", "@string/app_name_staging"
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
