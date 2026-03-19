@@ -49,17 +49,17 @@ yarn install && cd ios && pod install && cd ..
 # 개발 서버 실행
 yarn start
 yarn ios:local    # iOS
-yarn android:local # Android
+yarn android:dev  # Android
 ```
 
 ### 환경 변수 설정
 
-`.env.local`, `.env.staging`, `.env.prod` 파일에 설정:
+`.env.dev`, `.env.staging`, `.env.prod` 파일에 설정:
 
 ```env
 API_SERVER_BASE_URL=https://your-api-server.com
 ONESIGNAL_APP_ID=your-onesignal-app-id
-PROFILE=local|staging|prod
+PROFILE=dev|staging|prod
 ```
 
 ## 🏛️ 아키텍처
@@ -405,7 +405,7 @@ yarn reset                             # 전체 리셋
 
 ```bash
 # 디버그
-yarn ios:local / yarn android:local
+yarn ios:local / yarn android:dev
 
 # 릴리스
 yarn build:ios:prod:release / yarn build:android:release
