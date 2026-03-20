@@ -22,17 +22,3 @@ buildscript {
         classpath 'com.google.gms:google-services:4.4.0'
     }
 }
-
-subprojects { subproject ->
-    subproject.pluginManager.withPlugin("com.android.library") {
-        subproject.android {
-            flavorDimensions "environment"
-
-            productFlavors {
-                maybeCreate("dev").dimension = "environment"
-                maybeCreate("staging").dimension = "environment"
-                maybeCreate("prod").dimension = "environment"
-            }
-        }
-    }
-}
