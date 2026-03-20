@@ -99,6 +99,17 @@ def reactNativeArchitectures() {
     return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
 }
 
+def resolveVersionCode = { propertyName, defaultValue ->
+    def value = findProperty(propertyName)
+    return value != null ? value.toString().toInteger() : defaultValue
+}
+
+def prodVersionCode = resolveVersionCode("PROD_VERSION_CODE", 30)
+def devVersionCodeOffset = 10000
+def stagingVersionCodeOffset = 20000
+def devVersionCode = resolveVersionCode("DEV_VERSION_CODE", prodVersionCode + devVersionCodeOffset)
+def stagingVersionCode = resolveVersionCode("STAGING_VERSION_CODE", prodVersionCode + stagingVersionCodeOffset)
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -110,7 +121,7 @@ android {
         applicationId "com.padocorp.clubhouse.applicationId"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 29
+        versionCode prodVersionCode
         versionName "2.1.4"
         resValue "string", "build_config_package", "com.padocorp.clubhouse"
 
@@ -149,16 +160,19 @@ android {
     productFlavors {
         dev {
             dimension "environment"
+            versionCode devVersionCode
             applicationIdSuffix ".dev"
             resValue "string", "app_name", "(dev)올클"
         }
         staging {
             dimension "environment"
+            versionCode stagingVersionCode
             applicationIdSuffix ".staging"
             resValue "string", "app_name", "(staging)올클"
         }
         prod {
             dimension "environment"
+            versionCode prodVersionCode
             resValue "string", "app_name", "올클"
         }
     }
@@ -173,7 +187,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
 //             minifyEnabled enableProguardInReleaseBuilds
 //             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
