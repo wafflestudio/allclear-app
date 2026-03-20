@@ -58,7 +58,6 @@ yarn android:dev  # Android
 
 ```env
 API_SERVER_BASE_URL=https://your-api-server.com
-ONESIGNAL_APP_ID=your-onesignal-app-id
 PROFILE=dev|staging|prod
 ```
 

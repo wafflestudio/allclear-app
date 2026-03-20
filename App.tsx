@@ -25,18 +25,6 @@ import { getReviewService } from 'usecases/review'
 import { getUserService } from 'usecases/user'
 import { _navigationRef, setIsNavigationReady } from 'utils/navigation'
 
-// OneSignal Initialization
-// ENV.ONESIGNAL_APP_ID && OneSignal.initialize(ENV.ONESIGNAL_APP_ID)
-
-// requestPermission will show the native iOS or Android notification permission prompt.
-// We recommend removing the following code and instead using an In-App Message to prompt for notification permission
-// OneSignal.Notifications.requestPermission(true)
-
-// Method for listening for notification clicks
-// OneSignal.Notifications.addEventListener('click', event => {
-// 	console.log('OneSignal: notification clicked:', event)
-// })
-
 const queryClient = new QueryClient()
 
 function App(): React.JSX.Element {
