@@ -40,6 +40,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Prepare upload keystore
+        env:
+          ANDROID_UPLOAD_KEYSTORE_B64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_B64 }}
+        run: |
+          printf '%s' "$ANDROID_UPLOAD_KEYSTORE_B64" | base64 --decode > android/app/clubhouse.keystore
+
       - name: Compute dev release metadata
         id: build_meta
         shell: bash
@@ -60,10 +66,10 @@ jobs:
 
       - name: Build dev release bundle
         env:
-          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_FILE: debug.keystore
-          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_PASSWORD: android
-          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS: androiddebugkey
-          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_PASSWORD: android
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_FILE: clubhouse.keystore
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_STORE_PASSWORD }}
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
         run: |
           chmod +x android/gradlew
           cd android
@@ -79,3 +85,7 @@ jobs:
           status: completed
           releaseName: ${{ steps.build_meta.outputs.release_name }}
           whatsNewDirectory: .github/play/whatsnew
+
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f android/app/clubhouse.keystore
