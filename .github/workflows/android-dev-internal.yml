@@ -1,4 +1,4 @@
-name: Android Internal Testing
+name: Android Develop Internal Testing
 
 on:
   push:
@@ -46,14 +46,14 @@ jobs:
         run: |
           release_version_code=$((100000 + GITHUB_RUN_NUMBER))
           echo "release_version_code=${release_version_code}" >> "$GITHUB_OUTPUT"
-          echo "release_name=internal ${release_version_code}" >> "$GITHUB_OUTPUT"
+          echo "release_name=develop internal ${release_version_code}" >> "$GITHUB_OUTPUT"
 
       - name: Prepare release notes
         shell: bash
         run: |
           mkdir -p .github/play/whatsnew
           cat > .github/play/whatsnew/whatsnew-ko-KR <<EOF
-          develop 브랜치 자동 배포 빌드입니다.
+          develop 브랜치 자동 배포 빌드입니다. dev DB를 사용합니다.
           Run: #${GITHUB_RUN_NUMBER}
           Commit: ${GITHUB_SHA::7}
           EOF
@@ -62,7 +62,7 @@ jobs:
         run: |
           chmod +x android/gradlew
           cd android
-          ENVFILE=.env.prod ./gradlew :app:bundleRelease -PVERSION_CODE=${{ steps.build_meta.outputs.release_version_code }}
+          ENVFILE=.env.local ./gradlew :app:bundleRelease -PVERSION_CODE=${{ steps.build_meta.outputs.release_version_code }}
 
       - name: Upload to Google Play internal testing
         uses: r0adkll/upload-google-play@v1.1.3
