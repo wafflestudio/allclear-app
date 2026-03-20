@@ -74,3 +74,7 @@ jobs:
           status: completed
           releaseName: ${{ steps.build_meta.outputs.release_name }}
           whatsNewDirectory: .github/play/whatsnew
+
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f android/app/clubhouse.keystore
