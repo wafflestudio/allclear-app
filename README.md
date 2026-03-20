@@ -54,7 +54,7 @@ yarn android:dev  # Android
 
 ### 환경 변수 설정
 
-`.env.dev`, `.env.staging`, `.env.prod` 파일에 설정:
+`.env.local`, `.env.prod` 파일에 설정:
 
 ```env
 API_SERVER_BASE_URL=https://your-api-server.com

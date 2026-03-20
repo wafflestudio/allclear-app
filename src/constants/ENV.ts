@@ -1,6 +1,6 @@
 import Config from 'react-native-config'
 
-type Profile = 'dev' | 'staging' | 'prod'
+type Profile = 'dev' | 'prod'
 
 const API_SERVER_BASE_URL = Config.API_SERVER_BASE_URL
 
