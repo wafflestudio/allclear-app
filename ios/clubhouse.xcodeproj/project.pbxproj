@@ -666,9 +666,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = clubhouse/clubhouse.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CXAVL2XH66;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CXAVL2XH66;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = clubhouse/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "올클";
@@ -687,6 +689,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.padocorp.clubhouse.debug;
 				PRODUCT_NAME = "(Debug) allclear";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "allclear-dev";
 				SWIFT_OBJC_BRIDGING_HEADER = "clubhouse-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1105,9 +1108,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = clubhouse/clubhouse.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CXAVL2XH66;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CXAVL2XH66;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = clubhouse/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "올클";
@@ -1126,6 +1131,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.padocorp.clubhouse.local;
 				PRODUCT_NAME = "(Local) allclear";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "all clear-local";
 				SWIFT_OBJC_BRIDGING_HEADER = "clubhouse-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
