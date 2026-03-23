@@ -1,41 +1,11 @@
 PODS:
   - Alamofire (5.9.1)
-  - appcenter-analytics (5.0.0):
-    - AppCenter/Analytics (~> 5.0)
-    - AppCenterReactNativeShared (~> 5.0)
-    - React-Core
-  - appcenter-core (5.0.0):
-    - AppCenterReactNativeShared (~> 5.0)
-    - React-Core
-  - appcenter-crashes (5.0.0):
-    - AppCenter/Crashes (~> 5.0)
-    - AppCenterReactNativeShared (~> 5.0)
-    - React-Core
-  - AppCenter/Analytics (5.0.6):
-    - AppCenter/Core
-  - AppCenter/Core (5.0.6)
-  - AppCenter/Crashes (5.0.6):
-    - AppCenter/Core
-  - AppCenterReactNativeShared (5.0.3):
-    - AppCenter/Core (= 5.0.6)
-  - Base64 (1.1.2)
-  - boost (1.83.0)
+  - boost (1.84.0)
   - BVLinearGradient (2.8.3):
     - React-Core
-  - CodePush (8.3.1):
-    - Base64 (~> 1.1)
-    - JWT (~> 3.0.0-beta.12)
-    - React-Core
-    - SSZipArchive (~> 2.2.2)
   - DoubleConversion (1.1.6)
-  - FBLazyVector (0.73.0)
-  - FBReactNativeSpec (0.73.0):
-    - RCT-Folly (= 2022.05.16.00)
-    - RCTRequired (= 0.73.0)
-    - RCTTypeSafety (= 0.73.0)
-    - React-Core (= 0.73.0)
-    - React-jsi (= 0.73.0)
-    - ReactCommon/turbomodule/core (= 0.73.0)
+  - fast_float (6.1.4)
+  - FBLazyVector (0.77.3)
   - Firebase/Analytics (10.29.0):
     - Firebase/Core
   - Firebase/Core (10.29.0):
