@@ -1,15 +1,11 @@
 import Config from 'react-native-config'
 
-type Profile = 'local' | 'beta' | 'prod'
+type Profile = 'dev' | 'prod'
 
 const API_SERVER_BASE_URL = Config.API_SERVER_BASE_URL
-const ONESIGNAL_APP_ID = Config.ONESIGNAL_APP_ID
 
 ;(function validateEnv() {
-	const message = [
-		['API_SERVER_BASE_URL', API_SERVER_BASE_URL],
-		['ONESIGNAL_APP_ID', ONESIGNAL_APP_ID],
-	]
+	const message = [['API_SERVER_BASE_URL', API_SERVER_BASE_URL]]
 		.filter(it => !it[1])
 		.map(([name, value]) => `Invalid environment variable ${name}: ${value}`)
 		.join('\n')
@@ -19,9 +15,8 @@ const ONESIGNAL_APP_ID = Config.ONESIGNAL_APP_ID
 	}
 })()
 export const ENV = {
-	PROFILE: (__DEV__ ? `dev_${Config.PROFILE}` : Config.PROFILE) as Profile,
+	PROFILE: Config.PROFILE as Profile,
 	IS_PRODUCTION: !__DEV__,
 	API_SERVER_BASE_URL: API_SERVER_BASE_URL,
-	ONESIGNAL_APP_ID: Config.ONESIGNAL_APP_ID || '',
 	WEB_URL: Config.WEB_URL || '',
 }
