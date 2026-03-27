@@ -29,8 +29,8 @@ export const Colors = {
 	FYI_GRAY_100: '#F5F5F5',
 
 	GRAY_50: '#3A3434',
-	GRAY_30: '#C5BBB8',
 	GRAY_40: '#8F8686',
+	GRAY_30: '#C5BBB8',
 	GRAY_20: '#E6E0DF',
 	GRAY_10: '#F9F8F6',
 }
