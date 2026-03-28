@@ -7,6 +7,14 @@ import {
   TextStyle,
 } from 'react-native'
 
+const COLORS = {
+  purple: '#874FFF',
+  white: '#FFFFFF',
+  gray300: '#C1C1C1',
+  gray200: '#E0E0E0',
+  gray100: '#EAEAEA',
+} as const
+
 type ButtonVariant = 'primary' | 'outline' | 'ghost'
 
 type DisabledVariant = 'default' | 'light'
@@ -96,32 +104,33 @@ const borderedContainer: ViewStyle = {
 
 const variantStyles = {
   primary: {
-    container: { backgroundColor: '#874FFF' } as ViewStyle,
-    text: { color: '#FFFFFF' } as TextStyle,
+    container: { backgroundColor: COLORS.purple } as ViewStyle,
+    text: { color: COLORS.white } as TextStyle,
   },
   primaryDisabled: {
-    container: { backgroundColor: '#C1C1C1' } as ViewStyle,
-    text: { color: '#FFFFFF' } as TextStyle,
+    container: { backgroundColor: COLORS.gray300 } as ViewStyle,
+    text: { color: COLORS.white } as TextStyle,
   },
   primaryDisabledLight: {
-    container: { backgroundColor: '#EAEAEA' } as ViewStyle,
-    text: { color: '#C1C1C1' } as TextStyle,
+    container: { backgroundColor: COLORS.gray100 } as ViewStyle,
+    text: { color: COLORS.gray300 } as TextStyle,
   },
   outline: {
-    container: { ...borderedContainer, borderColor: '#874FFF' } as ViewStyle,
-    text: { color: '#874FFF' } as TextStyle,
+    container: { ...borderedContainer, borderColor: COLORS.purple } as ViewStyle,
+    text: { color: COLORS.purple } as TextStyle,
   },
+  // TODO: outlineDisabled와 ghost의 borderColor가 동일함 (피그마 기준). 검토 필요
   outlineDisabled: {
-    container: { ...borderedContainer, borderColor: '#C1C1C1' } as ViewStyle,
-    text: { color: '#C1C1C1' } as TextStyle,
+    container: { ...borderedContainer, borderColor: COLORS.gray300 } as ViewStyle,
+    text: { color: COLORS.gray300 } as TextStyle,
   },
   ghost: {
-    container: { ...borderedContainer, borderColor: '#C1C1C1' } as ViewStyle,
-    text: { color: '#C1C1C1' } as TextStyle,
+    container: { ...borderedContainer, borderColor: COLORS.gray300 } as ViewStyle,
+    text: { color: COLORS.gray300 } as TextStyle,
   },
   ghostDisabled: {
-    container: { ...borderedContainer, borderColor: '#E0E0E0' } as ViewStyle,
-    text: { color: '#E0E0E0' } as TextStyle,
+    container: { ...borderedContainer, borderColor: COLORS.gray200 } as ViewStyle,
+    text: { color: COLORS.gray200 } as TextStyle,
   },
 }
 
