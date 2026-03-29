@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal, View, StyleSheet, Text, ViewStyle, TextStyle } from 'react-native'
+import { Modal, Pressable, View, StyleSheet, Text } from 'react-native'
 import { Colors } from '../../../constants/colors'
 import Button from '../Button'
 
@@ -13,6 +13,7 @@ export type ModalButton = {
 
 type Props = {
   visible: boolean
+  onClose: () => void
   title: string
   description: string
   buttons: [ModalButton] | [ModalButton, ModalButton]
@@ -23,13 +24,13 @@ const defaultVariants: Record<1 | 2, ButtonVariant[]> = {
   2: ['outline', 'primary'],
 }
 
-const AlertModal = ({ visible, title, description, buttons }: Props) => {
-  const variants = defaultVariants[buttons.length as 1 | 2]
+const AlertModal = ({ visible, onClose, title, description, buttons }: Props) => {
+  const variants = defaultVariants[buttons.length === 1 ? 1 : 2]
 
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
-        <View style={styles.container}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+      <Pressable style={styles.overlay} onPress={onClose}>
+        <Pressable style={styles.container}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
           <View style={styles.buttonArea}>
@@ -42,8 +43,8 @@ const AlertModal = ({ visible, title, description, buttons }: Props) => {
               />
             ))}
           </View>
-        </View>
-      </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   )
 }
@@ -55,31 +56,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
-  } as ViewStyle,
+  },
   container: {
     width: '100%',
     backgroundColor: Colors.WHITE,
     borderRadius: 16,
     padding: 24,
-  } as ViewStyle,
+  },
   title: {
     fontSize: 18,
     fontWeight: '700',
     color: Colors.FYI_BLACK,
     textAlign: 'center',
-  } as TextStyle,
+  },
   description: {
     fontSize: 14,
     fontWeight: '400',
-    color: Colors.FYI_GRAY_600,
+    color: Colors.FYI_BLACK,
     textAlign: 'center',
     marginTop: 12,
-  } as TextStyle,
+  },
   buttonArea: {
     flexDirection: 'row',
     gap: 8,
     marginTop: 24,
-  } as ViewStyle,
+  },
 })
 
 export default AlertModal
