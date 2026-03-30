@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { serviceContext } from 'contexts/serviceContext'
 import { Club } from 'entities/club'
 import useExposeEventLog from 'hooks/useExposeEventLog'
-import React, { useContext, useRef } from 'react'
+import { useContext, useRef } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View, ViewToken } from 'react-native'
 import RecommendClubCard from './RecommendClubCard'
 

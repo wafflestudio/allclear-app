@@ -4,7 +4,7 @@ import { Colors } from 'constants/colors'
 import { Category } from 'entities/category'
 import { SCREEN_TYPE, StackParamList } from 'entities/screen'
 import useClickEventLog from 'hooks/useClickEventLog'
-import React, { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Blurhash } from 'react-native-blurhash'
 
@@ -18,7 +18,7 @@ const CategoryCard = ({ category }: Props) => {
 	const { logClickEvent } = useClickEventLog()
 
 	const [isFadeInFinished, setIsFadeInFinished] = useState(false)
-	const animatedOpacityValue = React.useRef(new Animated.Value(0)).current
+	const animatedOpacityValue = useRef(new Animated.Value(0)).current
 
 	const navigation = useNavigation<NavigationProps>()
 
@@ -34,7 +34,9 @@ const CategoryCard = ({ category }: Props) => {
 
 	return (
 		<View style={styles.wrapper}>
-			<TouchableOpacity onPress={() => handleMoveToClubList(category.name)} style={styles.touchable}>
+			<TouchableOpacity
+				onPress={() => handleMoveToClubList(category.name)}
+				style={styles.touchable}>
 				<View style={styles.imageContainer}>
 					{!isFadeInFinished && (
 						<View style={styles.blurOverlay}>
@@ -64,9 +66,7 @@ const CategoryCard = ({ category }: Props) => {
 							}}
 						/>
 					</Animated.View>
-					<View
-						pointerEvents="none"
-						style={styles.textOverlay}>
+					<View pointerEvents="none" style={styles.textOverlay}>
 						<Image resizeMethod="resize" style={styles.icon} source={{ uri: category.iconUri }} />
 						<Text style={styles.label}>{category.name}</Text>
 					</View>

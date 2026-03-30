@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { serviceContext } from 'contexts/serviceContext'
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Dimensions, FlatList, View } from 'react-native'
 import CategoryCard from './CategoryCard'
 import { Category } from 'entities/category'

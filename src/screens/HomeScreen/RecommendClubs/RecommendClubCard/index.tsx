@@ -1,6 +1,6 @@
 import { Colors } from 'constants/colors'
 import { Club } from 'entities/club'
-import React, { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native'
 import { Blurhash } from 'react-native-blurhash'
 
@@ -10,7 +10,7 @@ type Props = {
 
 const RecommendClubCard = ({ club }: Props) => {
 	const [isFadeInFinished, setIsFadeInFinished] = useState(false)
-	const animatedOpacityValue = React.useRef(new Animated.Value(0)).current
+	const animatedOpacityValue = useRef(new Animated.Value(0)).current
 
 	return (
 		<View style={styles.card}>
