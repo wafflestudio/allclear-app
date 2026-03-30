@@ -46,7 +46,7 @@ const HomeScreen = ({ navigation }: Props) => {
 					padding: 0,
 					backgroundColor: Colors.WHITE,
 				}}>
-				<ScrollView>
+				<ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 					<Header />
 					<CategoryBoard />
 					<RecommendClubs openDetailPage={handleMoveToDetailPage} />

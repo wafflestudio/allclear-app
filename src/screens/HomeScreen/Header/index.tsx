@@ -15,8 +15,10 @@ const Header = () => {
 
 	const handleClearText = () => setSearchText('')
 
+	const query = searchText.trim()
 	const handleSubmitText = () => {
-		if (searchText) navigation.navigate(SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST, { query: searchText })
+		if (!query) return
+		navigation.navigate(SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST, { query })
 	}
 
 	return (
