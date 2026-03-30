@@ -3,7 +3,7 @@ import { serviceContext } from 'contexts/serviceContext'
 import { Club } from 'entities/club'
 import useExposeEventLog from 'hooks/useExposeEventLog'
 import React, { useContext, useRef } from 'react'
-import { FlatList, Text, TouchableOpacity, View, ViewToken } from 'react-native'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View, ViewToken } from 'react-native'
 import RecommendClubCard from './RecommendClubCard'
 
 type Props = {
@@ -26,15 +26,10 @@ const RecommendClubs = ({ openDetailPage }: Props) => {
 	const viewabilityConfigCallbackPairs = useRef([{ viewabilityConfig, onViewableItemsChanged }])
 
 	return (
-		<View style={{ padding: 12 }}>
-			<View
-				style={{
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					paddingHorizontal: 12,
-				}}>
-				<View style={{ marginBottom: 12 }}>
-					<Text style={{ fontSize: 16, fontWeight: 'bold' }}>새로운 공고가 올라왔어요</Text>
+		<View style={styles.container}>
+			<View style={styles.headerRow}>
+				<View style={styles.titleWrapper}>
+					<Text style={styles.title}>새로운 공고가 올라왔어요</Text>
 				</View>
 			</View>
 			<FlatList
@@ -59,6 +54,24 @@ const RecommendClubs = ({ openDetailPage }: Props) => {
 }
 
 export default RecommendClubs
+
+const styles = StyleSheet.create({
+	container: {
+		padding: 12,
+	},
+	headerRow: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingHorizontal: 12,
+	},
+	titleWrapper: {
+		marginBottom: 12,
+	},
+	title: {
+		fontSize: 16,
+		fontWeight: 'bold',
+	},
+})
 
 const useLatestClubs = () => {
 	const { clubService } = useContext(serviceContext)
