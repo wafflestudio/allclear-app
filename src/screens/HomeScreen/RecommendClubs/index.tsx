@@ -76,7 +76,9 @@ const styles = StyleSheet.create({
 const useLatestClubs = () => {
 	const { clubService } = useContext(serviceContext)
 
-	const query = useQuery(['clubs', 'latest'], () => clubService.listLatestClubs(), {
+	const query = useQuery({
+		queryKey: ['clubs', 'latest'],
+		queryFn: () => clubService.listLatestClubs(),
 		keepPreviousData: true,
 		select: data => data.clubs,
 	})
