@@ -8,7 +8,7 @@ type Props = {
 	club: Club
 }
 
-const RecommandClubCard = ({ club }: Props) => {
+const RecommendClubCard = ({ club }: Props) => {
 	const [isFadeInFinished, setIsFadeInFinished] = useState(false)
 	const animatedOpacityValue = React.useRef(new Animated.Value(0)).current
 
@@ -93,4 +93,4 @@ const RecommandClubCard = ({ club }: Props) => {
 	)
 }
 
-export default RecommandClubCard
+export default RecommendClubCard
