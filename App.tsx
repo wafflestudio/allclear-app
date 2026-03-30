@@ -24,6 +24,21 @@ import { getEventLogService } from 'usecases/eventLog'
 import { getReviewService } from 'usecases/review'
 import { getUserService } from 'usecases/user'
 import { _navigationRef, setIsNavigationReady } from 'utils/navigation'
+import { SCREEN_TYPE } from 'entities/screen'
+
+const linking = {
+	prefixes: ['allclear://'],
+	config: {
+		screens: {
+			'홈': {
+				screens: {
+					[SCREEN_TYPE.CLUB_DETAIL]: 'club/:category/:uuid',
+				},
+			},
+		},
+	},
+}
+
 
 const queryClient = new QueryClient()
 
@@ -67,7 +82,10 @@ function App(): React.JSX.Element {
 								<LoginBottomSheetProvider>
 									<UserVoiceBottomSheetProvider>
 										<ManageClubBottomSheetProvider>
-											<NavigationContainer ref={_navigationRef}>
+											<NavigationContainer 
+												ref={_navigationRef}
+												linking={linking}
+											>
 												<TabNavigator />
 											</NavigationContainer>
 										</ManageClubBottomSheetProvider>
