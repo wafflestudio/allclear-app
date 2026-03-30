@@ -25,9 +25,10 @@ import { getReviewService } from 'usecases/review'
 import { getUserService } from 'usecases/user'
 import { _navigationRef, setIsNavigationReady } from 'utils/navigation'
 import { SCREEN_TYPE } from 'entities/screen'
+import { ENV } from 'constants/ENV'
 
 const linking = {
-	prefixes: ['allclear://'],
+	prefixes: ['allclear://', ENV.WEB_URL],
 	config: {
 		screens: {
 			'홈': {

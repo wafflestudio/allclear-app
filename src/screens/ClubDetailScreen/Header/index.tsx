@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Colors } from 'constants/colors'
+import { ENV } from 'constants/ENV'
 import { useProfile } from 'contexts/profileContext'
 import { serviceContext } from 'contexts/serviceContext'
 import dayjs from 'dayjs'
@@ -15,7 +16,7 @@ import { REVIEW_LAST_ASKED_KEY } from 'utils/localStorage'
 const handleShare = async (club?: Club) => {
 	if (!club) return
 
-	const shareUrl = `allclear://club/${club.category}/${club.uuid}`
+	const shareUrl = `${ENV.WEB_URL}/club/${club.category}/${club.uuid}`
 
 	try {
 		await Share.share({
