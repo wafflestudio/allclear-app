@@ -20,6 +20,13 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+
+        <intent-filter android:autoVerify="true">
+17         <action android:name="android.intent.action.VIEW" />
+18         <category android:name="android.intent.category.DEFAULT" />
+19         <category android:name="android.intent.category.BROWSABLE" />
+2022       <data android:scheme="https" android:host="all-clear.cc" />
+23      </intent-filter>
       </activity>
 
       <activity
