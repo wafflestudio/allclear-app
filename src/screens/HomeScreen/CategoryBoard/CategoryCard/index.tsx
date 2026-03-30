@@ -33,12 +33,11 @@ const CategoryCard = ({ category }: Props) => {
 	}
 
 	return (
-		<View style={{ display: 'flex', justifyContent: 'center', flex: 1, marginHorizontal: 4 }}>
+		<View style={{ justifyContent: 'center', flex: 1, marginHorizontal: 4 }}>
 			<TouchableOpacity
 				onPress={() => handleMoveToClubList(category.name)}
 				style={{
 					backgroundColor: Colors.WHITE,
-					display: 'flex',
 					justifyContent: 'center',
 					alignItems: 'center',
 				}}>
@@ -49,7 +48,6 @@ const CategoryCard = ({ category }: Props) => {
 						overflow: 'hidden',
 						width: '100%',
 						height: 90,
-						display: 'flex',
 						alignItems: 'flex-start',
 						justifyContent: 'flex-end',
 						marginBottom: 8,
@@ -111,7 +109,6 @@ const CategoryCard = ({ category }: Props) => {
 							bottom: 8,
 							zIndex: 3,
 							elevation: 12,
-							display: 'flex',
 							flexDirection: 'row',
 							alignItems: 'center',
 						}}>

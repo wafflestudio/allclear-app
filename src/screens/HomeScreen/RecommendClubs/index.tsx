@@ -29,7 +29,6 @@ const RecommendClubs = ({ openDetailPage }: Props) => {
 		<View style={{ padding: 12 }}>
 			<View
 				style={{
-					display: 'flex',
 					flexDirection: 'row',
 					justifyContent: 'space-between',
 					paddingHorizontal: 12,

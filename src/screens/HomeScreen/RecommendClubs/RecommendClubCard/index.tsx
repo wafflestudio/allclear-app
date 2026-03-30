@@ -15,7 +15,6 @@ const RecommendClubCard = ({ club }: Props) => {
 	return (
 		<View
 			style={{
-				display: 'flex',
 				width: 150,
 				height: 140,
 				marginRight: 12,
@@ -29,7 +28,6 @@ const RecommendClubCard = ({ club }: Props) => {
 				style={{
 					position: 'relative',
 					marginBottom: 12,
-					display: 'flex',
 					justifyContent: 'center',
 					alignItems: 'center',
 				}}>

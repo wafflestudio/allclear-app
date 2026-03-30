@@ -25,8 +25,6 @@ const Header = () => {
 				style={{
 					paddingHorizontal: 32,
 					paddingTop: 20,
-					display: 'flex',
-					flexDirection: 'column',
 					alignItems: 'flex-start',
 					justifyContent: 'center',
 				}}>
@@ -39,7 +37,7 @@ const Header = () => {
 							paddingBottom: 8,
 						}}>{`서울대 모든 동아리`}</Text>
 				</View>
-				<View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+				<View style={{ flexDirection: 'row', justifyContent: 'center' }}>
 					<Image
 						resizeMethod="resize"
 						style={{ width: 88, height: 28 }}
