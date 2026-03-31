@@ -97,6 +97,13 @@ def resolveVersionCode = { propertyName, defaultValue ->
 }
 
 def appVersionCode = resolveVersionCode("VERSION_CODE", 30)
+def kakaoAppKey = project.env.get("KAKAO_APP_KEY")
+
+if (!kakaoAppKey) {
+    throw new GradleException("KAKAO_APP_KEY is not set in the selected env file")
+}
+
+def kakaoScheme = "kakao${kakaoAppKey}"
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -111,8 +118,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode appVersionCode
         versionName "2.1.4"
+        manifestPlaceholders = [kakaoScheme: kakaoScheme]
         resValue "string", "build_config_package", "com.padocorp.clubhouse"
         resValue "string", "app_name", "올클"
+        resValue "string", "kakao_app_key", kakaoAppKey
 
         // Enable 16KB page size compatible shared library build on NDK r27+.
         externalNativeBuild {

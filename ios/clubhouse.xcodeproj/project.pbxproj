@@ -62,6 +62,10 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = clubhouse/main.m; sourceTree = "<group>"; };
 		23210574F1C899BBE789BC09 /* Pods-clubhouse.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse.release.xcconfig"; path = "Target Support Files/Pods-clubhouse/Pods-clubhouse.release.xcconfig"; sourceTree = "<group>"; };
 		2681DD6FE0F5BCC6F4B7D863 /* Pods-clubhouse.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse.staging.xcconfig"; path = "Target Support Files/Pods-clubhouse/Pods-clubhouse.staging.xcconfig"; sourceTree = "<group>"; };
+		7D0A00012E5A000100000001 /* clubhouse.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "clubhouse.debug.xcconfig"; sourceTree = "<group>"; };
+		7D0A00022E5A000100000001 /* clubhouse.release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "clubhouse.release.xcconfig"; sourceTree = "<group>"; };
+		7D0A00032E5A000100000001 /* clubhouse.staging.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "clubhouse.staging.xcconfig"; sourceTree = "<group>"; };
+		7D0A00042E5A000100000001 /* clubhouse.local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "clubhouse.local.xcconfig"; sourceTree = "<group>"; };
 		32BC1C99F99A19CDA97835C4 /* libPods-clubhouse-clubhouseTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-clubhouse-clubhouseTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		496B27BC2E49D5FFD0D5779A /* Pods-clubhouse-clubhouseTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse-clubhouseTests.staging.xcconfig"; path = "Target Support Files/Pods-clubhouse-clubhouseTests/Pods-clubhouse-clubhouseTests.staging.xcconfig"; sourceTree = "<group>"; };
 		498E54EC37CC5E5B2A744628 /* Pods-clubhouse.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse.debug.xcconfig"; path = "Target Support Files/Pods-clubhouse/Pods-clubhouse.debug.xcconfig"; sourceTree = "<group>"; };
@@ -208,6 +212,10 @@
 			children = (
 				6D2F04282A7F6D1600E8A8B8 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* clubhouse */,
+				7D0A00012E5A000100000001 /* clubhouse.debug.xcconfig */,
+				7D0A00042E5A000100000001 /* clubhouse.local.xcconfig */,
+				7D0A00022E5A000100000001 /* clubhouse.release.xcconfig */,
+				7D0A00032E5A000100000001 /* clubhouse.staging.xcconfig */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* clubhouseTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -630,7 +638,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 498E54EC37CC5E5B2A744628 /* Pods-clubhouse.debug.xcconfig */;
+			baseConfigurationReference = 7D0A00012E5A000100000001 /* clubhouse.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -669,7 +677,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 23210574F1C899BBE789BC09 /* Pods-clubhouse.release.xcconfig */;
+			baseConfigurationReference = 7D0A00022E5A000100000001 /* clubhouse.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -921,7 +929,7 @@
 		};
 		E726C2BA2A392D1500C2DBDD /* Staging */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2681DD6FE0F5BCC6F4B7D863 /* Pods-clubhouse.staging.xcconfig */;
+			baseConfigurationReference = 7D0A00032E5A000100000001 /* clubhouse.staging.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1057,7 +1065,7 @@
 		};
 		E726C2BD2A392D1E00C2DBDD /* Local */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B50D996974C131E074A8ED83 /* Pods-clubhouse.local.xcconfig */;
+			baseConfigurationReference = 7D0A00042E5A000100000001 /* clubhouse.local.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
