@@ -33,4 +33,6 @@ export const Colors = {
 	GRAY_40: '#8F8686',
 	GRAY_20: '#E6E0DF',
 	GRAY_10: '#F9F8F6',
+
+	DIM_BLACK: 'rgba(0, 0, 0, 0.5)',
 }
