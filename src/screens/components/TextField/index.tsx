@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import { TextInput, StyleSheet, TextStyle, ViewStyle } from 'react-native'
+import { useState } from 'react'
+import { TextInput, TextInputProps, StyleSheet, TextStyle, ViewStyle } from 'react-native'
 
 const COLORS = {
-  black: '#000000',
-  gray400: '#BDBDBD',
   gray300: '#C1C1C1',
+  gray500: '#757474',
 } as const
 
 type TextFieldBorderStyle = {
@@ -12,24 +11,15 @@ type TextFieldBorderStyle = {
   color?: string
 }
 
-type TextFieldTextStyle = {
-  color?: string
-  font?: TextStyle
-}
-
 type TextFieldValidation = {
   validate?: (value: string) => boolean
   errorMessage?: string
 }
 
-type Props = {
+type Props = Omit<TextInputProps, 'onChangeText'> & {
   width?: number
   height?: number
-  textAlign?: 'left' | 'center'
   border?: TextFieldBorderStyle
-  placeholder?: string
-  placeholderStyle?: TextFieldTextStyle
-  textStyle?: TextFieldTextStyle
   validation?: TextFieldValidation
   onChangeText?: (value: string, isValid: boolean) => void
 }
@@ -37,18 +27,22 @@ type Props = {
 const TextField = ({
   width,
   height = 48,
-  textAlign = 'left',
   border,
-  placeholder,
-  placeholderStyle,
-  textStyle,
   validation,
+  value = '',
   onChangeText,
+  placeholderTextColor,
+  style,
+  onFocus,
+  onBlur,
+  ...rest
 }: Props) => {
-  const [value, setValue] = useState('')
+  const [isFocused, setIsFocused] = useState(false)
+
+  const isActive = isFocused || (value?.length ?? 0) > 0
+  const activeColor = isActive ? COLORS.gray500 : COLORS.gray300
 
   const handleChangeText = (text: string) => {
-    setValue(text)
     const isValid = validation?.validate ? validation.validate(text) : true
     onChangeText?.(text, isValid)
   }
@@ -57,26 +51,27 @@ const TextField = ({
     styles.base,
     { height },
     { borderWidth: border?.width ?? 1 },
-    { borderColor: border?.color ?? COLORS.gray300 },
+    { borderColor: border?.color ?? activeColor },
     width !== undefined ? { width } : { flex: 1 },
   ]
 
-  const inputStyle: TextStyle[] = [
-    styles.text,
-    { textAlign },
-    { color: textStyle?.color ?? COLORS.black },
-    textStyle?.font,
-  ].filter((s): s is TextStyle => !!s)
-
-  const placeholderColor = placeholderStyle?.color ?? COLORS.gray400
+  const inputStyle: TextStyle[] = [styles.text, { color: activeColor }]
 
   return (
     <TextInput
-      style={[containerStyle, inputStyle]}
+      style={[containerStyle, inputStyle, style]}
       value={value}
       onChangeText={handleChangeText}
-      placeholder={placeholder}
-      placeholderTextColor={placeholderColor}
+      onFocus={(e) => {
+        setIsFocused(true)
+        onFocus?.(e)
+      }}
+      onBlur={(e) => {
+        setIsFocused(false)
+        onBlur?.(e)
+      }}
+      placeholderTextColor={placeholderTextColor ?? COLORS.gray300}
+      {...rest}
     />
   )
 }
