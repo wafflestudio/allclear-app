@@ -1,0 +1,4 @@
+#include? "Pods/Target Support Files/Pods-clubhouse/Pods-clubhouse.debug.xcconfig"
+#include? "tmp.xcconfig"
+
+KAKAO_URL_SCHEME = kakao$(KAKAO_APP_KEY)
