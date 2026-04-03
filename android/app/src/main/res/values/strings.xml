@@ -2,5 +2,4 @@
     <string name="app_name_release">올클</string>
     <string name="app_name_staging">(staging)올클</string>
     <string name="app_name_debug">(debug)올클</string>
-    <string name="kakao_app_key">__SET_KAKAO_NATIVE_APP_KEY__</string>
 </resources>
