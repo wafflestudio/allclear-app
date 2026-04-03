@@ -21,12 +21,26 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
 
+        <intent-filter>
+           <action android:name="android.intent.action.VIEW" />
+           <category android:name="android.intent.category.DEFAULT" />
+           <category android:name="android.intent.category.BROWSABLE" />
+           <data android:scheme="allclear" />
+        </intent-filter>
+
         <intent-filter android:autoVerify="true">
-17         <action android:name="android.intent.action.VIEW" />
-18         <category android:name="android.intent.category.DEFAULT" />
-19         <category android:name="android.intent.category.BROWSABLE" />
-2022       <data android:scheme="https" android:host="all-clear.cc" />
-23      </intent-filter>
+           <action android:name="android.intent.action.VIEW" />
+           <category android:name="android.intent.category.DEFAULT" />
+           <category android:name="android.intent.category.BROWSABLE" />
+           <data android:scheme="https" android:host="all-clear.cc" />
+        </intent-filter>
+
+        <intent-filter android:autoVerify="true">
+           <action android:name="android.intent.action.VIEW" />
+           <category android:name="android.intent.category.DEFAULT" />
+           <category android:name="android.intent.category.BROWSABLE" />
+           <data android:scheme="https" android:host="dev.all-clear.cc" />
+        </intent-filter>
       </activity>
 
       <activity

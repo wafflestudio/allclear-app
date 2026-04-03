@@ -16,7 +16,7 @@ import { REVIEW_LAST_ASKED_KEY } from 'utils/localStorage'
 const handleShare = async (club?: Club) => {
 	if (!club) return
 
-	const shareUrl = `${ENV.WEB_URL}/club/${club.category}/${club.uuid}`
+	const shareUrl = `${ENV.WEB_URL}/club/${club.uuid}`
 
 	try {
 		await Share.share({

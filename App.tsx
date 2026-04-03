@@ -28,12 +28,12 @@ import { SCREEN_TYPE } from 'entities/screen'
 import { ENV } from 'constants/ENV'
 
 const linking = {
-	prefixes: ['allclear://', ENV.WEB_URL],
+	prefixes: ['allclear://', 'https://all-clear.cc', 'https://dev.all-clear.cc', ENV.WEB_URL],
 	config: {
 		screens: {
 			'홈': {
 				screens: {
-					[SCREEN_TYPE.CLUB_DETAIL]: 'club/:category/:uuid',
+					[SCREEN_TYPE.CLUB_DETAIL]: 'club/:uuid',
 				},
 			},
 		},

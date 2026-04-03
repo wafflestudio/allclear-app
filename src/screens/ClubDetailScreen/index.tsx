@@ -46,7 +46,7 @@ const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 
 const ClubDetailScreen = ({ route, navigation }: Props) => {
-	const { uuid, category, entry_point } = route.params as DetailsScreenRouteProp['params']
+	const { uuid, category: paramCategory, entry_point } = route.params as DetailsScreenRouteProp['params']
 
 	const { logClickEvent } = useClickEventLog()
 	const { openBottomSheet } = useLoginBottomSheet()
@@ -102,15 +102,23 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 		})
 	}
 
-	if (!category) return null
+	const currentCategory = club?.category || paramCategory
 
-	const categoryDetail = CategoryMap[category]
+	if (!currentCategory || isLoading) {
+		return (
+			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>	
+				<ActivityIndicator size="large" color="#000" />
+			</View>
+		)
+	}
+
+	const categoryDetail = CategoryMap[currentCategory]
 
 	return (
 		<WithViewEventLog
 			params={{
 				screen_name: 'club_detail_screen',
-				category,
+				category: currentCategory,
 				club_name: club?.name ?? '',
 				entry_point: entry_point ?? '',
 			}}>
