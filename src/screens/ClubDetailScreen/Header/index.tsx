@@ -20,7 +20,7 @@ const handleShare = async (club?: Club) => {
 
 	try {
 		await Share.share({
-			message: `${club.name}의 동아리 정보를 확인해보세요!\n${shareUrl}`,
+			message: `${club.name}의 동아리 정보를 확인해보세요!`,
 			url: shareUrl,
 		})
 	} catch (error) {
