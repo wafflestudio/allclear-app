@@ -62,10 +62,6 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = clubhouse/main.m; sourceTree = "<group>"; };
 		23210574F1C899BBE789BC09 /* Pods-clubhouse.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse.release.xcconfig"; path = "Target Support Files/Pods-clubhouse/Pods-clubhouse.release.xcconfig"; sourceTree = "<group>"; };
 		2681DD6FE0F5BCC6F4B7D863 /* Pods-clubhouse.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse.staging.xcconfig"; path = "Target Support Files/Pods-clubhouse/Pods-clubhouse.staging.xcconfig"; sourceTree = "<group>"; };
-		7D0A00012E5A000100000001 /* clubhouse.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "clubhouse.debug.xcconfig"; sourceTree = "<group>"; };
-		7D0A00022E5A000100000001 /* clubhouse.release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "clubhouse.release.xcconfig"; sourceTree = "<group>"; };
-		7D0A00032E5A000100000001 /* clubhouse.staging.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "clubhouse.staging.xcconfig"; sourceTree = "<group>"; };
-		7D0A00042E5A000100000001 /* clubhouse.local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "clubhouse.local.xcconfig"; sourceTree = "<group>"; };
 		32BC1C99F99A19CDA97835C4 /* libPods-clubhouse-clubhouseTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-clubhouse-clubhouseTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		496B27BC2E49D5FFD0D5779A /* Pods-clubhouse-clubhouseTests.staging.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse-clubhouseTests.staging.xcconfig"; path = "Target Support Files/Pods-clubhouse-clubhouseTests/Pods-clubhouse-clubhouseTests.staging.xcconfig"; sourceTree = "<group>"; };
 		498E54EC37CC5E5B2A744628 /* Pods-clubhouse.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse.debug.xcconfig"; path = "Target Support Files/Pods-clubhouse/Pods-clubhouse.debug.xcconfig"; sourceTree = "<group>"; };
@@ -99,6 +95,10 @@
 		6DE02E352A9204A5002924CC /* Pretendard-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Light.ttf"; sourceTree = "<group>"; };
 		6DE02E362A9204A5002924CC /* Pretendard-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.ttf"; sourceTree = "<group>"; };
 		6DE02E382A9204A5002924CC /* Pretendard-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.ttf"; sourceTree = "<group>"; };
+		7D0A00012E5A000100000001 /* clubhouse.debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = clubhouse.debug.xcconfig; sourceTree = "<group>"; };
+		7D0A00022E5A000100000001 /* clubhouse.release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = clubhouse.release.xcconfig; sourceTree = "<group>"; };
+		7D0A00032E5A000100000001 /* clubhouse.staging.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = clubhouse.staging.xcconfig; sourceTree = "<group>"; };
+		7D0A00042E5A000100000001 /* clubhouse.local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = clubhouse.local.xcconfig; sourceTree = "<group>"; };
 		901DE3E1145D84C0D44E58A6 /* Pods-clubhouse-clubhouseTests.local.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse-clubhouseTests.local.xcconfig"; path = "Target Support Files/Pods-clubhouse-clubhouseTests/Pods-clubhouse-clubhouseTests.local.xcconfig"; sourceTree = "<group>"; };
 		B50D996974C131E074A8ED83 /* Pods-clubhouse.local.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse.local.xcconfig"; path = "Target Support Files/Pods-clubhouse/Pods-clubhouse.local.xcconfig"; sourceTree = "<group>"; };
 		CC9993EF03FBB6524BC46811 /* Pods-clubhouse-clubhouseTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-clubhouse-clubhouseTests.debug.xcconfig"; path = "Target Support Files/Pods-clubhouse-clubhouseTests/Pods-clubhouse-clubhouseTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -664,10 +664,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.padocorp.clubhouse.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = com.padocorp.clubhouse;
 				PRODUCT_NAME = "(Debug) allclear";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "allclear-dev";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "all clear";
 				SWIFT_OBJC_BRIDGING_HEADER = "clubhouse-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -683,9 +683,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = clubhouse/clubhouseRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = CXAVL2XH66;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = CXAVL2XH66;
 				INFOPLIST_FILE = clubhouse/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "올클";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
@@ -703,6 +705,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.padocorp.clubhouse;
 				PRODUCT_NAME = allclear;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "all clear";
 				SWIFT_OBJC_BRIDGING_HEADER = "clubhouse-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -816,7 +819,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODEPUSH_KEY = "__SET_CODEPUSH_KEY__";
+				CODEPUSH_KEY = __SET_CODEPUSH_KEY__;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1091,10 +1094,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.padocorp.clubhouse.local;
+				PRODUCT_BUNDLE_IDENTIFIER = com.padocorp.clubhouse;
 				PRODUCT_NAME = "(Local) allclear";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "all clear-local";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "all clear";
 				SWIFT_OBJC_BRIDGING_HEADER = "clubhouse-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
