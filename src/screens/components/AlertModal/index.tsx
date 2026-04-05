@@ -1,47 +1,43 @@
-import React from 'react'
 import { Modal, Pressable, View, StyleSheet, Text } from 'react-native'
 import { Colors } from '../../../constants/colors'
 import Button from '../Button'
 
 type ButtonVariant = 'primary' | 'outline' | 'ghost'
 
-export type ModalButton = {
-  label: string
-  onPress: () => void
-  variant?: ButtonVariant
-}
-
 type Props = {
   visible: boolean
   onClose: () => void
   title: string
   description: string
-  buttons: [ModalButton] | [ModalButton, ModalButton]
+  buttonLabel: string
+  onButtonPress: () => void
+  buttonVariant?: ButtonVariant
+  hasCancel?: boolean
+  cancelLabel?: string
+  dismissOnBackdropPress?: boolean
 }
 
-const defaultVariants: Record<1 | 2, ButtonVariant[]> = {
-  1: ['outline'],
-  2: ['outline', 'primary'],
-}
-
-const AlertModal = ({ visible, onClose, title, description, buttons }: Props) => {
-  const variants = defaultVariants[buttons.length === 1 ? 1 : 2]
-
+const AlertModal = ({
+  visible,
+  onClose,
+  title,
+  description,
+  buttonLabel,
+  onButtonPress,
+  buttonVariant = 'primary',
+  hasCancel = false,
+  cancelLabel = '취소',
+  dismissOnBackdropPress = true,
+}: Props) => {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable style={styles.container}>
+      <Pressable style={styles.overlay} onPress={dismissOnBackdropPress ? onClose : undefined}>
+        <Pressable style={styles.container} onPress={(e) => e.stopPropagation()}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
           <View style={styles.buttonArea}>
-            {buttons.map((button, index) => (
-              <Button
-                key={index}
-                label={button.label}
-                onPress={button.onPress}
-                variant={button.variant ?? variants[index]}
-              />
-            ))}
+            {hasCancel && <Button label={cancelLabel} onPress={onClose} variant="outline" />}
+            <Button label={buttonLabel} onPress={onButtonPress} variant={buttonVariant} />
           </View>
         </Pressable>
       </Pressable>

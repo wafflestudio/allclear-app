@@ -5,10 +5,12 @@ import {
   StyleSheet,
   ViewStyle,
   TextStyle,
+  StyleProp,
 } from 'react-native'
 
 const COLORS = {
   purple: '#874FFF',
+  purplePressed: '#6C40CA',
   white: '#FFFFFF',
   gray300: '#C1C1C1',
   gray200: '#E0E0E0',
@@ -17,19 +19,16 @@ const COLORS = {
 
 type ButtonVariant = 'primary' | 'outline' | 'ghost'
 
-type DisabledVariant = 'default' | 'light'
-
 type Props = {
   label: string
   onPress: () => void
   variant?: ButtonVariant
   height?: number
+	width?: number
   isSelected?: boolean
   disabled?: boolean
-  disabledVariant?: DisabledVariant
-  width?: number
-  style?: ViewStyle
-  textStyle?: TextStyle
+  style?: StyleProp<ViewStyle>
+  textStyle?: StyleProp<TextStyle>
 }
 
 const Button = ({
@@ -39,12 +38,11 @@ const Button = ({
   height,
   isSelected = false,
   disabled = false,
-  disabledVariant = 'default',
   width,
   style,
   textStyle,
 }: Props) => {
-  const variantStyle = getVariantStyle(variant, isSelected, disabled, disabledVariant)
+  const variantStyle = getVariantStyle(variant, isSelected, disabled)
 
   const containerStyle: ViewStyle[] = [
     styles.base,
@@ -62,7 +60,10 @@ const Button = ({
 
   return (
     <Pressable
-      style={({ pressed }) => [containerStyle, pressed && { opacity: 0.7 }]}
+      style={({ pressed }) => [
+        containerStyle,
+        pressed && (variant === 'primary' ? { backgroundColor: COLORS.purplePressed } : { opacity: 0.7 }),
+      ]}
       onPress={onPress}
       disabled={disabled}
     >
@@ -71,27 +72,23 @@ const Button = ({
   )
 }
 
-const disabledVariantMap: Record<
-  ButtonVariant,
-  Record<DisabledVariant, keyof typeof variantStyles>
-> = {
-  primary: { default: 'primaryDisabled', light: 'primaryDisabledLight' },
-  outline: { default: 'outlineDisabled', light: 'outlineDisabled' },
-  ghost: { default: 'ghostDisabled', light: 'ghostDisabled' },
+const disabledVariantMap: Record<ButtonVariant, keyof typeof variantStyles> = {
+  primary: 'primaryDisabled',
+  outline: 'outlineDisabled',
+  ghost: 'ghostDisabled',
 }
 
 const getVariantStyle = (
   variant: ButtonVariant,
   isSelected: boolean,
-  disabled: boolean,
-  disabledVariant: DisabledVariant
+  disabled: boolean
 ): { container: ViewStyle; text: TextStyle } => {
   if (isSelected) {
     return disabled ? variantStyles.primaryDisabled : variantStyles.primary
   }
 
   if (disabled) {
-    return variantStyles[disabledVariantMap[variant][disabledVariant]]
+    return variantStyles[disabledVariantMap[variant]]
   }
 
   return variantStyles[variant]
@@ -108,10 +105,6 @@ const variantStyles = {
     text: { color: COLORS.white } as TextStyle,
   },
   primaryDisabled: {
-    container: { backgroundColor: COLORS.gray300 } as ViewStyle,
-    text: { color: COLORS.white } as TextStyle,
-  },
-  primaryDisabledLight: {
     container: { backgroundColor: COLORS.gray100 } as ViewStyle,
     text: { color: COLORS.gray300 } as TextStyle,
   },
