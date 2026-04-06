@@ -7,7 +7,7 @@ import { Category, CategoryMap } from '@/entities/category'
 import { Club } from '@/entities/club'
 import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
 import React, { useContext } from 'react'
-import { Dimensions, FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ClubListItem from '@/shared/components/ClubListItem'
 import Header from '@/features/club/screens/ClubListScreen/Header'
@@ -22,8 +22,6 @@ type Props = {
 }
 
 const ClubListScreen = ({ route, navigation }: Props) => {
-	const deviceWidth = Dimensions.get('window').width
-
 	const { name, category } = route.params as DetailsScreenRouteProp['params']
 	const { data: categoryClubs } = useCategoryClubs({ name, category })
 
@@ -49,56 +47,32 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 				screen_name: 'club_list_screen',
 				category,
 			}}>
-			<SafeAreaView
-				key={`${categoryDetail.name}-top`}
-				edges={['top']}
-				style={{ flex: 0, backgroundColor: categoryDetail.safeArea }}
-			/>
-			<SafeAreaView
-				key={`${categoryDetail.name}-horizontal`}
-				edges={['left', 'right']}
-				style={{
-					flex: 1,
-					padding: 0,
-					overflow: 'scroll',
-				}}>
-				<View>
-					<Image
-						key={`${categoryDetail.name}-image`}
-						source={categoryDetail.source}
-						style={{
-							width: '100%',
-							height: deviceWidth * 0.8,
-							position: 'absolute',
-							top: 0,
-							left: 0,
-							right: 0,
-							zIndex: -1,
-						}}
-					/>
-				</View>
+			<SafeAreaView key={`${categoryDetail.name}-horizontal`} style={styles.horizontalSafeArea}>
 				<Header category={category} onBack={handleMoveToHomePage} />
+
 				{categoryClubs?.length === 0 ? (
-					<View style={{ flex: 1, justifyContent: 'center' }}>
-						<View style={{ marginBottom: 80, alignItems: 'center' }}>
+					<View style={styles.emptyState}>
+						<View style={styles.emptyStateContent}>
 							<Image
-								source={require('@/assets/images/not-found.png')}
-								style={{ width: 200, height: 200 }}
+								source={require('../../assets/images/not-found.png')}
+								style={styles.emptyStateImage}
 							/>
-							<Text style={{ fontSize: 16, fontWeight: 'normal', color: Colors.FYI_BLACK }}>
-								멍멍! (대충 검색결과가 없다는 뜻이에요)
-							</Text>
+							<Text style={styles.emptyStateText}>멍멍! (대충 검색결과가 없다는 뜻이에요)</Text>
 						</View>
 					</View>
 				) : (
 					<FlatList
-						nestedScrollEnabled
 						keyExtractor={(_, index) => index.toString()}
 						data={categoryClubs}
+						style={{ flex: 1, width: '100%' }}
+						contentContainerStyle={{
+							alignItems: 'center',
+							gap: 25,
+						}}
 						renderItem={({ item }) => (
-							<TouchableOpacity onPress={() => openDetailPage(item)}>
+							<Pressable onPress={() => openDetailPage(item)}>
 								<ClubListItem club={item} category={category} />
-							</TouchableOpacity>
+							</Pressable>
 						)}
 						// Performance settings
 						removeClippedSubviews={true} // Unmount components when outside of window
@@ -134,3 +108,29 @@ const useCategoryClubs = ({ name, category }: UseCategoryClubsProps) => {
 
 	return query
 }
+
+const styles = StyleSheet.create({
+	horizontalSafeArea: {
+		flex: 1,
+		padding: 0,
+		backgroundColor: '#ffffff',
+		overflow: 'scroll',
+	},
+	emptyState: {
+		flex: 1,
+		justifyContent: 'center',
+	},
+	emptyStateContent: {
+		marginBottom: 80,
+		alignItems: 'center',
+	},
+	emptyStateImage: {
+		width: 200,
+		height: 200,
+	},
+	emptyStateText: {
+		fontSize: 16,
+		fontWeight: 'normal',
+		color: Colors.FYI_BLACK,
+	},
+})

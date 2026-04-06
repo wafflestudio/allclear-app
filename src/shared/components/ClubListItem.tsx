@@ -1,166 +1,117 @@
-import { Colors } from '@/shared/constants/colors'
-import { Category, CategoryMap } from '@/entities/category'
-import { Club } from '@/entities/club'
-import React, { useState } from 'react'
-import { Animated, Easing, Text, View } from 'react-native'
-import { Blurhash } from 'react-native-blurhash'
+import React from 'react'
+import { Dimensions, Image, StyleSheet, Text, View } from 'react-native'
 
-const defaultBlurHash = 'UFE.X=9uRNtR~q9tD%bu-=D*Vss:I.Rit5sl'
+import { Colors } from 'constants/colors'
+import { Category, CategoryMap } from 'entities/category'
+import { Club } from 'entities/club'
 
 type Props = {
 	club: Club
 	category?: Category['name']
 }
 
+const addAlpha = (hex: string, opacity: number) => {
+	const r = parseInt(hex.slice(1, 3), 16)
+	const g = parseInt(hex.slice(3, 5), 16)
+	const b = parseInt(hex.slice(5, 7), 16)
+	return `rgba(${r}, ${g}, ${b}, ${opacity})`
+}
+
 const ClubListItem = ({ club, category }: Props) => {
-	const [isFadeInFinished, setIsFadeInFinished] = useState(false)
-	const animatedOpacityValue = React.useRef(new Animated.Value(0)).current
-
 	const categoryDetail = category ? CategoryMap[category] : undefined
-
-	const imageView = (
-		<View
-			style={{
-				display: 'flex',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				overflow: 'visible',
-			}}>
-			{!isFadeInFinished && (
-				<View
-					style={{
-						elevation: 5,
-						borderColor: Colors.FYI_GRAY_300,
-						borderRadius: 4,
-						borderWidth: 1,
-						zIndex: 1000,
-						overflow: 'hidden',
-						position: 'absolute',
-						left: 0,
-						top: 0,
-					}}>
-					<Blurhash
-						blurhash={club.blurHash || defaultBlurHash}
-						decodeWidth={32}
-						decodeHeight={32}
-						style={{
-							width: 100,
-							height: 100,
-						}}
-					/>
-				</View>
-			)}
-			<Animated.Image
-				style={{
-					width: 100,
-					height: 100,
-					borderRadius: 4,
-					borderWidth: 1,
-					borderColor: categoryDetail ? `${categoryDetail.safeArea}20` : Colors.FYI_GRAY_300,
-					opacity: animatedOpacityValue,
-				}}
-				resizeMode={'contain'}
-				source={{ uri: club.imageUri }}
-				onLoad={() => {
-					if (isFadeInFinished) return
-					Animated.timing(animatedOpacityValue, {
-						toValue: 1,
-						delay: 0,
-						isInteraction: false,
-						useNativeDriver: true,
-						easing: Easing.in(Easing.ease),
-					}).start(() => setIsFadeInFinished(true))
-				}}
-			/>
-		</View>
-	)
-
-	const textView = (
-		<View style={{ width: '65%', marginTop: 2 }}>
-			<View>
-				<Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 8 }}>{club.name}</Text>
-			</View>
-			<View style={{ marginBottom: 4, display: 'flex' }}>
-				<Text numberOfLines={3} style={{ fontSize: 14, lineHeight: 18 }}>
-					{club.description}
-				</Text>
-			</View>
-			<View
-				style={{
-					display: 'flex',
-					flexDirection: 'row',
-					flexWrap: 'wrap',
-					marginTop: 'auto',
-					marginBottom: 4,
-				}}>
-				{club.tags?.map((tag, index) => (
-					<Text
-						style={{
-							color: Colors.BACKGROUND_LIGHT_GRAY,
-							fontSize: 12,
-							marginRight: 4,
-							marginBottom: 2,
-						}}
-						key={`${club.name}-${index}`}>{`#${tag}`}</Text>
-				))}
-			</View>
-		</View>
-	)
-
-	const reviewView = (
-		<View style={{ marginTop: 4, display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-			{club.reviewKeywords?.slice(0, 2).map((keyword, index) => (
-				<View
-					style={{
-						display: 'flex',
-						width: 'auto',
-						flexDirection: 'row',
-						alignItems: 'center',
-						alignSelf: 'flex-start',
-						padding: 4,
-						paddingHorizontal: 8,
-						borderRadius: 32,
-						borderWidth: 1,
-						borderColor: categoryDetail ? categoryDetail.safeArea : Colors.FYI_GRAY_300,
-					}}
-					key={`${club.name}-${index}`}>
-					<Text
-						style={{
-							fontSize: 11,
-							marginRight: 4,
-						}}>
-						{keyword.iconUri?.trim()}
-					</Text>
-					<Text style={{ fontSize: 11 }}>{keyword.title}</Text>
-				</View>
-			))}
-		</View>
-	)
+	const borderColor = categoryDetail ? categoryDetail.themeColor : Colors.FYI_GRAY_300
+	const backgroundColor = categoryDetail ? addAlpha(borderColor, 0.1) : Colors.WHITE
 
 	return (
-		<View
-			style={{
-				display: 'flex',
-				backgroundColor: Colors.WHITE,
-				padding: 12,
-				paddingLeft: 16,
-				borderRadius: 12,
-				marginHorizontal: 20,
-				marginVertical: 8,
-			}}>
-			<View
-				style={{
-					display: 'flex',
-					flex: 1,
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-				}}>
-				{textView}
-				{imageView}
+		<View style={styles.container}>
+			<View style={[styles.imageWrapper, { borderColor: borderColor }]}>
+				<Image style={styles.image} resizeMode="contain" source={{ uri: club.imageUri }} />
 			</View>
-			{club.reviewKeywords && club.reviewKeywords.length > 0 && <>{reviewView}</>}
+
+			<View style={styles.contentWrapper}>
+				<View>
+					<Text style={styles.title}>{club.name}</Text>
+					<Text numberOfLines={2} style={styles.description}>
+						{club.description}
+					</Text>
+				</View>
+				<View style={styles.reviewView}>
+					{club.reviewKeywords?.slice(0, 2).map((keyword, index) => (
+						<View
+							key={`${club.name}-${index}`}
+							style={[
+								styles.reviewKeyword,
+								{ borderColor: borderColor, backgroundColor: backgroundColor },
+							]}>
+							<Text style={styles.reviewKeywordIcon}>{keyword.iconUri?.trim()}</Text>
+							<Text style={styles.reviewKeywordTitle}>{keyword.title}</Text>
+						</View>
+					))}
+				</View>
+			</View>
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 0,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		width: Dimensions.get('window').width - 50,
+		height: 100,
+	},
+	imageWrapper: {
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: Colors.WHITE,
+		width: 100,
+		height: 100,
+		marginRight: 16,
+		borderWidth: 0.5,
+		borderRadius: 8,
+	},
+	image: {
+		width: 80,
+		height: 80,
+	},
+	contentWrapper: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'space-between',
+		height: '100%',
+		paddingVertical: 3,
+	},
+	title: {
+		fontWeight: 'bold',
+		fontSize: 16,
+		marginBottom: 2,
+	},
+	description: {
+		color: '#757474',
+		fontSize: 14,
+	},
+	reviewView: {
+		flexDirection: 'row',
+		marginTop: 'auto',
+		gap: 8,
+	},
+	reviewKeyword: {
+		width: 'auto',
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingVertical: 4,
+		paddingHorizontal: 8,
+		borderRadius: 24,
+		borderWidth: 0.5,
+	},
+	reviewKeywordIcon: {
+		fontSize: 11,
+		marginRight: 4,
+	},
+	reviewKeywordTitle: {
+		fontSize: 11,
+	},
+})
 
 export default ClubListItem

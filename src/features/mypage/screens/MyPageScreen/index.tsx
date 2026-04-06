@@ -211,7 +211,7 @@ const MyPageScreen = () => {
 														<Image
 															resizeMethod="resize"
 															style={{ width: 24, height: 24 }}
-															source={CategoryMap[club.category].coloredSource}
+															source={CategoryMap[club.category].icon}
 														/>
 														<Text
 															style={{

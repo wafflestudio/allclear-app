@@ -1,8 +1,9 @@
-import { Colors } from '@/shared/constants/colors'
-import { Category, CategoryMap } from '@/entities/category'
 import React from 'react'
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+
+import { Colors } from 'constants/colors'
+import { Category } from 'entities/category'
 
 type Props = {
 	category?: Category['name']
@@ -10,61 +11,52 @@ type Props = {
 }
 
 const Header = ({ category, onBack }: Props) => {
-	const deviceWidth = Dimensions.get('window').width
-
 	if (!category) return null
 
-	const categoryDetail = CategoryMap[category]
-
 	return (
-		<View
-			style={{
-				padding: 20,
-				height: deviceWidth * 0.4,
-				display: 'flex',
-				flexDirection: 'column',
-				zIndex: 3,
-			}}>
-			<View
-				style={{
-					position: 'relative',
-					display: 'flex',
-					flexDirection: 'row',
-					alignItems: 'center',
-					justifyContent: 'space-between',
-					minHeight: 28,
-					zIndex: 3,
-				}}>
-				<TouchableOpacity
-					style={{ width: 28, height: 28, alignItems: 'center', justifyContent: 'center' }}
-					onPress={onBack}>
-					<Icon color={Colors.WHITE} name="chevron-left" size={24} />
-				</TouchableOpacity>
-			</View>
-
-			<View style={{ marginLeft: 12 }}>
-				<Text
-					style={{
-						color: Colors.WHITE,
-						fontSize: 40,
-						fontWeight: 'bold',
-						letterSpacing: -2,
-					}}>
+		<View style={styles.container}>
+			<View style={styles.titleContainer}>
+				<Text style={styles.title} numberOfLines={1}>
 					{category} 동아리
 				</Text>
-				<Text
-					style={{
-						color: Colors.WHITE,
-						fontSize: 22,
-						fontWeight: '600',
-						letterSpacing: -1,
-						lineHeight: 28,
-					}}>
-					{categoryDetail.description}
-				</Text>
 			</View>
+
+			<TouchableOpacity style={styles.backButton} onPress={onBack}>
+				<Icon name="chevron-left" size={28} color="#757474" />
+			</TouchableOpacity>
 		</View>
 	)
 }
+
+const styles = StyleSheet.create({
+	container: {
+		width: '100%',
+		height: 56,
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingHorizontal: 16,
+		backgroundColor: Colors.WHITE,
+	},
+	titleContainer: {
+		position: 'absolute',
+		left: 0,
+		right: 0,
+		alignItems: 'center',
+		justifyContent: 'center',
+		paddingHorizontal: 48,
+	},
+	title: {
+		fontSize: 18,
+		fontWeight: 'bold',
+		color: '#757474',
+	},
+	backButton: {
+		width: 32,
+		height: 32,
+		alignItems: 'center',
+		justifyContent: 'center',
+		zIndex: 10,
+	},
+})
 
 export default Header
