@@ -4,8 +4,8 @@ import { Colors } from 'constants/colors'
 import { Category } from 'entities/category'
 import { SCREEN_TYPE, StackParamList } from 'entities/screen'
 import useClickEventLog from 'hooks/useClickEventLog'
-import React, { useState } from 'react'
-import { Animated, Easing, Image, Text, TouchableOpacity, View } from 'react-native'
+import { useRef, useState } from 'react'
+import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Blurhash } from 'react-native-blurhash'
 
 type NavigationProps = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
@@ -18,7 +18,7 @@ const CategoryCard = ({ category }: Props) => {
 	const { logClickEvent } = useClickEventLog()
 
 	const [isFadeInFinished, setIsFadeInFinished] = useState(false)
-	const animatedOpacityValue = React.useRef(new Animated.Value(0)).current
+	const animatedOpacityValue = useRef(new Animated.Value(0)).current
 
 	const navigation = useNavigation<NavigationProps>()
 
@@ -33,64 +33,27 @@ const CategoryCard = ({ category }: Props) => {
 	}
 
 	return (
-		<View style={{ display: 'flex', justifyContent: 'center', flex: 1, marginHorizontal: 4 }}>
+		<View style={styles.wrapper}>
 			<TouchableOpacity
 				onPress={() => handleMoveToClubList(category.name)}
-				style={{
-					backgroundColor: Colors.WHITE,
-					display: 'flex',
-					justifyContent: 'center',
-					alignItems: 'center',
-				}}>
-				<View
-					style={{
-						position: 'relative',
-						borderRadius: 8,
-						overflow: 'hidden',
-						width: '100%',
-						height: 90,
-						display: 'flex',
-						alignItems: 'flex-start',
-						justifyContent: 'flex-end',
-						marginBottom: 8,
-					}}>
+				style={styles.touchable}>
+				<View style={styles.imageContainer}>
 					{!isFadeInFinished && (
-						<View
-							style={{
-								position: 'absolute',
-								zIndex: 1,
-								width: '100%',
-								left: 0,
-								top: 0,
-							}}>
+						<View style={styles.blurOverlay}>
 							<Blurhash
 								blurhash={category.blurHash || 'UFE.X=9uRNtR~q9tD%bu-=D*Vss:I.Rit5sl'}
 								decodeWidth={32}
 								decodeHeight={32}
-								style={{
-									width: '100%',
-									height: 90,
-								}}
+								style={styles.blurHash}
 							/>
 						</View>
 					)}
 					<Animated.View
 						pointerEvents="none"
-						style={{
-							position: 'absolute',
-							left: 0,
-							top: 0,
-							right: 0,
-							bottom: 0,
-							zIndex: 2,
-							opacity: animatedOpacityValue,
-						}}>
+						style={[styles.imageOverlay, { opacity: animatedOpacityValue }]}>
 						<Image
 							source={{ uri: category.thumbnailUri }}
-							style={{
-								width: '100%',
-								height: 90,
-							}}
+							style={styles.thumbnail}
 							onLoad={() => {
 								if (isFadeInFinished) return
 								Animated.timing(animatedOpacityValue, {
@@ -103,34 +66,9 @@ const CategoryCard = ({ category }: Props) => {
 							}}
 						/>
 					</Animated.View>
-					<View
-						pointerEvents="none"
-						style={{
-							position: 'absolute',
-							left: 8,
-							bottom: 8,
-							zIndex: 3,
-							elevation: 12,
-							display: 'flex',
-							flexDirection: 'row',
-							alignItems: 'center',
-						}}>
-						<Image
-							resizeMethod="resize"
-							style={{ width: 32, height: 32 }}
-							source={{ uri: category.iconUri }}
-						/>
-						<Text
-							style={{
-								color: 'white',
-								fontSize: 14,
-								lineHeight: 16,
-								letterSpacing: -1,
-								fontWeight: '700',
-								marginLeft: 4,
-							}}>
-							{category.name}
-						</Text>
+					<View pointerEvents="none" style={styles.textOverlay}>
+						<Image resizeMethod="resize" style={styles.icon} source={{ uri: category.iconUri }} />
+						<Text style={styles.label}>{category.name}</Text>
 					</View>
 				</View>
 			</TouchableOpacity>
@@ -138,3 +76,70 @@ const CategoryCard = ({ category }: Props) => {
 	)
 }
 export default CategoryCard
+
+const styles = StyleSheet.create({
+	wrapper: {
+		justifyContent: 'center',
+		flex: 1,
+		marginHorizontal: 4,
+	},
+	touchable: {
+		backgroundColor: Colors.WHITE,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	imageContainer: {
+		position: 'relative',
+		borderRadius: 8,
+		overflow: 'hidden',
+		width: '100%',
+		height: 90,
+		alignItems: 'flex-start',
+		justifyContent: 'flex-end',
+		marginBottom: 8,
+	},
+	blurOverlay: {
+		position: 'absolute',
+		zIndex: 1,
+		width: '100%',
+		left: 0,
+		top: 0,
+	},
+	blurHash: {
+		width: '100%',
+		height: 90,
+	},
+	imageOverlay: {
+		position: 'absolute',
+		left: 0,
+		top: 0,
+		right: 0,
+		bottom: 0,
+		zIndex: 2,
+	},
+	thumbnail: {
+		width: '100%',
+		height: 90,
+	},
+	textOverlay: {
+		position: 'absolute',
+		left: 8,
+		bottom: 8,
+		zIndex: 3,
+		elevation: 12,
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	icon: {
+		width: 32,
+		height: 32,
+	},
+	label: {
+		color: Colors.WHITE,
+		fontSize: 14,
+		lineHeight: 16,
+		letterSpacing: -1,
+		fontWeight: '700',
+		marginLeft: 4,
+	},
+})

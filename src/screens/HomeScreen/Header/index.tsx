@@ -2,8 +2,8 @@ import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Colors } from 'constants/colors'
 import { SCREEN_TYPE, StackParamList } from 'entities/screen'
-import React, { useState } from 'react'
-import { View, Image, TouchableOpacity, Text } from 'react-native'
+import { useState } from 'react'
+import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { Input } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/AntDesign'
 
@@ -15,44 +15,27 @@ const Header = () => {
 
 	const handleClearText = () => setSearchText('')
 
+	const query = searchText.trim()
 	const handleSubmitText = () => {
-		if (searchText) navigation.navigate(SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST, { query: searchText })
+		if (!query) return
+		navigation.navigate(SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST, { query })
 	}
 
 	return (
-		<View style={{ backgroundColor: Colors.WHITE }}>
-			<View
-				style={{
-					paddingHorizontal: 32,
-					paddingTop: 20,
-					display: 'flex',
-					flexDirection: 'column',
-					alignItems: 'flex-start',
-					justifyContent: 'center',
-				}}>
+		<View style={styles.container}>
+			<View style={styles.titleSection}>
 				<View>
-					<Text
-						style={{
-							fontSize: 14,
-							fontWeight: 'normal',
-							lineHeight: 16,
-							paddingBottom: 8,
-						}}>{`서울대 모든 동아리`}</Text>
+					<Text style={styles.subtitle}>{`서울대 모든 동아리`}</Text>
 				</View>
-				<View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+				<View style={styles.logoRow}>
 					<Image
 						resizeMethod="resize"
-						style={{ width: 88, height: 28 }}
+						style={styles.logo}
 						source={require('../../../assets/images/header/allclear.png')}
 					/>
 				</View>
 			</View>
-			<View
-				style={{
-					marginTop: 12,
-					paddingHorizontal: 24,
-					paddingVertical: 8,
-				}}>
+			<View style={styles.searchSection}>
 				<Input
 					keyboardType="default"
 					value={searchText}
@@ -68,20 +51,10 @@ const Header = () => {
 							</TouchableOpacity>
 						) : undefined
 					}
-					containerStyle={{
-						backgroundColor: Colors.WHITE,
-						borderColor: Colors.FYI_GRAY_300,
-						borderRadius: 8,
-						borderWidth: 1,
-						height: 48,
-					}}
-					inputStyle={{
-						fontSize: 14,
-						padding: 4,
-						color: Colors.FYI_BLACK,
-					}}
-					inputContainerStyle={{ borderBottomWidth: 0, height: 48 }}
-					errorStyle={{ display: 'none' }}
+					containerStyle={styles.inputContainer}
+					inputStyle={styles.input}
+					inputContainerStyle={styles.inputInnerContainer}
+					errorStyle={styles.hiddenError}
 				/>
 			</View>
 		</View>
@@ -89,3 +62,53 @@ const Header = () => {
 }
 
 export default Header
+
+const styles = StyleSheet.create({
+	container: {
+		backgroundColor: Colors.WHITE,
+	},
+	titleSection: {
+		paddingHorizontal: 32,
+		paddingTop: 20,
+		alignItems: 'flex-start',
+		justifyContent: 'center',
+	},
+	subtitle: {
+		fontSize: 14,
+		fontWeight: 'normal',
+		lineHeight: 16,
+		paddingBottom: 8,
+	},
+	logoRow: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+	},
+	logo: {
+		width: 88,
+		height: 28,
+	},
+	searchSection: {
+		marginTop: 12,
+		paddingHorizontal: 24,
+		paddingVertical: 8,
+	},
+	inputContainer: {
+		backgroundColor: Colors.WHITE,
+		borderColor: Colors.FYI_GRAY_300,
+		borderRadius: 8,
+		borderWidth: 1,
+		height: 48,
+	},
+	input: {
+		fontSize: 14,
+		padding: 4,
+		color: Colors.FYI_BLACK,
+	},
+	inputInnerContainer: {
+		borderBottomWidth: 0,
+		height: 48,
+	},
+	hiddenError: {
+		display: 'none',
+	},
+})
