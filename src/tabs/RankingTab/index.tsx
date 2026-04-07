@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { SCREEN_TYPE, StackParamList } from 'entities/screen'
-import React from 'react'
 import ClubDetailScreen from 'screens/ClubDetailScreen'
 import ClubRankingScreen from 'screens/ClubRankingScreen'
 import ClubReviewScreen from 'screens/ClubReviewScreen'

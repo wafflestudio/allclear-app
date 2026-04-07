@@ -5,7 +5,6 @@ import { Club } from 'entities/club'
 import { SCREEN_TYPE, StackParamList } from 'entities/screen'
 import WithViewEventLog from 'hocs/WithViewEventLog'
 import useClickEventLog from 'hooks/useClickEventLog'
-import React from 'react'
 import { ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CategoryBoard from './CategoryBoard'
@@ -46,7 +45,7 @@ const HomeScreen = ({ navigation }: Props) => {
 					padding: 0,
 					backgroundColor: Colors.WHITE,
 				}}>
-				<ScrollView>
+				<ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 					<Header />
 					<CategoryBoard />
 					<RecommendClubs openDetailPage={handleMoveToDetailPage} />
