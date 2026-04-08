@@ -1,6 +1,6 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet'
-import { Colors } from 'constants/colors'
-import { serviceContext } from 'contexts/serviceContext'
+import { Colors } from 'shared/constants/colors'
+import { serviceContext } from 'shared/contexts/serviceContext'
 import React, { useContext } from 'react'
 import { Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'
@@ -9,20 +9,20 @@ type Props = {
 	closeBottomSheet: () => void
 }
 
-const ManageClubView = ({ closeBottomSheet }: Props) => {
+const UserVoiceView = ({ closeBottomSheet }: Props) => {
 	const [input, setInput] = React.useState('')
-	const { clubService } = useContext(serviceContext)
+	const { userService } = useContext(serviceContext)
 
 	const handleSubmit = async () => {
 		try {
 			Keyboard.dismiss()
 			closeBottomSheet()
-			await clubService.requestClubManager({ clubName: input })
+			await userService.createUserVoice({ content: input })
 
 			setTimeout(() => {
 				Toast.show({
 					type: 'info',
-					text1: '동아리 등록 요청이 전송되었어요!',
+					text1: '의견이 전송되었어요!',
 					position: 'bottom',
 					visibilityTime: 2000,
 				})
@@ -43,10 +43,8 @@ const ManageClubView = ({ closeBottomSheet }: Props) => {
 		<View style={styles.mainWrapper}>
 			<View style={styles.titleWrapper}>
 				<View>
-					<Text style={[styles.title, styles.bold]}>
-						올클에서 자신의 동아리를 직접 수정해보세요!
-					</Text>
-					<Text style={styles.title}>요청 후 등록까지는 최대 24시간이 소요됩니다</Text>
+					<Text style={[styles.title, styles.bold]}>여러분의 의견이 필요해요!</Text>
+					<Text style={styles.title}>올클에 건의사항이 있다면 자유롭게 알려주세요😊</Text>
 				</View>
 			</View>
 			<View>
@@ -54,22 +52,19 @@ const ManageClubView = ({ closeBottomSheet }: Props) => {
 					<BottomSheetTextInput
 						value={input}
 						onChangeText={setInput}
-						style={styles.input}
-						maxLength={30}
-						numberOfLines={2}
 						multiline
-						placeholder="동아리 이름을 입력해주세요"
+						numberOfLines={4}
+						maxLength={1000}
+						style={styles.input}
+						placeholder="여기에 의견을 적어주세요. (1000자 이내)"
 					/>
 				</View>
 			</View>
 			<View style={styles.buttonWrapper}>
 				<TouchableOpacity
-					disabled={!input.trim()}
+					disabled={!input}
 					onPress={handleSubmit}
-					style={[
-						styles.button,
-						{ backgroundColor: input.trim() ? Colors.GRAY_50 : Colors.GRAY_30 },
-					]}>
+					style={[styles.button, { backgroundColor: Colors.GRAY_50, marginTop: 'auto' }]}>
 					<Text
 						style={{
 							color: Colors.WHITE,
@@ -77,7 +72,7 @@ const ManageClubView = ({ closeBottomSheet }: Props) => {
 							textAlign: 'center',
 							fontWeight: 'bold',
 						}}>
-						요청하기
+						의견 보내기
 					</Text>
 				</TouchableOpacity>
 			</View>
@@ -85,7 +80,7 @@ const ManageClubView = ({ closeBottomSheet }: Props) => {
 	)
 }
 
-export default ManageClubView
+export default UserVoiceView
 
 const styles = StyleSheet.create({
 	mainWrapper: {
@@ -106,7 +101,6 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 16,
 		lineHeight: 24,
-		textAlign: 'center',
 	},
 
 	bold: {
@@ -128,8 +122,11 @@ const styles = StyleSheet.create({
 	},
 
 	buttonWrapper: {
-		marginTop: 20,
+		marginTop: 'auto',
+		bottom: 0,
 		width: '100%',
+		left: 0,
+		right: 0,
 	},
 
 	button: {

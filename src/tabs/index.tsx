@@ -2,9 +2,9 @@ import {
 	createBottomTabNavigator,
 	type BottomTabNavigationOptions,
 } from '@react-navigation/bottom-tabs'
-import { Colors } from 'constants/colors'
-import { useLoginBottomSheet } from 'contexts/loginBottomSheetContext'
-import { useProfile } from 'contexts/profileContext'
+import { Colors } from 'shared/constants/colors'
+import { useLoginBottomSheet } from 'shared/contexts/loginBottomSheetContext'
+import { useProfile } from 'shared/contexts/profileContext'
 import { Image, type ImageSourcePropType } from 'react-native'
 import { HomeTab } from './HomeTab'
 import { MyPageTab } from './MyPageTab'

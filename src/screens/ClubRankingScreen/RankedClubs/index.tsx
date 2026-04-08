@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
-import { Colors } from 'constants/colors'
-import { serviceContext } from 'contexts/serviceContext'
+import { Colors } from 'shared/constants/colors'
+import { serviceContext } from 'shared/contexts/serviceContext'
 import { Club } from 'entities/club'
 import { SCREEN_TYPE } from 'entities/screen'
-import useClickEventLog from 'hooks/useClickEventLog'
+import useClickEventLog from 'shared/hooks/useClickEventLog'
 import React, { useContext } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
-import { navigation } from 'utils/navigation'
+import { navigation } from 'shared/utils/navigation'
 
 const RankedClubs = () => {
 	const { clubService } = useContext(serviceContext)

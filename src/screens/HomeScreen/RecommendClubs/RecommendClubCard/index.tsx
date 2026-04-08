@@ -1,4 +1,4 @@
-import { Colors } from 'constants/colors'
+import { Colors } from 'shared/constants/colors'
 import { Club } from 'entities/club'
 import { useRef, useState } from 'react'
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native'

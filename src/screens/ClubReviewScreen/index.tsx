@@ -1,16 +1,16 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Colors } from 'constants/colors'
-import { serviceContext } from 'contexts/serviceContext'
+import { Colors } from 'shared/constants/colors'
+import { serviceContext } from 'shared/contexts/serviceContext'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
 import { CategoryMap } from 'entities/category'
 import { Club } from 'entities/club'
 import { ReviewKeyword } from 'entities/review'
 import { SCREEN_TYPE, StackParamList } from 'entities/screen'
-import WithViewEventLog from 'hocs/WithViewEventLog'
-import useClickEventLog from 'hooks/useClickEventLog'
+import WithViewEventLog from 'shared/hocs/WithViewEventLog'
+import useClickEventLog from 'shared/hooks/useClickEventLog'
 import React, { useContext, useEffect } from 'react'
 import {
 	ActivityIndicator,
@@ -24,7 +24,7 @@ import {
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
-import { navigation } from 'utils/navigation'
+import { navigation } from 'shared/utils/navigation'
 import Header from './Header'
 
 dayjs.locale('ko')

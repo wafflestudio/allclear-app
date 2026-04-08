@@ -2,8 +2,8 @@ import appleAuth from '@invertase/react-native-apple-authentication'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login as kakaoLogin } from '@react-native-seoul/kakao-login'
 import { useQueryClient } from '@tanstack/react-query'
-import { useProfile } from 'contexts/profileContext'
-import { serviceContext } from 'contexts/serviceContext'
+import { useProfile } from 'shared/contexts/profileContext'
+import { serviceContext } from 'shared/contexts/serviceContext'
 import React, { useContext } from 'react'
 import {
 	Image,
@@ -16,7 +16,7 @@ import {
 } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { AuthProvider } from 'usecases/auth'
-import { LOGIN_TOKEN } from 'utils/localStorage'
+import { LOGIN_TOKEN } from 'shared/utils/localStorage'
 
 type Props = {
 	closeBottomSheet: () => void

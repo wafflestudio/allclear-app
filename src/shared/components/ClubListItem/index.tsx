@@ -1,4 +1,4 @@
-import { Colors } from 'constants/colors'
+import { Colors } from 'shared/constants/colors'
 import { Category, CategoryMap } from 'entities/category'
 import { Club } from 'entities/club'
 import React, { useState } from 'react'

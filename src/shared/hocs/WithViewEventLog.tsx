@@ -1,5 +1,5 @@
-import { useProfile } from 'contexts/profileContext'
-import { serviceContext } from 'contexts/serviceContext'
+import { useProfile } from 'shared/contexts/profileContext'
+import { serviceContext } from 'shared/contexts/serviceContext'
 import { ViewParameter } from 'entities/eventLog'
 import React, { useContext, useEffect } from 'react'
 import { Platform } from 'react-native'

@@ -3,7 +3,7 @@ import { SCREEN_TYPE, StackParamList } from 'entities/screen'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import WebView, { WebViewMessageEvent } from 'react-native-webview'
-import { navigation } from 'utils/navigation'
+import { navigation } from 'shared/utils/navigation'
 import Header from './Header'
 import { ActivityIndicator, View, StyleSheet } from 'react-native'
 

@@ -1,17 +1,17 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
-import { Colors } from 'constants/colors'
-import { serviceContext } from 'contexts/serviceContext'
+import { Colors } from 'shared/constants/colors'
+import { serviceContext } from 'shared/contexts/serviceContext'
 import { Category, CategoryMap } from 'entities/category'
 import { Club } from 'entities/club'
 import { SCREEN_TYPE, StackParamList } from 'entities/screen'
 import React, { useContext } from 'react'
 import { Dimensions, FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import ClubListItem from 'screens/components/ClubListItem'
+import ClubListItem from 'shared/components/ClubListItem'
 import Header from './Header'
-import WithViewEventLog from 'hocs/WithViewEventLog'
+import WithViewEventLog from 'shared/hocs/WithViewEventLog'
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.CLUB_LIST>
 type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>

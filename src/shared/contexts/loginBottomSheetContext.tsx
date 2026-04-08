@@ -5,9 +5,9 @@ import {
 } from '@gorhom/bottom-sheet'
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react'
 import { BackHandler, Platform } from 'react-native'
-import UserVoiceView from 'screens/components/UserVoiceView'
+import LoginView from 'shared/components/LoginView'
 
-const UserVoiceBottomSheetContext = createContext<{
+const LoginBottomSheetContext = createContext<{
 	openBottomSheet: () => void
 	closeBottomSheet: () => void
 }>({
@@ -15,13 +15,13 @@ const UserVoiceBottomSheetContext = createContext<{
 	closeBottomSheet: () => {},
 })
 
-export const useUserVoiceBottomSheet = () => useContext(UserVoiceBottomSheetContext)
+export const useLoginBottomSheet = () => useContext(LoginBottomSheetContext)
 
 type Props = {
 	children: React.ReactNode
 }
 
-export const UserVoiceBottomSheetProvider = ({ children }: Props) => {
+export const LoginBottomSheetProvider = ({ children }: Props) => {
 	const bottomSheetModalRef = useRef<BottomSheetModal>(null)
 	const isBottomSheetOpenRef = useRef(false)
 
@@ -61,7 +61,7 @@ export const UserVoiceBottomSheetProvider = ({ children }: Props) => {
 	}, [closeBottomSheet])
 
 	return (
-		<UserVoiceBottomSheetContext.Provider
+		<LoginBottomSheetContext.Provider
 			value={{
 				openBottomSheet,
 				closeBottomSheet,
@@ -70,13 +70,13 @@ export const UserVoiceBottomSheetProvider = ({ children }: Props) => {
 			<BottomSheetModal
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={[Platform.OS === 'ios' ? 400 : 350]}
+				snapPoints={[Platform.OS === 'ios' ? 310 : 260]}
 				onDismiss={() => {
 					isBottomSheetOpenRef.current = false
 				}}
 				backdropComponent={renderBackdrop}>
-				<UserVoiceView closeBottomSheet={closeBottomSheet} />
+				<LoginView closeBottomSheet={closeBottomSheet} />
 			</BottomSheetModal>
-		</UserVoiceBottomSheetContext.Provider>
+		</LoginBottomSheetContext.Provider>
 	)
 }

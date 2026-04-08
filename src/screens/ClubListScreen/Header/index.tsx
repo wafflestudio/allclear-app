@@ -1,4 +1,4 @@
-import { Colors } from 'constants/colors'
+import { Colors } from 'shared/constants/colors'
 import { Category, CategoryMap } from 'entities/category'
 import React from 'react'
 import { Dimensions, Text, TouchableOpacity, View } from 'react-native'

@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Colors } from 'constants/colors'
+import { Colors } from 'shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from 'entities/screen'
 import { useState } from 'react'
 import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native'

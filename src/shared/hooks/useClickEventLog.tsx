@@ -1,21 +1,21 @@
-import { useProfile } from 'contexts/profileContext'
-import { serviceContext } from 'contexts/serviceContext'
-import { ExposeParameter } from 'entities/eventLog'
+import { useProfile } from 'shared/contexts/profileContext'
+import { serviceContext } from 'shared/contexts/serviceContext'
+import { ClickParameter } from 'entities/eventLog'
 import { useContext } from 'react'
 import { Platform } from 'react-native'
 import { getUniqueIdSync } from 'react-native-device-info'
 
-const useExposeEventLog = () => {
+const useClickEventLog = () => {
 	const { eventLogService } = useContext(serviceContext)
 	const { user } = useProfile()
 
-	const logExposeEvent = (params: {
-		screen_name: ExposeParameter['screen_name']
-		expose_type: ExposeParameter['expose_type']
+	const logClickEvent = (params: {
+		screen_name: ClickParameter['screen_name']
+		screen_component_name: ClickParameter['screen_component_name']
 		[key: string]: string
 	}) => {
 		eventLogService.logEvent({
-			name: 'expose',
+			name: 'click',
 			parameters: {
 				...params,
 				device_id: getUniqueIdSync(),
@@ -26,8 +26,8 @@ const useExposeEventLog = () => {
 	}
 
 	return {
-		logExposeEvent,
+		logClickEvent,
 	}
 }
 
-export default useExposeEventLog
+export default useClickEventLog

@@ -1,5 +1,5 @@
-import { useLoginBottomSheet } from 'contexts/loginBottomSheetContext'
-import { useProfile } from 'contexts/profileContext'
+import { useLoginBottomSheet } from 'shared/contexts/loginBottomSheetContext'
+import { useProfile } from 'shared/contexts/profileContext'
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
