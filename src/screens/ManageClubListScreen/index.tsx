@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
-import { ENV } from 'shared/constants/ENV'
+import { ENV } from 'config/ENV'
 import { serviceContext } from 'shared/contexts/serviceContext'
 import 'dayjs/locale/ko'
 import { Club } from 'entities/club'

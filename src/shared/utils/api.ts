@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
-import { ENV } from '../constants/ENV'
+import { ENV } from '../../config/ENV'
 import { LOGIN_TOKEN } from './localStorage'
 
 export interface APIMessage<T> {

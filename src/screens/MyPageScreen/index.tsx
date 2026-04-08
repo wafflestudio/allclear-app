@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ENV } from 'shared/constants/ENV'
+import { ENV } from 'config/ENV'
 import { Colors } from 'shared/constants/colors'
 import { useManageClubBottomSheet } from 'shared/contexts/manageClubBottomSheet'
 import { useProfile } from 'shared/contexts/profileContext'
