@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { SCREEN_TYPE, StackParamList } from 'entities/screen'
-import ClubDetailScreen from 'screens/ClubDetailScreen'
-import ClubRankingScreen from 'screens/ClubRankingScreen'
-import ClubReviewScreen from 'screens/ClubReviewScreen'
+import ClubDetailScreen from 'features/club/screens/ClubDetailScreen'
+import ClubRankingScreen from 'features/club/screens/ClubRankingScreen'
+import ClubReviewScreen from 'features/club/screens/ClubReviewScreen'
 
 const Stack = createNativeStackNavigator<StackParamList>()
 
