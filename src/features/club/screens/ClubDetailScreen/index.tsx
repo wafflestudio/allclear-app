@@ -484,7 +484,6 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: '#8F8686',
 		marginBottom: 16,
-		whiteSpace: 'pre',
 	},
 	tagWrapper: {
 		flexDirection: 'row',
