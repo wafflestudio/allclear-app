@@ -1,5 +1,5 @@
-import { Club, ClubRanking } from 'entities/club'
-import { apiConnector } from 'shared/utils/api'
+import { Club, ClubRanking } from '@/entities/club'
+import { apiConnector } from '@/shared/utils/api'
 
 export type SearchClubsRequest = {
 	query: string

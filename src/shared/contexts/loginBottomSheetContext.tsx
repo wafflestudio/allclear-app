@@ -5,7 +5,7 @@ import {
 } from '@gorhom/bottom-sheet'
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react'
 import { BackHandler, Platform } from 'react-native'
-import LoginView from 'shared/components/LoginView'
+import LoginView from '@/shared/components/LoginView'
 
 const LoginBottomSheetContext = createContext<{
 	openBottomSheet: () => void

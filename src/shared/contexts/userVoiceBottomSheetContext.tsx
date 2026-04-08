@@ -5,7 +5,7 @@ import {
 } from '@gorhom/bottom-sheet'
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react'
 import { BackHandler, Platform } from 'react-native'
-import UserVoiceView from 'shared/components/UserVoiceView'
+import UserVoiceView from '@/shared/components/UserVoiceView'
 
 const UserVoiceBottomSheetContext = createContext<{
 	openBottomSheet: () => void

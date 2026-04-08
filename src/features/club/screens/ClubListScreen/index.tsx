@@ -1,17 +1,17 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
-import { Colors } from 'shared/constants/colors'
-import { serviceContext } from 'shared/contexts/serviceContext'
-import { Category, CategoryMap } from 'entities/category'
-import { Club } from 'entities/club'
-import { SCREEN_TYPE, StackParamList } from 'entities/screen'
+import { Colors } from '@/shared/constants/colors'
+import { serviceContext } from '@/shared/contexts/serviceContext'
+import { Category, CategoryMap } from '@/entities/category'
+import { Club } from '@/entities/club'
+import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
 import React, { useContext } from 'react'
 import { Dimensions, FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import ClubListItem from 'shared/components/ClubListItem'
-import Header from './Header'
-import WithViewEventLog from 'shared/hocs/WithViewEventLog'
+import ClubListItem from '@/shared/components/ClubListItem'
+import Header from '@/features/club/screens/ClubListScreen/Header'
+import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.CLUB_LIST>
 type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
@@ -82,7 +82,7 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 					<View style={{ flex: 1, justifyContent: 'center' }}>
 						<View style={{ marginBottom: 80, alignItems: 'center' }}>
 							<Image
-								source={require('../../assets/images/not-found.png')}
+								source={require('@/assets/images/not-found.png')}
 								style={{ width: 200, height: 200 }}
 							/>
 							<Text style={{ fontSize: 16, fontWeight: 'normal', color: Colors.FYI_BLACK }}>

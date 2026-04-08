@@ -1,8 +1,8 @@
 import { AppleRequestResponse } from '@invertase/react-native-apple-authentication'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { KakaoAccessTokenInfo } from '@react-native-seoul/kakao-login'
-import { apiConnector } from 'shared/utils/api'
-import { LOGIN_TOKEN } from 'shared/constants/localStorage'
+import { apiConnector } from '@/shared/utils/api'
+import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 
 export type CallbackKakaoAuthRequest = {
 	accessToken: KakaoAccessTokenInfo['accessToken']

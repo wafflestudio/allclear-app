@@ -1,6 +1,6 @@
-import { User } from 'entities/user'
+import { User } from '@/entities/user'
 import React, { createContext, useContext, useEffect } from 'react'
-import { serviceContext } from './serviceContext'
+import { serviceContext } from '@/shared/contexts/serviceContext'
 
 const profileContext = createContext<{
 	user: User | null

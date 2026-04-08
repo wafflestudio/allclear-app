@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
-import { Colors } from 'shared/constants/colors'
-import { serviceContext } from 'shared/contexts/serviceContext'
-import { Club } from 'entities/club'
-import { SCREEN_TYPE } from 'entities/screen'
-import useClickEventLog from 'shared/hooks/useClickEventLog'
+import { Colors } from '@/shared/constants/colors'
+import { serviceContext } from '@/shared/contexts/serviceContext'
+import { Club } from '@/entities/club'
+import { SCREEN_TYPE } from '@/entities/screen'
+import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import React, { useContext } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
-import { navigation } from 'shared/utils/navigation'
+import { navigation } from '@/shared/utils/navigation'
 
 const RankedClubs = () => {
 	const { clubService } = useContext(serviceContext)
@@ -96,7 +96,7 @@ const RankedClubs = () => {
 						<View>
 							<Image
 								style={{ width: 60, height: 60 }}
-								source={require('../../../assets/icons/trophy.png')}
+								source={require('@/assets/icons/trophy.png')}
 							/>
 						</View>
 
@@ -257,9 +257,9 @@ function getRankingWidth(curReview: number, maxReview: number, ranking: number):
 }
 
 function getRankingIconSource(index: number) {
-	if (index % 3 === 0) return require('../../../assets/icons/first-place.png')
-	if (index % 3 === 1) return require('../../../assets/icons/second-place.png')
-	return require('../../../assets/icons/third-place.png')
+	if (index % 3 === 0) return require('@/assets/icons/first-place.png')
+	if (index % 3 === 1) return require('@/assets/icons/second-place.png')
+	return require('@/assets/icons/third-place.png')
 }
 
 const styles = StyleSheet.create({

@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { serviceContext } from 'shared/contexts/serviceContext'
-import { Club } from 'entities/club'
-import useExposeEventLog from 'shared/hooks/useExposeEventLog'
+import { serviceContext } from '@/shared/contexts/serviceContext'
+import { Club } from '@/entities/club'
+import useExposeEventLog from '@/shared/hooks/useExposeEventLog'
 import { useContext, useRef } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View, ViewToken } from 'react-native'
-import RecommendClubCard from './RecommendClubCard'
+import RecommendClubCard from '@/features/home/screens/HomeScreen/RecommendClubs/RecommendClubCard'
 
 type Props = {
 	openDetailPage: (club: Club) => void

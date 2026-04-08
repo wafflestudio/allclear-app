@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { CollegeMajor, User } from 'entities/user'
-import { apiConnector } from 'shared/utils/api'
-import { LOGIN_TOKEN } from 'shared/constants/localStorage'
+import { CollegeMajor, User } from '@/entities/user'
+import { apiConnector } from '@/shared/utils/api'
+import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 
 export type GetUserResponse = {
 	profile: User

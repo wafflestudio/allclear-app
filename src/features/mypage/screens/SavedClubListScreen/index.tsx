@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
-import { Colors } from 'shared/constants/colors'
-import { serviceContext } from 'shared/contexts/serviceContext'
-import { Club } from 'entities/club'
-import { SCREEN_TYPE } from 'entities/screen'
-import WithViewEventLog from 'shared/hocs/WithViewEventLog'
+import { Colors } from '@/shared/constants/colors'
+import { serviceContext } from '@/shared/contexts/serviceContext'
+import { Club } from '@/entities/club'
+import { SCREEN_TYPE } from '@/entities/screen'
+import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import React, { useContext } from 'react'
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import ClubListItem from 'shared/components/ClubListItem'
-import { navigation } from 'shared/utils/navigation'
-import Header from './Header'
+import ClubListItem from '@/shared/components/ClubListItem'
+import { navigation } from '@/shared/utils/navigation'
+import Header from '@/features/mypage/screens/SavedClubListScreen/Header'
 
 const SavedClubListScreen = () => {
 	const { data: savedClubs } = useSavedClubs()
@@ -40,7 +40,7 @@ const SavedClubListScreen = () => {
 					<View style={{ flex: 1, justifyContent: 'center' }}>
 						<View style={{ marginBottom: 80, alignItems: 'center' }}>
 							<Image
-								source={require('../../assets/images/mypage/notfoundclub.png')}
+								source={require('@/assets/images/mypage/notfoundclub.png')}
 								style={{ width: 148, height: 100 }}
 							/>
 							<Text style={{ fontSize: 14, fontWeight: 'normal', color: Colors.GRAY_40 }}>

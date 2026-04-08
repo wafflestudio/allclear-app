@@ -1,6 +1,6 @@
 import { Modal, Pressable, View, StyleSheet, Text } from 'react-native'
-import { Colors } from '../constants/colors'
-import Button from './Button'
+import { Colors } from '@/shared/constants/colors'
+import Button from '@/shared/components/Button'
 
 type ButtonVariant = 'primary' | 'outline' | 'ghost'
 

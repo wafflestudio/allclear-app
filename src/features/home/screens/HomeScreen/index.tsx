@@ -1,15 +1,15 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Colors } from 'shared/constants/colors'
-import { Club } from 'entities/club'
-import { SCREEN_TYPE, StackParamList } from 'entities/screen'
-import WithViewEventLog from 'shared/hocs/WithViewEventLog'
-import useClickEventLog from 'shared/hooks/useClickEventLog'
+import { Colors } from '@/shared/constants/colors'
+import { Club } from '@/entities/club'
+import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
+import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import { ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import CategoryBoard from './CategoryBoard'
-import Header from './Header'
-import RecommendClubs from './RecommendClubs'
+import CategoryBoard from '@/features/home/screens/HomeScreen/CategoryBoard'
+import Header from '@/features/home/screens/HomeScreen/Header'
+import RecommendClubs from '@/features/home/screens/HomeScreen/RecommendClubs'
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.HOME>
 type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>

@@ -1,5 +1,5 @@
-import { Colors } from 'shared/constants/colors'
-import { Club } from 'entities/club'
+import { Colors } from '@/shared/constants/colors'
+import { Club } from '@/entities/club'
 import { useRef, useState } from 'react'
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native'
 import { Blurhash } from 'react-native-blurhash'

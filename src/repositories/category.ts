@@ -1,5 +1,5 @@
-import { Category } from 'entities/category'
-import { apiConnector } from 'shared/utils/api'
+import { Category } from '@/entities/category'
+import { apiConnector } from '@/shared/utils/api'
 
 export type ListCategoriesResponse = {
 	categories: Category[]

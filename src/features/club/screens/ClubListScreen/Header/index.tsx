@@ -1,5 +1,5 @@
-import { Colors } from 'shared/constants/colors'
-import { Category, CategoryMap } from 'entities/category'
+import { Colors } from '@/shared/constants/colors'
+import { Category, CategoryMap } from '@/entities/category'
 import React from 'react'
 import { Dimensions, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'

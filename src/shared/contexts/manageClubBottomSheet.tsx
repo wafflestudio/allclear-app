@@ -5,7 +5,7 @@ import {
 } from '@gorhom/bottom-sheet'
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react'
 import { BackHandler, Platform } from 'react-native'
-import ManageClubView from 'shared/components/ManageClubView'
+import ManageClubView from '@/shared/components/ManageClubView'
 
 const ManageClubBottomSheetContext = createContext<{
 	openBottomSheet: () => void

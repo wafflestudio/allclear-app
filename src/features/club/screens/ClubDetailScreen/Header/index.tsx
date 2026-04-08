@@ -1,16 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Colors } from 'shared/constants/colors'
-import { useProfile } from 'shared/contexts/profileContext'
-import { serviceContext } from 'shared/contexts/serviceContext'
+import { Colors } from '@/shared/constants/colors'
+import { useProfile } from '@/shared/contexts/profileContext'
+import { serviceContext } from '@/shared/contexts/serviceContext'
 import dayjs from 'dayjs'
-import { Club } from 'entities/club'
+import { Club } from '@/entities/club'
 import React, { useContext, useEffect } from 'react'
 import { TouchableOpacity, View } from 'react-native'
 import { requestReview } from 'react-native-store-review'
 import Toast from 'react-native-toast-message'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { REVIEW_LAST_ASKED_KEY } from 'shared/constants/localStorage'
+import { REVIEW_LAST_ASKED_KEY } from '@/shared/constants/localStorage'
 
 const getLastAskedDate = async (): Promise<dayjs.Dayjs | null> => {
 	try {

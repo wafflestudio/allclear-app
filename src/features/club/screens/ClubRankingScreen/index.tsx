@@ -1,8 +1,8 @@
-import WithViewEventLog from 'shared/hocs/WithViewEventLog'
+import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import React from 'react'
 import { ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import RankedClubs from './RankedClubs'
+import RankedClubs from '@/features/club/screens/ClubRankingScreen/RankedClubs'
 
 const ClubRankingScreen = () => {
 	return (

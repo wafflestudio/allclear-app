@@ -1,5 +1,5 @@
-import { useLoginBottomSheet } from 'shared/contexts/loginBottomSheetContext'
-import { useProfile } from 'shared/contexts/profileContext'
+import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
+import { useProfile } from '@/shared/contexts/profileContext'
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
@@ -19,7 +19,7 @@ const HeaderProfile = () => {
 					<View>
 						<Image
 							style={styles.defaultImage}
-							source={require('../../../assets/images/default-me.png')}
+							source={require('@/assets/images/default-me.png')}
 						/>
 					</View>
 				</TouchableOpacity>

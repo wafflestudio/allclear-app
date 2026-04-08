@@ -1,5 +1,5 @@
-import { Colors } from 'shared/constants/colors'
-import { Club } from 'entities/club'
+import { Colors } from '@/shared/constants/colors'
+import { Club } from '@/entities/club'
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'

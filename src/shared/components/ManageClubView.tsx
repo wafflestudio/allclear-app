@@ -1,6 +1,6 @@
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet'
-import { Colors } from 'shared/constants/colors'
-import { serviceContext } from 'shared/contexts/serviceContext'
+import { Colors } from '@/shared/constants/colors'
+import { serviceContext } from '@/shared/contexts/serviceContext'
 import React, { useContext } from 'react'
 import { Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Toast from 'react-native-toast-message'

@@ -1,16 +1,16 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
-import { Colors } from 'shared/constants/colors'
-import { serviceContext } from 'shared/contexts/serviceContext'
-import { Club } from 'entities/club'
-import { SCREEN_TYPE, StackParamList } from 'entities/screen'
-import WithViewEventLog from 'shared/hocs/WithViewEventLog'
+import { Colors } from '@/shared/constants/colors'
+import { serviceContext } from '@/shared/contexts/serviceContext'
+import { Club } from '@/entities/club'
+import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import React, { useContext } from 'react'
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import ClubListItem from 'shared/components/ClubListItem'
-import Header from './Header'
+import ClubListItem from '@/shared/components/ClubListItem'
+import Header from '@/features/club/screens/SearchResultClubListScreen/Header'
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST>
 type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
@@ -54,7 +54,7 @@ const SearchResultClubListScreen = ({ route, navigation }: Props) => {
 					<View style={{ flex: 1, justifyContent: 'center' }}>
 						<View style={{ marginBottom: 80, alignItems: 'center' }}>
 							<Image
-								source={require('../../assets/images/not-found.png')}
+								source={require('@/assets/images/not-found.png')}
 								style={{ width: 200, height: 200 }}
 							/>
 							<Text style={{ fontSize: 16, fontWeight: 'normal', color: Colors.FYI_BLACK }}>

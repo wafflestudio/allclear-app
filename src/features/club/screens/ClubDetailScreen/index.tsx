@@ -3,17 +3,17 @@ import { BlurView } from '@react-native-community/blur'
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
-import { useLoginBottomSheet } from 'shared/contexts/loginBottomSheetContext'
-import { useProfile } from 'shared/contexts/profileContext'
-import { serviceContext } from 'shared/contexts/serviceContext'
+import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
+import { useProfile } from '@/shared/contexts/profileContext'
+import { serviceContext } from '@/shared/contexts/serviceContext'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
-import { CategoryMap } from 'entities/category'
-import { Club } from 'entities/club'
-import { ReviewKeyword, ReviewKeywordCategory } from 'entities/review'
-import { SCREEN_TYPE, StackParamList } from 'entities/screen'
-import WithViewEventLog from 'shared/hocs/WithViewEventLog'
-import useClickEventLog from 'shared/hooks/useClickEventLog'
+import { CategoryMap } from '@/entities/category'
+import { Club } from '@/entities/club'
+import { ReviewKeyword, ReviewKeywordCategory } from '@/entities/review'
+import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
+import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import React, { useContext } from 'react'
 import {
 	ActivityIndicator,
@@ -29,8 +29,8 @@ import {
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/Octicons'
-import HtmlView from 'shared/components/HtmlView'
-import Header from './Header'
+import HtmlView from '@/shared/components/HtmlView'
+import Header from '@/features/club/screens/ClubDetailScreen/Header'
 
 dayjs.locale('ko')
 
@@ -170,21 +170,21 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 							<View style={styles.iconWrapper}>
 								<Image
 									style={styles.icon}
-									source={require('../../assets/images/detail/clubtype.png')}
+									source={require('@/assets/images/detail/clubtype.png')}
 								/>
 								<Text style={styles.iconDescription}>{club.type}</Text>
 							</View>
 							<View style={styles.iconWrapper}>
 								<Image
 									style={styles.icon}
-									source={require('../../assets/images/detail/collegetype.png')}
+									source={require('@/assets/images/detail/collegetype.png')}
 								/>
 								<Text style={styles.iconDescription}>{club.college}</Text>
 							</View>
 							<View style={styles.iconWrapper}>
 								<Image
 									style={styles.icon}
-									source={require('../../assets/images/detail/recruittype.png')}
+									source={require('@/assets/images/detail/recruittype.png')}
 								/>
 								<Text style={styles.iconDescription}>{`${club.recruitType || '정기'} 모집`}</Text>
 							</View>

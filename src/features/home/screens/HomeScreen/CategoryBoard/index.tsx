@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
-import { serviceContext } from 'shared/contexts/serviceContext'
+import { serviceContext } from '@/shared/contexts/serviceContext'
 import { useContext } from 'react'
 import { Dimensions, FlatList, View } from 'react-native'
-import CategoryCard from './CategoryCard'
-import { Category } from 'entities/category'
-import { initialCategories } from 'shared/constants/fixtures'
+import CategoryCard from '@/features/home/screens/HomeScreen/CategoryBoard/CategoryCard'
+import { Category } from '@/entities/category'
+import { initialCategories } from '@/shared/constants/fixtures'
 
 const CategoryBoard = () => {
 	const { data: categories } = useCategories()

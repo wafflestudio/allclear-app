@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Colors } from 'shared/constants/colors'
-import { SCREEN_TYPE, StackParamList } from 'entities/screen'
+import { Colors } from '@/shared/constants/colors'
+import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
 import { useState } from 'react'
 import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { Input } from 'react-native-elements'
@@ -31,7 +31,7 @@ const Header = () => {
 					<Image
 						resizeMethod="resize"
 						style={styles.logo}
-						source={require('../../../assets/images/header/allclear.png')}
+						source={require('@/assets/images/header/allclear.png')}
 					/>
 				</View>
 			</View>

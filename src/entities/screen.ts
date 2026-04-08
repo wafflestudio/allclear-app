@@ -1,4 +1,4 @@
-import { Club } from './club'
+import { Club } from '@/entities/club'
 
 export enum SCREEN_TYPE {
 	HOME = 'Home',

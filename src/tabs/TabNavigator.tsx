@@ -2,19 +2,19 @@ import {
 	createBottomTabNavigator,
 	type BottomTabNavigationOptions,
 } from '@react-navigation/bottom-tabs'
-import { Colors } from 'shared/constants/colors'
-import { useLoginBottomSheet } from 'shared/contexts/loginBottomSheetContext'
-import { useProfile } from 'shared/contexts/profileContext'
+import { Colors } from '@/shared/constants/colors'
+import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
+import { useProfile } from '@/shared/contexts/profileContext'
 import { Image, type ImageSourcePropType } from 'react-native'
-import { HomeTab } from './HomeTab'
-import { MyPageTab } from './MyPageTab'
-import { RankingTab } from './RankingTab'
+import { HomeTab } from '@/tabs/HomeTab'
+import { MyPageTab } from '@/tabs/MyPageTab'
+import { RankingTab } from '@/tabs/RankingTab'
 
 const Tab = createBottomTabNavigator()
 
-const renderHomeTabIcon = createTabBarIcon(require('../assets/images/tab/home.png'))
-const renderRankingTabIcon = createTabBarIcon(require('../assets/images/tab/ranking.png'))
-const renderMyPageTabIcon = createTabBarIcon(require('../assets/images/tab/mypage.png'))
+const renderHomeTabIcon = createTabBarIcon(require('@/assets/images/tab/home.png'))
+const renderRankingTabIcon = createTabBarIcon(require('@/assets/images/tab/ranking.png'))
+const renderMyPageTabIcon = createTabBarIcon(require('@/assets/images/tab/mypage.png'))
 
 const TAB_BAR_ICON_SIZE = 24
 

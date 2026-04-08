@@ -1,14 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ENV } from 'config/ENV'
-import { Colors } from 'shared/constants/colors'
-import { useManageClubBottomSheet } from 'shared/contexts/manageClubBottomSheet'
-import { useProfile } from 'shared/contexts/profileContext'
-import { serviceContext } from 'shared/contexts/serviceContext'
-import { useUserVoiceBottomSheet } from 'shared/contexts/userVoiceBottomSheetContext'
-import { CategoryMap } from 'entities/category'
-import { Club } from 'entities/club'
-import { SCREEN_TYPE } from 'entities/screen'
+import { ENV } from '@/config/ENV'
+import { Colors } from '@/shared/constants/colors'
+import { useManageClubBottomSheet } from '@/shared/contexts/manageClubBottomSheet'
+import { useProfile } from '@/shared/contexts/profileContext'
+import { serviceContext } from '@/shared/contexts/serviceContext'
+import { useUserVoiceBottomSheet } from '@/shared/contexts/userVoiceBottomSheetContext'
+import { CategoryMap } from '@/entities/category'
+import { Club } from '@/entities/club'
+import { SCREEN_TYPE } from '@/entities/screen'
 import React, { useContext } from 'react'
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
@@ -17,8 +17,8 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 import Toast from 'react-native-toast-message'
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { LOGIN_TOKEN } from 'shared/constants/localStorage'
-import { navigation } from 'shared/utils/navigation'
+import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
+import { navigation } from '@/shared/utils/navigation'
 
 const MyPageScreen = () => {
 	const { authService } = useContext(serviceContext)
@@ -148,7 +148,7 @@ const MyPageScreen = () => {
 									style={{ position: 'absolute', top: 24, right: 24 }}
 									onPress={handleMoveEditProfilePage}>
 									<Image
-										source={require('../../assets/icons/edit-pencil.png')}
+										source={require('@/assets/icons/edit-pencil.png')}
 										style={{
 											width: 24,
 											height: 24,
@@ -156,7 +156,7 @@ const MyPageScreen = () => {
 									/>
 								</TouchableOpacity>
 								<Image
-									source={require('../../assets/images/mypage/snu-profile-icon.png')}
+									source={require('@/assets/images/mypage/snu-profile-icon.png')}
 									style={{
 										width: 80,
 										height: 80,
@@ -253,7 +253,7 @@ const MyPageScreen = () => {
 							style={{ position: 'absolute', top: 24, right: 24 }}
 							onPress={handleMoveEditProfilePage}>
 							<Image
-								source={require('../../assets/icons/edit-pencil.png')}
+								source={require('@/assets/icons/edit-pencil.png')}
 								style={{
 									width: 24,
 									height: 24,
@@ -262,7 +262,7 @@ const MyPageScreen = () => {
 						</TouchableOpacity>
 
 						<Image
-							source={require('../../assets/images/tab/snu.png')}
+							source={require('@/assets/images/tab/snu.png')}
 							style={{
 								width: 40,
 								height: 40,

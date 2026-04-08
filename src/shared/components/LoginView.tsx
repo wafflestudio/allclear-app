@@ -2,8 +2,8 @@ import appleAuth from '@invertase/react-native-apple-authentication'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { login as kakaoLogin } from '@react-native-seoul/kakao-login'
 import { useQueryClient } from '@tanstack/react-query'
-import { useProfile } from 'shared/contexts/profileContext'
-import { serviceContext } from 'shared/contexts/serviceContext'
+import { useProfile } from '@/shared/contexts/profileContext'
+import { serviceContext } from '@/shared/contexts/serviceContext'
 import React, { useContext } from 'react'
 import {
 	Image,
@@ -15,8 +15,8 @@ import {
 	View,
 } from 'react-native'
 import Toast from 'react-native-toast-message'
-import { AuthProvider } from 'usecases/auth'
-import { LOGIN_TOKEN } from 'shared/constants/localStorage'
+import { AuthProvider } from '@/usecases/auth'
+import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 
 type Props = {
 	closeBottomSheet: () => void
@@ -83,14 +83,14 @@ const LoginView = ({ closeBottomSheet }: Props) => {
 				<TouchableOpacity
 					style={[styles.button, styles.kakao]}
 					onPress={() => onKakaoButtonPress()}>
-					<Image source={require('../../../assets/icons/kakao.png')} style={styles.icon} />
+					<Image source={require('@/assets/icons/kakao.png')} style={styles.icon} />
 					<Text style={styles.kakaoText}>카카오톡으로 계속하기</Text>
 				</TouchableOpacity>
 				{Platform.OS === 'ios' && (
 					<TouchableOpacity
 						style={[styles.button, styles.apple]}
 						onPress={() => onAppleButtonPress()}>
-						<Image source={require('../../../assets/icons/apple.png')} style={styles.icon} />
+						<Image source={require('@/assets/icons/apple.png')} style={styles.icon} />
 						<Text style={styles.appleText}>Apple로 계속하기</Text>
 					</TouchableOpacity>
 				)}
