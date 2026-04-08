@@ -10,7 +10,7 @@ import { TouchableOpacity, View } from 'react-native'
 import { requestReview } from 'react-native-store-review'
 import Toast from 'react-native-toast-message'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { REVIEW_LAST_ASKED_KEY } from 'shared/utils/localStorage'
+import { REVIEW_LAST_ASKED_KEY } from 'shared/constants/localStorage'
 
 const getLastAskedDate = async (): Promise<dayjs.Dayjs | null> => {
 	try {

@@ -10,7 +10,7 @@ import React, { useContext } from 'react'
 import { FlatList, Text, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ClubListItem from 'shared/components/ClubListItem'
-import { LOGIN_TOKEN } from 'shared/utils/localStorage'
+import { LOGIN_TOKEN } from 'shared/constants/localStorage'
 import Header from './Header'
 
 type ScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.WEBVIEW>

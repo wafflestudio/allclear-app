@@ -16,7 +16,7 @@ import {
 } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { AuthProvider } from 'usecases/auth'
-import { LOGIN_TOKEN } from 'shared/utils/localStorage'
+import { LOGIN_TOKEN } from 'shared/constants/localStorage'
 
 type Props = {
 	closeBottomSheet: () => void

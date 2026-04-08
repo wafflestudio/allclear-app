@@ -17,7 +17,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 import Toast from 'react-native-toast-message'
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { LOGIN_TOKEN } from 'shared/utils/localStorage'
+import { LOGIN_TOKEN } from 'shared/constants/localStorage'
 import { navigation } from 'shared/utils/navigation'
 
 const MyPageScreen = () => {
