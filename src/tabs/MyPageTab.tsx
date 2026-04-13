@@ -1,0 +1,37 @@
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import ClubDetailScreen from '@/features/club/screens/ClubDetailScreen'
+import EditProfileScreen from '@/features/mypage/screens/EditProfileScreen'
+import MyPageScreen from '@/features/mypage/screens/MyPageScreen'
+import SavedClubListScreen from '@/features/mypage/screens/SavedClubListScreen'
+import WebViewScreen from '@/features/webview/screens/WebviewScreen'
+
+const Stack = createNativeStackNavigator<StackParamList>()
+
+export function MyPageTab() {
+	return (
+		<Stack.Navigator screenOptions={{ headerBackTitleVisible: false, headerShown: false }}>
+			<Stack.Screen key={SCREEN_TYPE.MYPAGE} name={SCREEN_TYPE.MYPAGE} component={MyPageScreen} />
+			<Stack.Screen
+				key={SCREEN_TYPE.EDIT_PROFILE}
+				name={SCREEN_TYPE.EDIT_PROFILE}
+				component={EditProfileScreen}
+			/>
+			<Stack.Screen
+				key={SCREEN_TYPE.WEBVIEW}
+				name={SCREEN_TYPE.WEBVIEW}
+				component={WebViewScreen}
+			/>
+			<Stack.Screen
+				key={SCREEN_TYPE.SAVED_CLUB_LIST}
+				name={SCREEN_TYPE.SAVED_CLUB_LIST}
+				component={SavedClubListScreen}
+			/>
+			<Stack.Screen
+				key={SCREEN_TYPE.CLUB_DETAIL}
+				name={SCREEN_TYPE.CLUB_DETAIL}
+				component={ClubDetailScreen}
+			/>
+		</Stack.Navigator>
+	)
+}

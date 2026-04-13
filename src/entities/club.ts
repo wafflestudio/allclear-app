@@ -1,4 +1,4 @@
-import { Category } from './category'
+import { Category } from '@/entities/category'
 
 export type Club = {
 	id: string

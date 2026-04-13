@@ -1,6 +1,6 @@
-import { Club } from 'entities/club'
-import { ReviewKeyword, ReviewKeywordCategory } from 'entities/review'
-import { apiConnector } from 'utils/api'
+import { Club } from '@/entities/club'
+import { ReviewKeyword, ReviewKeywordCategory } from '@/entities/review'
+import { apiConnector } from '@/shared/utils/api'
 
 export type CreateClubReviewsRequest = {
 	uuid: Club['uuid']

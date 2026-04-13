@@ -1,4 +1,4 @@
-import { Club } from 'entities/club'
+import { Club } from '@/entities/club'
 import {
 	ClubRepository,
 	CreateSavedClubRequest,
@@ -16,7 +16,7 @@ import {
 	RequestClubmanagerRequest,
 	SearchClubsRequest,
 	SearchClubsResponse,
-} from 'repositories/club'
+} from '@/repositories/club'
 
 export type ClubService = {
 	searchClubs: (req: SearchClubsRequest) => Promise<SearchClubsResponse>
