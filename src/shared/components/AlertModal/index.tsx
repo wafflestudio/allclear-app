@@ -1,10 +1,8 @@
 import { Modal, Pressable, View, StyleSheet, Text } from 'react-native'
-import { Colors } from '../../../constants/colors'
-import Button from '../Button'
+import { Colors } from 'constants/colors'
+import { Button, type ButtonVariant } from 'shared/components/Button'
 
-type ButtonVariant = 'primary' | 'outline' | 'ghost'
-
-type Props = {
+export type AlertModalProps = {
   visible: boolean
   onClose: () => void
   title: string
@@ -17,7 +15,7 @@ type Props = {
   dismissOnBackdropPress?: boolean
 }
 
-const AlertModal = ({
+export const AlertModal = ({
   visible,
   onClose,
   title,
@@ -28,7 +26,7 @@ const AlertModal = ({
   hasCancel = false,
   cancelLabel = '취소',
   dismissOnBackdropPress = true,
-}: Props) => {
+}: AlertModalProps) => {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={dismissOnBackdropPress ? onClose : undefined}>
@@ -78,5 +76,3 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
 })
-
-export default AlertModal

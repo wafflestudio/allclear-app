@@ -17,9 +17,9 @@ const COLORS = {
   gray100: '#EAEAEA',
 } as const
 
-type ButtonVariant = 'primary' | 'outline' | 'ghost'
+export type ButtonVariant = 'primary' | 'outline' | 'ghost'
 
-type Props = {
+export type ButtonProps = {
   label: string
   onPress: () => void
   variant?: ButtonVariant
@@ -31,7 +31,7 @@ type Props = {
   textStyle?: StyleProp<TextStyle>
 }
 
-const Button = ({
+export const Button = ({
   label,
   onPress,
   variant = 'primary',
@@ -41,7 +41,7 @@ const Button = ({
   width,
   style,
   textStyle,
-}: Props) => {
+}: ButtonProps) => {
   const variantStyle = getVariantStyle(variant, isSelected, disabled)
 
   const containerStyle: ViewStyle[] = [
@@ -141,5 +141,3 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
 })
-
-export default Button
