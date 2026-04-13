@@ -1,4 +1,4 @@
-import { EventLogParameter, EventLogParameterType } from 'entities/eventLog'
+import { EventLogParameter, EventLogParameterType } from '@/entities/eventLog'
 import analytics from '@react-native-firebase/analytics'
 
 export type EventLogService = {
