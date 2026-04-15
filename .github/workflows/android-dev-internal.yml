@@ -1,4 +1,4 @@
-name: Android Dev Internal App Sharing
+name: Android Dev Artifact Build
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: android-dev-internal-app-sharing
+  group: android-dev-artifact-build
   cancel-in-progress: true
 
 permissions:
@@ -81,27 +81,27 @@ jobs:
           cd android
           ENVFILE=.env.local ./gradlew :app:assembleDebug --build-cache
 
-      - name: Upload to Google Play internal app sharing
-        id: upload_internal_sharing
-        uses: r0adkll/upload-google-play@v1.1.3
+      - name: Upload debug APK artifact
+        uses: actions/upload-artifact@v4
         with:
-          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.padocorp.clubhouse.applicationId.debug
-          releaseFiles: android/app/build/outputs/apk/debug/app-debug.apk
-          tracks: internalsharing
+          name: android-debug-apk-${{ github.run_number }}
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 7
 
-      - name: Publish internal app sharing link
-        if: ${{ steps.upload_internal_sharing.outputs.internalSharingDownloadUrl != '' }}
+      - name: Publish artifact summary
         shell: bash
         run: |
           {
-            echo "## Android Internal App Sharing"
+            echo "## Android Debug Artifact"
             echo ""
-            echo "Branch: develop"
+            echo "Branch: ${GITHUB_REF_NAME}"
             echo "Build: debug APK"
             echo "Package: com.padocorp.clubhouse.applicationId.debug"
+            echo "Artifact: android-debug-apk-${GITHUB_RUN_NUMBER}"
+            echo "Retention: 7 days"
             echo ""
-            echo "${{ steps.upload_internal_sharing.outputs.internalSharingDownloadUrl }}"
+            echo "Download the APK from the Artifacts section of this workflow run."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Cleanup local config
