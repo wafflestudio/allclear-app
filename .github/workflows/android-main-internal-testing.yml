@@ -16,7 +16,7 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: android-main-internal-testing
+    environment: android-main-internal
     env:
       ALLCLEAR_UPLOAD_STORE_FILE: ${{ secrets.ALLCLEAR_UPLOAD_STORE_FILE }}
       ORG_GRADLE_PROJECT_ALLCLEAR_UPLOAD_STORE_FILE: ${{ secrets.ALLCLEAR_UPLOAD_STORE_FILE }}
