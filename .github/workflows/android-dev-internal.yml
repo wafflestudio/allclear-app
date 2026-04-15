@@ -1,13 +1,13 @@
-name: Android Develop Internal Testing
+name: Android Dev Internal App Sharing
 
 on:
   push:
     branches:
-      - develop
+      - chore/android-cicd
   workflow_dispatch:
 
 concurrency:
-  group: android-internal-testing
+  group: android-dev-internal-app-sharing
   cancel-in-progress: true
 
 permissions:
@@ -27,6 +27,7 @@ jobs:
         with:
           node-version: 20
           cache: yarn
+          cache-dependency-path: yarn.lock
 
       - name: Enable Corepack
         run: corepack enable
@@ -38,15 +39,22 @@ jobs:
           java-version: 17
           cache: gradle
 
+      - name: Restore node_modules cache
+        id: cache_node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock', 'package.json', 'patches/**') }}
+
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        if: steps.cache_node_modules.outputs.cache-hit != 'true'
+        run: yarn install --frozen-lockfile --prefer-offline
 
       - name: Restore Android local config
         shell: bash
         env:
           ANDROID_ENV_LOCAL: ${{ secrets.ANDROID_ENV_LOCAL }}
           ANDROID_GOOGLE_SERVICES_JSON: ${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}
-          ANDROID_DEBUG_KEYSTORE_BASE64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_BASE64 }}
         run: |
           if [ -z "$ANDROID_ENV_LOCAL" ]; then
             echo "ANDROID_ENV_LOCAL is not set"
@@ -56,54 +64,41 @@ jobs:
             echo "ANDROID_GOOGLE_SERVICES_JSON is not set"
             exit 1
           fi
-          if [ -z "$ANDROID_DEBUG_KEYSTORE_BASE64" ]; then
-            echo "ANDROID_DEBUG_KEYSTORE_BASE64 is not set"
-            exit 1
-          fi
 
           printf '%s' "$ANDROID_ENV_LOCAL" > .env.local
           printf '%s' "$ANDROID_GOOGLE_SERVICES_JSON" > android/app/google-services.json
-          printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > android/app/debug.keystore
-          chmod 600 android/app/debug.keystore
 
-      - name: Compute release metadata
-        id: build_meta
-        shell: bash
-        run: |
-          release_version_code=$((100000 + GITHUB_RUN_NUMBER))
-          echo "release_version_code=${release_version_code}" >> "$GITHUB_OUTPUT"
-          echo "release_name=develop internal ${release_version_code}" >> "$GITHUB_OUTPUT"
-
-      - name: Prepare release notes
-        shell: bash
-        run: |
-          mkdir -p .github/play/whatsnew
-          cat > .github/play/whatsnew/whatsnew-ko-KR <<EOF
-          develop 브랜치 자동 배포 빌드입니다. dev DB를 사용합니다.
-          Run: #${GITHUB_RUN_NUMBER}
-          Commit: ${GITHUB_SHA::7}
-          EOF
-
-      - name: Build release bundle
+      - name: Build debug APK
         run: |
           chmod +x android/gradlew
           cd android
-          ENVFILE=.env.local ./gradlew :app:bundleRelease -PVERSION_CODE=${{ steps.build_meta.outputs.release_version_code }}
+          ENVFILE=.env.local ./gradlew :app:assembleDebug --build-cache
 
-      - name: Upload to Google Play internal testing
+      - name: Upload to Google Play internal app sharing
+        id: upload_internal_sharing
         uses: r0adkll/upload-google-play@v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: com.padocorp.clubhouse.applicationId
-          releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
-          track: internal
-          status: completed
-          releaseName: ${{ steps.build_meta.outputs.release_name }}
-          whatsNewDirectory: .github/play/whatsnew
+          packageName: com.padocorp.clubhouse.applicationId.debug
+          releaseFiles: android/app/build/outputs/apk/debug/app-debug.apk
+          tracks: internalsharing
+
+      - name: Publish internal app sharing link
+        if: ${{ steps.upload_internal_sharing.outputs.internalSharingDownloadUrl != '' }}
+        shell: bash
+        run: |
+          {
+            echo "## Android Internal App Sharing"
+            echo ""
+            echo "Branch: develop"
+            echo "Build: debug APK"
+            echo "Package: com.padocorp.clubhouse.applicationId.debug"
+            echo ""
+            echo "${{ steps.upload_internal_sharing.outputs.internalSharingDownloadUrl }}"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Cleanup local config
         if: always()
         run: |
           rm -f .env.local
           rm -f android/app/google-services.json
-          rm -f android/app/debug.keystore
