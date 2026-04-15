@@ -75,17 +75,17 @@ jobs:
           printf '%s' "$ANDROID_DEBUG_KEYSTORE_BASE64" | base64 --decode > android/app/debug.keystore
           chmod 600 android/app/debug.keystore
 
-      - name: Build debug APK
+      - name: Build standalone dev APK
         run: |
           chmod +x android/gradlew
           cd android
-          ENVFILE=.env.local ./gradlew :app:assembleDebug --build-cache
+          ENVFILE=.env.local ./gradlew :app:assembleDevRelease --build-cache
 
-      - name: Upload debug APK artifact
+      - name: Upload standalone dev APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: android-debug-apk-${{ github.run_number }}
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: android-dev-release-apk-${{ github.run_number }}
+          path: android/app/build/outputs/apk/devRelease/*.apk
           if-no-files-found: error
           retention-days: 7
 
@@ -93,12 +93,12 @@ jobs:
         shell: bash
         run: |
           {
-            echo "## Android Debug Artifact"
+            echo "## Android Dev Artifact"
             echo ""
             echo "Branch: ${GITHUB_REF_NAME}"
-            echo "Build: debug APK"
+            echo "Build: standalone dev APK"
             echo "Package: com.padocorp.clubhouse.applicationId.debug"
-            echo "Artifact: android-debug-apk-${GITHUB_RUN_NUMBER}"
+            echo "Artifact: android-dev-release-apk-${GITHUB_RUN_NUMBER}"
             echo "Retention: 7 days"
             echo ""
             echo "Download the APK from the Artifacts section of this workflow run."
