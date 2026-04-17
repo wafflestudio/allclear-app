@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 
 import { Colors } from '@/shared/constants/colors'
 import { Category, CategoryMap } from '@/entities/category'
@@ -44,7 +44,7 @@ const ClubListItem = ({ club, category }: Props) => {
 								{ borderColor: borderColor, backgroundColor: backgroundColor },
 							]}>
 							<Text style={styles.reviewKeywordIcon}>{keyword.iconUri?.trim()}</Text>
-							<Text style={styles.reviewKeywordTitle}>{keyword.title}</Text>
+							<Text style={styles.reviewKeywordTitle} numberOfLines={1}>{keyword.title}</Text>
 						</View>
 					))}
 				</View>
@@ -55,32 +55,32 @@ const ClubListItem = ({ club, category }: Props) => {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 0,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
-		width: Dimensions.get('window').width - 50,
-		height: 100,
+		width: '100%',
+		height: 90,
 	},
 	imageWrapper: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: Colors.WHITE,
-		width: 100,
-		height: 100,
+		width: 90,
+		height: 90,
 		marginRight: 16,
 		borderWidth: 0.5,
 		borderRadius: 8,
 	},
 	image: {
-		width: 80,
-		height: 80,
+		width: 70,
+		height: 70,
 	},
 	contentWrapper: {
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'space-between',
 		height: '100%',
-		paddingVertical: 3,
+		paddingTop: 1,
+		paddingBottom: 3,
 	},
 	title: {
 		fontWeight: 'bold',
@@ -94,23 +94,25 @@ const styles = StyleSheet.create({
 	reviewView: {
 		flexDirection: 'row',
 		marginTop: 'auto',
-		gap: 8,
+		gap: 4,
+		paddingTop: 6,
 	},
 	reviewKeyword: {
-		width: 'auto',
 		flexDirection: 'row',
 		alignItems: 'center',
 		paddingVertical: 4,
 		paddingHorizontal: 8,
 		borderRadius: 24,
 		borderWidth: 0.5,
+		flexShrink: 1,
 	},
 	reviewKeywordIcon: {
-		fontSize: 11,
+		fontSize: 9,
 		marginRight: 4,
 	},
 	reviewKeywordTitle: {
-		fontSize: 11,
+		fontSize: 9,
+		flexShrink: 1,
 	},
 })
 

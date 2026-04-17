@@ -7,7 +7,7 @@ import { Category, CategoryMap } from '@/entities/category'
 import { Club } from '@/entities/club'
 import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
 import React, { useContext } from 'react'
-import { FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ClubListItem from '@/shared/components/ClubListItem'
 import Header from '@/features/club/screens/ClubListScreen/Header'
@@ -65,21 +65,19 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 						keyExtractor={(_, index) => index.toString()}
 						data={categoryClubs}
 						style={{ flex: 1, width: '100%' }}
-						contentContainerStyle={{
-							alignItems: 'center',
-							gap: 25,
-						}}
+						contentContainerStyle={{ gap: 25, paddingVertical: 8 }}
 						renderItem={({ item }) => (
-							<Pressable onPress={() => openDetailPage(item)}>
+							<Pressable
+								style={({ pressed }) => ({ width: Dimensions.get('window').width, paddingHorizontal: 20, opacity: pressed ? 0.5 : 1 })}
+								onPress={() => openDetailPage(item)}>
 								<ClubListItem club={item} category={category} />
 							</Pressable>
 						)}
-						// Performance settings
-						removeClippedSubviews={true} // Unmount components when outside of window
-						initialNumToRender={6} // Reduce initial render amount
-						maxToRenderPerBatch={1} // Reduce number in each render batch
-						updateCellsBatchingPeriod={100} // Increase time between renders
-						windowSize={7} // Reduce the window size
+						removeClippedSubviews={true}
+						initialNumToRender={6}
+						maxToRenderPerBatch={1}
+						updateCellsBatchingPeriod={100}
+						windowSize={7}
 					/>
 				)}
 			</SafeAreaView>
@@ -97,16 +95,15 @@ type UseCategoryClubsProps = {
 const useCategoryClubs = ({ name, category }: UseCategoryClubsProps) => {
 	const { clubService } = useContext(serviceContext)
 
-	const query = useQuery(
+	return useQuery(
 		['clubs', name ?? 'name', category ?? 'category'],
 		() => clubService.listClubs({ name, category }),
 		{
-			keepPreviousData: true,
 			select: data => data.clubs,
+			staleTime: 60 * 1000,
+			cacheTime: 5 * 60 * 1000,
 		},
 	)
-
-	return query
 }
 
 const styles = StyleSheet.create({
