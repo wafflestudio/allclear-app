@@ -9,6 +9,7 @@ import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
 import React, { useContext } from 'react'
 import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import LinearGradient from 'react-native-linear-gradient'
 import ClubListItem from '@/shared/components/ClubListItem'
 import Header from '@/features/club/screens/ClubListScreen/Header'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
@@ -48,6 +49,11 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 				category,
 			}}>
 			<SafeAreaView key={`${categoryDetail.name}-horizontal`} style={styles.horizontalSafeArea}>
+				<LinearGradient
+					colors={['transparent', categoryDetail.backgroundColor]}
+					style={StyleSheet.absoluteFillObject}
+					pointerEvents="none"
+				/>
 				<Header category={category} onBack={handleMoveToHomePage} />
 
 				{categoryClubs?.length === 0 ? (
