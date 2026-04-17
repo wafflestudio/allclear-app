@@ -54,7 +54,7 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 					<View style={styles.emptyState}>
 						<View style={styles.emptyStateContent}>
 							<Image
-								source={require('../../assets/images/not-found.png')}
+								source={require('@/assets/images/not-found.png')}
 								style={styles.emptyStateImage}
 							/>
 							<Text style={styles.emptyStateText}>멍멍! (대충 검색결과가 없다는 뜻이에요)</Text>

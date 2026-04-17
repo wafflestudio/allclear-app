@@ -1,9 +1,9 @@
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Colors } from 'constants/colors'
-import { Category } from 'entities/category'
-import { SCREEN_TYPE, StackParamList } from 'entities/screen'
-import useClickEventLog from 'hooks/useClickEventLog'
+import { Colors } from '@/shared/constants/colors'
+import { Category } from '@/entities/category'
+import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import React, { useState } from 'react'
 import { Animated, Easing, Image, Text, TouchableOpacity, View } from 'react-native'
 

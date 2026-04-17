@@ -1,9 +1,9 @@
 import React from 'react'
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native'
 
-import { Colors } from 'constants/colors'
-import { Category, CategoryMap } from 'entities/category'
-import { Club } from 'entities/club'
+import { Colors } from '@/shared/constants/colors'
+import { Category, CategoryMap } from '@/entities/category'
+import { Club } from '@/entities/club'
 
 type Props = {
 	club: Club

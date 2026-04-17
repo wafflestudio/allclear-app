@@ -1,5 +1,5 @@
-import { Colors } from 'constants/colors'
-import { Club } from 'entities/club'
+import { Colors } from '@/shared/constants/colors'
+import { Club } from '@/entities/club'
 import React, { useState } from 'react'
 import { Animated, Easing, Text, View } from 'react-native'
 
@@ -7,7 +7,7 @@ type Props = {
 	club: Club
 }
 
-const RecommandClubCard = ({ club }: Props) => {
+const RecommendClubCard = ({ club }: Props) => {
 	const [isFadeInFinished, setIsFadeInFinished] = useState(false)
 	const animatedOpacityValue = React.useRef(new Animated.Value(0)).current
 
@@ -82,4 +82,4 @@ const RecommandClubCard = ({ club }: Props) => {
 	)
 }
 
-export default RecommandClubCard
+export default RecommendClubCard
