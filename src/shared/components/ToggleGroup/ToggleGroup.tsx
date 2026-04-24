@@ -11,7 +11,6 @@ export type ToggleGroupProps = {
   options: ToggleGroupOption[]
   allOption?: ToggleGroupOption
   selectionMode?: ToggleGroupSelectionMode
-  allowEmptySelection?: boolean
   value?: ToggleGroupValue
   defaultValue?: ToggleGroupValue
   onChange?: (value: ToggleGroupValue) => void
@@ -24,7 +23,6 @@ export const ToggleGroup = ({
   options,
   allOption,
   selectionMode,
-  allowEmptySelection,
   value,
   defaultValue,
   onChange,
@@ -35,7 +33,6 @@ export const ToggleGroup = ({
   const { isSelected, toggle } = useToggleGroup({
     allOption,
     selectionMode,
-    allowEmptySelection,
     value,
     defaultValue,
     onChange,

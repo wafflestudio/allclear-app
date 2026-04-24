@@ -8,7 +8,6 @@ import type {
 export type UseToggleGroupParams = {
   allOption?: ToggleGroupOption
   selectionMode?: ToggleGroupSelectionMode
-  allowEmptySelection?: boolean
   value?: ToggleGroupValue
   defaultValue?: ToggleGroupValue
   onChange?: (value: ToggleGroupValue) => void
@@ -52,13 +51,11 @@ const getNextValue = ({
   value,
   allOption,
   selectionMode,
-  allowEmptySelection,
 }: {
   selectedValues: ToggleGroupValue
   value: string
   allOption?: ToggleGroupOption
   selectionMode: ToggleGroupSelectionMode
-  allowEmptySelection: boolean
 }): ToggleGroupValue => {
   if (allOption && value === allOption.value) {
     return [allOption.value]
@@ -71,7 +68,7 @@ const getNextValue = ({
 
   if (selectionMode === 'single') {
     if (isCurrentlySelected) {
-      return allowEmptySelection ? [] : [value]
+      return allOption ? [allOption.value] : []
     }
 
     return [value]
@@ -80,12 +77,8 @@ const getNextValue = ({
   if (isCurrentlySelected) {
     const newValues = withoutAll.filter(selectedValue => selectedValue !== value)
 
-    if (newValues.length === 0 && !allowEmptySelection && allOption) {
+    if (newValues.length === 0 && allOption) {
       return [allOption.value]
-    }
-
-    if (newValues.length === 0 && !allowEmptySelection) {
-      return selectedValues
     }
 
     return newValues
@@ -99,13 +92,12 @@ const getNextValue = ({
 export const useToggleGroup = ({
   allOption,
   selectionMode = 'multiple',
-  allowEmptySelection = allOption === undefined,
   value: controlledValue,
   defaultValue,
   onChange,
 }: UseToggleGroupParams): UseToggleGroupReturn => {
   const initialValue = normalizeValue({
-    selectedValues: defaultValue ?? (allOption && !allowEmptySelection ? [allOption.value] : []),
+    selectedValues: defaultValue ?? (allOption ? [allOption.value] : []),
     selectionMode,
     allOption,
   })
@@ -142,12 +134,11 @@ export const useToggleGroup = ({
         value: nextSelectedValue,
         allOption,
         selectionMode,
-        allowEmptySelection,
       })
 
       updateValue(nextValue)
     },
-    [allOption, allowEmptySelection, selectedValues, selectionMode, updateValue]
+    [allOption, selectedValues, selectionMode, updateValue]
   )
 
   const reset = useCallback(() => {
