@@ -30,20 +30,19 @@ const normalizeValue = ({
   allOption?: ToggleGroupOption
 }): ToggleGroupValue => {
   const uniqueValues = [...new Set(selectedValues)]
+  const normalizedValues = allOption
+    ? uniqueValues.filter(selectedValue => selectedValue !== allOption.value)
+    : uniqueValues
 
-  if (uniqueValues.length === 0) {
+  if (normalizedValues.length === 0) {
     return []
   }
 
-  if (allOption && uniqueValues.includes(allOption.value)) {
-    return [allOption.value]
-  }
-
   if (selectionMode === 'single') {
-    return uniqueValues.slice(0, 1)
+    return normalizedValues.slice(0, 1)
   }
 
-  return uniqueValues
+  return normalizedValues
 }
 
 const getNextValue = ({
@@ -58,33 +57,24 @@ const getNextValue = ({
   selectionMode: ToggleGroupSelectionMode
 }): ToggleGroupValue => {
   if (allOption && value === allOption.value) {
-    return [allOption.value]
+    return []
   }
 
   const isCurrentlySelected = selectedValues.includes(value)
-  const withoutAll = allOption
-    ? selectedValues.filter(selectedValue => selectedValue !== allOption.value)
-    : selectedValues
 
   if (selectionMode === 'single') {
     if (isCurrentlySelected) {
-      return allOption ? [allOption.value] : []
+      return []
     }
 
     return [value]
   }
 
   if (isCurrentlySelected) {
-    const newValues = withoutAll.filter(selectedValue => selectedValue !== value)
-
-    if (newValues.length === 0 && allOption) {
-      return [allOption.value]
-    }
-
-    return newValues
+    return selectedValues.filter(selectedValue => selectedValue !== value)
   }
 
-  const newValues = [...withoutAll, value]
+  const newValues = [...selectedValues, value]
 
   return newValues
 }
@@ -97,7 +87,7 @@ export const useToggleGroup = ({
   onChange,
 }: UseToggleGroupParams): UseToggleGroupReturn => {
   const initialValue = normalizeValue({
-    selectedValues: defaultValue ?? (allOption ? [allOption.value] : []),
+    selectedValues: defaultValue ?? [],
     selectionMode,
     allOption,
   })
@@ -123,8 +113,14 @@ export const useToggleGroup = ({
   )
 
   const isSelected = useCallback(
-    (value: string) => selectedValues.includes(value),
-    [selectedValues]
+    (value: string) => {
+      if (allOption && value === allOption.value) {
+        return selectedValues.length === 0
+      }
+
+      return selectedValues.includes(value)
+    },
+    [allOption, selectedValues]
   )
 
   const toggle = useCallback(
