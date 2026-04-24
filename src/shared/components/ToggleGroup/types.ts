@@ -4,4 +4,6 @@ export type ToggleGroupOption = {
   disabled?: boolean
 }
 
+export type ToggleGroupSelectionMode = 'single' | 'multiple'
+
 export type ToggleGroupValue = string[]

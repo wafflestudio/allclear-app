@@ -1,11 +1,17 @@
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native'
 import { ToggleGroupItem } from './ToggleGroupItem'
-import type { ToggleGroupOption, ToggleGroupValue } from './types'
+import type {
+  ToggleGroupOption,
+  ToggleGroupSelectionMode,
+  ToggleGroupValue,
+} from './types'
 import { useToggleGroup } from './useToggleGroup'
 
 export type ToggleGroupProps = {
   options: ToggleGroupOption[]
   allOption?: ToggleGroupOption
+  selectionMode?: ToggleGroupSelectionMode
+  allowEmptySelection?: boolean
   value?: ToggleGroupValue
   defaultValue?: ToggleGroupValue
   onChange?: (value: ToggleGroupValue) => void
@@ -17,6 +23,8 @@ export type ToggleGroupProps = {
 export const ToggleGroup = ({
   options,
   allOption,
+  selectionMode,
+  allowEmptySelection,
   value,
   defaultValue,
   onChange,
@@ -26,6 +34,8 @@ export const ToggleGroup = ({
 }: ToggleGroupProps) => {
   const { isSelected, toggle } = useToggleGroup({
     allOption,
+    selectionMode,
+    allowEmptySelection,
     value,
     defaultValue,
     onChange,

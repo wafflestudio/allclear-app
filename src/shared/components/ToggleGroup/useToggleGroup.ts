@@ -1,8 +1,14 @@
 import { useCallback, useState } from 'react'
-import type { ToggleGroupOption, ToggleGroupValue } from './types'
+import type {
+  ToggleGroupOption,
+  ToggleGroupSelectionMode,
+  ToggleGroupValue,
+} from './types'
 
 export type UseToggleGroupParams = {
   allOption?: ToggleGroupOption
+  selectionMode?: ToggleGroupSelectionMode
+  allowEmptySelection?: boolean
   value?: ToggleGroupValue
   defaultValue?: ToggleGroupValue
   onChange?: (value: ToggleGroupValue) => void
@@ -12,16 +18,47 @@ export type UseToggleGroupReturn = {
   selectedValues: ToggleGroupValue
   isSelected: (value: string) => boolean
   toggle: (value: string) => void
+  reset: () => void
+}
+
+const normalizeValue = ({
+  selectedValues,
+  selectionMode,
+  allOption,
+}: {
+  selectedValues: ToggleGroupValue
+  selectionMode: ToggleGroupSelectionMode
+  allOption?: ToggleGroupOption
+}): ToggleGroupValue => {
+  const uniqueValues = [...new Set(selectedValues)]
+
+  if (uniqueValues.length === 0) {
+    return []
+  }
+
+  if (allOption && uniqueValues.includes(allOption.value)) {
+    return [allOption.value]
+  }
+
+  if (selectionMode === 'single') {
+    return uniqueValues.slice(0, 1)
+  }
+
+  return uniqueValues
 }
 
 const getNextValue = ({
   selectedValues,
   value,
   allOption,
+  selectionMode,
+  allowEmptySelection,
 }: {
   selectedValues: ToggleGroupValue
   value: string
   allOption?: ToggleGroupOption
+  selectionMode: ToggleGroupSelectionMode
+  allowEmptySelection: boolean
 }): ToggleGroupValue => {
   if (allOption && value === allOption.value) {
     return [allOption.value]
@@ -32,11 +69,23 @@ const getNextValue = ({
     ? selectedValues.filter(selectedValue => selectedValue !== allOption.value)
     : selectedValues
 
+  if (selectionMode === 'single') {
+    if (isCurrentlySelected) {
+      return allowEmptySelection ? [] : [value]
+    }
+
+    return [value]
+  }
+
   if (isCurrentlySelected) {
     const newValues = withoutAll.filter(selectedValue => selectedValue !== value)
 
-    if (newValues.length === 0 && allOption) {
+    if (newValues.length === 0 && !allowEmptySelection && allOption) {
       return [allOption.value]
+    }
+
+    if (newValues.length === 0 && !allowEmptySelection) {
+      return selectedValues
     }
 
     return newValues
@@ -49,15 +98,37 @@ const getNextValue = ({
 
 export const useToggleGroup = ({
   allOption,
+  selectionMode = 'multiple',
+  allowEmptySelection = allOption === undefined,
   value: controlledValue,
   defaultValue,
   onChange,
 }: UseToggleGroupParams): UseToggleGroupReturn => {
+  const initialValue = normalizeValue({
+    selectedValues: defaultValue ?? (allOption && !allowEmptySelection ? [allOption.value] : []),
+    selectionMode,
+    allOption,
+  })
   const [internalSelectedValues, setInternalSelectedValues] = useState<ToggleGroupValue>(
-    defaultValue ?? (allOption ? [allOption.value] : [])
+    initialValue
   )
 
-  const selectedValues = controlledValue ?? internalSelectedValues
+  const selectedValues = normalizeValue({
+    selectedValues: controlledValue ?? internalSelectedValues,
+    selectionMode,
+    allOption,
+  })
+
+  const updateValue = useCallback(
+    (nextValue: ToggleGroupValue) => {
+      if (controlledValue === undefined) {
+        setInternalSelectedValues(nextValue)
+      }
+
+      onChange?.(nextValue)
+    },
+    [controlledValue, onChange]
+  )
 
   const isSelected = useCallback(
     (value: string) => selectedValues.includes(value),
@@ -70,16 +141,18 @@ export const useToggleGroup = ({
         selectedValues,
         value: nextSelectedValue,
         allOption,
+        selectionMode,
+        allowEmptySelection,
       })
 
-      if (controlledValue === undefined) {
-        setInternalSelectedValues(nextValue)
-      }
-
-      onChange?.(nextValue)
+      updateValue(nextValue)
     },
-    [allOption, controlledValue, onChange, selectedValues]
+    [allOption, allowEmptySelection, selectedValues, selectionMode, updateValue]
   )
 
-  return { selectedValues, isSelected, toggle }
+  const reset = useCallback(() => {
+    updateValue([])
+  }, [updateValue])
+
+  return { selectedValues, isSelected, toggle, reset }
 }
