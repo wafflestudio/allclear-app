@@ -3,7 +3,7 @@ name: Android Dev Artifact Build
 on:
   push:
     branches:
-      - chore/android-cicd
+      - develop
   workflow_dispatch:
 
 concurrency:

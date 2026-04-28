@@ -3,7 +3,7 @@ name: Android Main Internal Testing
 on:
   push:
     branches:
-      - chore/android-cicd
+      - main
   workflow_dispatch:
 
 concurrency:
