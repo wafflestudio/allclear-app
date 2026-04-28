@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: android-main-internal
     env:
-      ALLCLEAR_UPLOAD_STORE_FILE: ${{ secrets.ALLCLEAR_UPLOAD_STORE_FILE }}
       ORG_GRADLE_PROJECT_ALLCLEAR_UPLOAD_STORE_FILE: ${{ secrets.ALLCLEAR_UPLOAD_STORE_FILE }}
       ORG_GRADLE_PROJECT_ALLCLEAR_UPLOAD_KEY_ALIAS: ${{ secrets.ALLCLEAR_UPLOAD_KEY_ALIAS }}
       ORG_GRADLE_PROJECT_ALLCLEAR_UPLOAD_STORE_PASSWORD: ${{ secrets.ALLCLEAR_UPLOAD_STORE_PASSWORD }}
@@ -37,6 +36,7 @@ jobs:
           ANDROID_ENV_PROD: ${{ secrets.ANDROID_ENV_PROD }}
           ANDROID_GOOGLE_SERVICES_JSON_PROD: ${{ secrets.ANDROID_GOOGLE_SERVICES_JSON_PROD }}
           ALLCLEAR_UPLOAD_KEYSTORE_BASE64: ${{ secrets.ALLCLEAR_UPLOAD_KEYSTORE_BASE64 }}
+          ALLCLEAR_UPLOAD_STORE_FILE: ${{ secrets.ALLCLEAR_UPLOAD_STORE_FILE }}
         run: |
           if [ -z "$ANDROID_ENV_PROD" ]; then
             echo "ANDROID_ENV_PROD is not set"
@@ -71,6 +71,7 @@ jobs:
           printf '%s' "$ANDROID_GOOGLE_SERVICES_JSON_PROD" > android/app/google-services.json
           printf '%s' "$ALLCLEAR_UPLOAD_KEYSTORE_BASE64" | base64 --decode > "android/app/${ALLCLEAR_UPLOAD_STORE_FILE}"
           chmod 600 "android/app/${ALLCLEAR_UPLOAD_STORE_FILE}"
+          echo "ALLCLEAR_UPLOAD_STORE_FILE=${ALLCLEAR_UPLOAD_STORE_FILE}" >> "$GITHUB_ENV"
 
       - name: Compute version code
         shell: bash
