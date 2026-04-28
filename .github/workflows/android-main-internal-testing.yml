@@ -28,33 +28,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5.0.1
 
-      - name: Setup Node
-        uses: actions/setup-node@v6.3.0
-        with:
-          node-version: 20
-          cache: yarn
-          cache-dependency-path: yarn.lock
-
-      - name: Enable Corepack
-        run: corepack enable
-
-      - name: Setup Java
-        uses: actions/setup-java@v5.2.0
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
-
-      - name: Restore node_modules cache
-        id: cache_node_modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock', 'package.json', 'patches/**') }}
-
-      - name: Install dependencies
-        if: steps.cache_node_modules.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile --prefer-offline
+      - name: Setup Android environment
+        uses: ./.github/actions/setup-android-env
 
       - name: Restore Android release config
         shell: bash
@@ -108,7 +83,7 @@ jobs:
         run: |
           chmod +x android/gradlew
           cd android
-          ENVFILE=.env.prod ./gradlew :app:bundleRelease -PVERSION_CODE="${VERSION_CODE}" --build-cache
+          ENVFILE=../.env.prod ./gradlew :app:bundleRelease -PVERSION_CODE="${VERSION_CODE}" --build-cache
 
       - name: Upload to Google Play internal testing
         uses: r0adkll/upload-google-play@v1.1.3
