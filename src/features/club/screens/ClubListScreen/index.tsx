@@ -39,7 +39,6 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 	}
 
 	if (!category) return null
-
 	const categoryDetail = CategoryMap[category]
 
 	return (
@@ -48,7 +47,7 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 				screen_name: 'club_list_screen',
 				category,
 			}}>
-			<SafeAreaView key={`${categoryDetail.name}-horizontal`} style={styles.horizontalSafeArea}>
+			<SafeAreaView edges={['top', 'left', 'right']} style={styles.horizontalSafeArea}>
 				<LinearGradient
 					colors={['transparent', categoryDetail.backgroundColor]}
 					style={StyleSheet.absoluteFillObject}
@@ -74,7 +73,11 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 						contentContainerStyle={{ gap: 25, paddingVertical: 8 }}
 						renderItem={({ item }) => (
 							<Pressable
-								style={({ pressed }) => ({ width: Dimensions.get('window').width, paddingHorizontal: 20, opacity: pressed ? 0.5 : 1 })}
+								style={({ pressed }) => ({
+									width: Dimensions.get('window').width,
+									paddingHorizontal: 20,
+									opacity: pressed ? 0.5 : 1,
+								})}
 								onPress={() => openDetailPage(item)}>
 								<ClubListItem club={item} category={category} />
 							</Pressable>
