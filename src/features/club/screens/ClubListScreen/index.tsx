@@ -68,7 +68,7 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 					</View>
 				) : (
 					<FlatList
-						keyExtractor={(_, index) => index.toString()}
+						keyExtractor={item => item.id}
 						data={categoryClubs}
 						style={{ flex: 1, width: '100%' }}
 						contentContainerStyle={{ gap: 25, paddingVertical: 8 }}
