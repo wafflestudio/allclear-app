@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: android-dev-artifact-build
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
