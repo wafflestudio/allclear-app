@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import type {
   SearchFilterToggleGroupSelection,
   SearchFilterToggleGroupSelectionMode,
@@ -6,9 +6,8 @@ import type {
 
 export type UseSearchFilterToggleGroupParams = {
   selectionMode?: SearchFilterToggleGroupSelectionMode
-  value?: SearchFilterToggleGroupSelection
-  defaultValue?: SearchFilterToggleGroupSelection
-  onChange?: (value: SearchFilterToggleGroupSelection) => void
+  value: SearchFilterToggleGroupSelection
+  onChange: (value: SearchFilterToggleGroupSelection) => void
 }
 
 export type UseSearchFilterToggleGroupReturn = {
@@ -94,38 +93,23 @@ const getNextSelection = ({
 
 export const useSearchFilterToggleGroup = ({
   selectionMode = 'multiple',
-  value: controlledValue,
-  defaultValue,
+  value,
   onChange,
 }: UseSearchFilterToggleGroupParams): UseSearchFilterToggleGroupReturn => {
-  const initialSelection = sanitizeExternalSelection({
-    selection: defaultValue ?? NONE_SELECTION,
+  const selection = sanitizeExternalSelection({
+    selection: value,
     selectionMode,
   })
-  const [internalSelection, setInternalSelection] =
-    useState<SearchFilterToggleGroupSelection>(initialSelection)
-
-  const selection =
-    controlledValue === undefined
-      ? internalSelection
-      : sanitizeExternalSelection({
-          selection: controlledValue,
-          selectionMode,
-        })
 
   const updateSelection = useCallback(
     (nextSelection: SearchFilterToggleGroupSelection) => {
-      if (controlledValue === undefined) {
-        setInternalSelection(nextSelection)
-      }
-
-      onChange?.(nextSelection)
+      onChange(nextSelection)
     },
-    [controlledValue, onChange]
+    [onChange]
   )
 
-  const isSelected = (value: string) =>
-    selection.kind === 'values' && selection.values.includes(value)
+  const isSelected = (optionValue: string) =>
+    selection.kind === 'values' && selection.values.includes(optionValue)
 
   const toggle = useCallback(
     (nextSelectedValue: string) => {

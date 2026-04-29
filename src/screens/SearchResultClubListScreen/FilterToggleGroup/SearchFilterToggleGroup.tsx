@@ -12,9 +12,8 @@ export type SearchFilterToggleGroupProps = {
   options: SearchFilterToggleGroupOption[]
   allItem?: SearchFilterToggleGroupAllItem
   selectionMode?: SearchFilterToggleGroupSelectionMode
-  value?: SearchFilterToggleGroupSelection
-  defaultValue?: SearchFilterToggleGroupSelection
-  onChange?: (value: SearchFilterToggleGroupSelection) => void
+  value: SearchFilterToggleGroupSelection
+  onChange: (value: SearchFilterToggleGroupSelection) => void
   disabled?: boolean
   style?: StyleProp<ViewStyle>
   itemStyle?: StyleProp<ViewStyle>
@@ -25,7 +24,6 @@ export const SearchFilterToggleGroup = ({
   allItem,
   selectionMode,
   value,
-  defaultValue,
   onChange,
   disabled,
   style,
@@ -34,7 +32,6 @@ export const SearchFilterToggleGroup = ({
   const { isAllSelected, isSelected, selectAll, toggle } = useSearchFilterToggleGroup({
     selectionMode,
     value,
-    defaultValue,
     onChange,
   })
 
