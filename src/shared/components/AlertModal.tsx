@@ -48,27 +48,27 @@ const AlertModal = ({
 const styles = StyleSheet.create({
 	overlay: {
 		flex: 1,
-		backgroundColor: Colors.DIM_BLACK,
+		backgroundColor: 'rgba(0, 0, 0, 0.5)', // #deprecated color
 		justifyContent: 'center',
 		alignItems: 'center',
 		paddingHorizontal: 24,
 	},
 	container: {
 		width: '100%',
-		backgroundColor: Colors.WHITE,
+		backgroundColor: '#FFFFFF', // #deprecated color
 		borderRadius: 16,
 		padding: 24,
 	},
 	title: {
 		fontSize: 18,
 		fontWeight: '700',
-		color: Colors.FYI_BLACK,
+		color: '#212121', // #deprecated color
 		textAlign: 'center',
 	},
 	description: {
 		fontSize: 14,
 		fontWeight: '400',
-		color: Colors.FYI_BLACK,
+		color: '#212121', // #deprecated color
 		textAlign: 'center',
 		marginTop: 12,
 	},

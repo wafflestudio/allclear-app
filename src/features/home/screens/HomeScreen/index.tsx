@@ -43,7 +43,7 @@ const HomeScreen = ({ navigation }: Props) => {
 				style={{
 					flex: 1,
 					padding: 0,
-					backgroundColor: Colors.WHITE,
+					backgroundColor: '#FFFFFF', // #deprecated color
 				}}>
 				<ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
 					<Header />

@@ -43,7 +43,7 @@ const SavedClubListScreen = () => {
 								source={require('@/assets/images/mypage/notfoundclub.png')}
 								style={{ width: 148, height: 100 }}
 							/>
-							<Text style={{ fontSize: 14, fontWeight: 'normal', color: Colors.GRAY_40 }}>
+							<Text style={{ fontSize: 14, fontWeight: 'normal', color: '#8F8686' /* #deprecated color */ }}>
 								아직 저장한 동아리가 없어요
 							</Text>
 						</View>

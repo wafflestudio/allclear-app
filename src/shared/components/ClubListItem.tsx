@@ -30,7 +30,7 @@ const ClubListItem = ({ club, category }: Props) => {
 				<View
 					style={{
 						elevation: 5,
-						borderColor: Colors.FYI_GRAY_300,
+						borderColor: '#E0E0E0', // #deprecated color
 						borderRadius: 4,
 						borderWidth: 1,
 						zIndex: 1000,
@@ -56,7 +56,7 @@ const ClubListItem = ({ club, category }: Props) => {
 					height: 100,
 					borderRadius: 4,
 					borderWidth: 1,
-					borderColor: categoryDetail ? `${categoryDetail.safeArea}20` : Colors.FYI_GRAY_300,
+					borderColor: categoryDetail ? `${categoryDetail.safeArea}20` : '#E0E0E0' /* #deprecated color */,
 					opacity: animatedOpacityValue,
 				}}
 				resizeMode={'contain'}
@@ -96,7 +96,7 @@ const ClubListItem = ({ club, category }: Props) => {
 				{club.tags?.map((tag, index) => (
 					<Text
 						style={{
-							color: Colors.BACKGROUND_LIGHT_GRAY,
+							color: '#777', // #deprecated color
 							fontSize: 12,
 							marginRight: 4,
 							marginBottom: 2,
@@ -121,7 +121,7 @@ const ClubListItem = ({ club, category }: Props) => {
 						paddingHorizontal: 8,
 						borderRadius: 32,
 						borderWidth: 1,
-						borderColor: categoryDetail ? categoryDetail.safeArea : Colors.FYI_GRAY_300,
+						borderColor: categoryDetail ? categoryDetail.safeArea : '#E0E0E0' /* #deprecated color */,
 					}}
 					key={`${club.name}-${index}`}>
 					<Text
@@ -141,7 +141,7 @@ const ClubListItem = ({ club, category }: Props) => {
 		<View
 			style={{
 				display: 'flex',
-				backgroundColor: Colors.WHITE,
+				backgroundColor: '#FFFFFF', // #deprecated color
 				padding: 12,
 				paddingLeft: 16,
 				borderRadius: 12,

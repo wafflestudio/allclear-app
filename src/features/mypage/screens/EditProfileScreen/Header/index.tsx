@@ -30,7 +30,7 @@ const Header = ({ onBack }: Props) => {
 						marginRight: 24,
 						fontSize: 14,
 						fontWeight: 'bold',
-						color: Colors.GRAY_50,
+						color: '#3A3434', // #deprecated color
 					}}>
 					프로필 수정
 				</Text>

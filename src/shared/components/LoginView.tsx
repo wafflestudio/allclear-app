@@ -17,6 +17,7 @@ import {
 import Toast from 'react-native-toast-message'
 import { AuthProvider } from '@/usecases/auth'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
+import { Colors } from '@/shared/constants/colors'
 
 type Props = {
 	closeBottomSheet: () => void
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
 	},
 
 	appleText: {
-		color: '#fff',
+		color: Colors.TEXT_BUTTON_SELECTED,
 		fontWeight: '500',
 		textAlign: 'center',
 	},
