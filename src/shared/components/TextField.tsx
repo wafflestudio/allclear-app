@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { TextInput, TextInputProps, StyleSheet, TextStyle, ViewStyle } from 'react-native'
+import { Colors } from '@/shared/constants/colors'
 
 const COLORS = {
-  gray300: '#C1C1C1',
-  gray500: '#757474',
+  gray300: Colors.BODYTEXT_DISABLED,
+  gray500: Colors.BODYTEXT_SUB,
 } as const
 
 type TextFieldBorderStyle = {

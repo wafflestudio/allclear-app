@@ -11,11 +11,12 @@ import {
 	ViewStyle,
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
+import { Colors } from '@/shared/constants/colors'
 
 const COLORS = {
-	offWhite: '#FAFAFA',
-	title: '#202020',
-	description: '#757474',
+	offWhite: Colors.BACKGROUND_MAIN,
+	title: Colors.BODYTEXT_MAIN,
+	description: Colors.BODYTEXT_SUB,
 	transparentOffWhite: 'rgba(250, 250, 250, 0)',
 } as const
 

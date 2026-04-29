@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 4,
 	},
 	touchable: {
-		backgroundColor: Colors.WHITE,
+		backgroundColor: '#FFFFFF', // #deprecated color
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
 		height: 32,
 	},
 	label: {
-		color: Colors.WHITE,
+		color: '#FFFFFF', // #deprecated color
 		fontSize: 14,
 		lineHeight: 16,
 		letterSpacing: -1,

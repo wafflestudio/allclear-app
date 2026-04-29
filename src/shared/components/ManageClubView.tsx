@@ -68,11 +68,11 @@ const ManageClubView = ({ closeBottomSheet }: Props) => {
 					onPress={handleSubmit}
 					style={[
 						styles.button,
-						{ backgroundColor: input.trim() ? Colors.GRAY_50 : Colors.GRAY_30 },
+						{ backgroundColor: input.trim() ? '#3A3434' /* #deprecated color */ : '#C5BBB8' /* #deprecated color */ },
 					]}>
 					<Text
 						style={{
-							color: Colors.WHITE,
+							color: '#FFFFFF', // #deprecated color
 							fontSize: 16,
 							textAlign: 'center',
 							fontWeight: 'bold',
@@ -118,12 +118,12 @@ const styles = StyleSheet.create({
 	input: {
 		height: '100%',
 		maxHeight: 120,
-		backgroundColor: Colors.WHITE,
+		backgroundColor: '#FFFFFF', // #deprecated color
 		paddingHorizontal: 16,
 		paddingVertical: 8,
 		borderRadius: 12,
 		fontSize: 16,
-		color: Colors.GRAY_50,
+		color: '#3A3434', // #deprecated color
 		textAlignVertical: 'top',
 	},
 

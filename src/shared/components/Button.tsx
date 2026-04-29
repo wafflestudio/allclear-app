@@ -7,14 +7,15 @@ import {
   TextStyle,
   StyleProp,
 } from 'react-native'
+import { Colors } from '@/shared/constants/colors'
 
 const COLORS = {
-  purple: '#874FFF',
+  purple: Colors.BUTTON_SELECTED,
   purplePressed: '#6C40CA',
-  white: '#FFFFFF',
-  gray300: '#C1C1C1',
+  white: Colors.TEXT_BUTTON_SELECTED,
+  gray300: Colors.BODYTEXT_DISABLED,
   gray200: '#E0E0E0',
-  gray100: '#EAEAEA',
+  gray100: Colors.TEXTBOX_SELECTED,
 } as const
 
 type ButtonVariant = 'primary' | 'outline' | 'ghost'

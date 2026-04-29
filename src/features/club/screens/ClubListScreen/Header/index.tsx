@@ -38,14 +38,14 @@ const Header = ({ category, onBack }: Props) => {
 				<TouchableOpacity
 					style={{ width: 28, height: 28, alignItems: 'center', justifyContent: 'center' }}
 					onPress={onBack}>
-					<Icon color={Colors.WHITE} name="chevron-left" size={24} />
+					<Icon color={'#FFFFFF' /* #deprecated color */} name="chevron-left" size={24} />
 				</TouchableOpacity>
 			</View>
 
 			<View style={{ marginLeft: 12 }}>
 				<Text
 					style={{
-						color: Colors.WHITE,
+						color: '#FFFFFF', // #deprecated color
 						fontSize: 40,
 						fontWeight: 'bold',
 						letterSpacing: -2,
@@ -54,7 +54,7 @@ const Header = ({ category, onBack }: Props) => {
 				</Text>
 				<Text
 					style={{
-						color: Colors.WHITE,
+						color: '#FFFFFF', // #deprecated color
 						fontSize: 22,
 						fontWeight: '600',
 						letterSpacing: -1,
