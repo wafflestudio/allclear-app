@@ -120,10 +120,8 @@ export const useToggleGroup = ({
     [controlledValue, onChange]
   )
 
-  const isSelected = useCallback(
-    (value: string) => selection.kind === 'values' && selection.values.includes(value),
-    [selection]
-  )
+  const isSelected = (value: string) =>
+    selection.kind === 'values' && selection.values.includes(value)
 
   const toggle = useCallback(
     (nextSelectedValue: string) => {
@@ -138,13 +136,13 @@ export const useToggleGroup = ({
     [selection, selectionMode, updateSelection]
   )
 
-  const selectAll = useCallback(() => {
+  const selectAll = () => {
     updateSelection(ALL_SELECTION)
-  }, [updateSelection])
+  }
 
-  const reset = useCallback(() => {
+  const reset = () => {
     updateSelection(NONE_SELECTION)
-  }, [updateSelection])
+  }
 
   return {
     selection,
