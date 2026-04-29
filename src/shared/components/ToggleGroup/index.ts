@@ -3,5 +3,10 @@ export { ToggleGroupItem } from './ToggleGroupItem'
 export { useToggleGroup } from './useToggleGroup'
 export type { ToggleGroupProps } from './ToggleGroup'
 export type { ToggleGroupItemProps } from './ToggleGroupItem'
-export type { ToggleGroupOption, ToggleGroupSelectionMode, ToggleGroupValue } from './types'
+export type {
+  ToggleGroupAllItem,
+  ToggleGroupOption,
+  ToggleGroupSelection,
+  ToggleGroupSelectionMode,
+} from './types'
 export type { UseToggleGroupParams, UseToggleGroupReturn } from './useToggleGroup'

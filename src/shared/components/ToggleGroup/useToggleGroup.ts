@@ -1,145 +1,159 @@
 import { useCallback, useState } from 'react'
-import type {
-  ToggleGroupOption,
-  ToggleGroupSelectionMode,
-  ToggleGroupValue,
-} from './types'
+import type { ToggleGroupSelection, ToggleGroupSelectionMode } from './types'
 
 export type UseToggleGroupParams = {
-  allOption?: ToggleGroupOption
   selectionMode?: ToggleGroupSelectionMode
-  value?: ToggleGroupValue
-  defaultValue?: ToggleGroupValue
-  onChange?: (value: ToggleGroupValue) => void
+  value?: ToggleGroupSelection
+  defaultValue?: ToggleGroupSelection
+  onChange?: (value: ToggleGroupSelection) => void
 }
 
 export type UseToggleGroupReturn = {
-  selectedValues: ToggleGroupValue
+  selection: ToggleGroupSelection
+  isAllSelected: boolean
   isSelected: (value: string) => boolean
   toggle: (value: string) => void
+  selectAll: () => void
   reset: () => void
 }
 
-const normalizeValue = ({
-  selectedValues,
-  selectionMode,
-  allOption,
-}: {
-  selectedValues: ToggleGroupValue
-  selectionMode: ToggleGroupSelectionMode
-  allOption?: ToggleGroupOption
-}): ToggleGroupValue => {
-  const uniqueValues = [...new Set(selectedValues)]
-  const normalizedValues = allOption
-    ? uniqueValues.filter(selectedValue => selectedValue !== allOption.value)
-    : uniqueValues
+const NONE_SELECTION: ToggleGroupSelection = { kind: 'none' }
+const ALL_SELECTION: ToggleGroupSelection = { kind: 'all' }
 
-  if (normalizedValues.length === 0) {
-    return []
+const normalizeSelection = ({
+  selection,
+  selectionMode,
+}: {
+  selection: ToggleGroupSelection
+  selectionMode: ToggleGroupSelectionMode
+}): ToggleGroupSelection => {
+  if (selection.kind !== 'values') {
+    return selection
+  }
+
+  const uniqueValues = [...new Set(selection.values)]
+
+  if (uniqueValues.length === 0) {
+    return NONE_SELECTION
   }
 
   if (selectionMode === 'single') {
-    return normalizedValues.slice(0, 1)
+    return {
+      kind: 'values',
+      values: uniqueValues.slice(0, 1),
+    }
   }
 
-  return normalizedValues
+  return {
+    kind: 'values',
+    values: uniqueValues,
+  }
 }
 
-const getNextValue = ({
-  selectedValues,
+const getNextSelection = ({
+  selection,
   value,
-  allOption,
   selectionMode,
 }: {
-  selectedValues: ToggleGroupValue
+  selection: ToggleGroupSelection
   value: string
-  allOption?: ToggleGroupOption
   selectionMode: ToggleGroupSelectionMode
-}): ToggleGroupValue => {
-  if (allOption && value === allOption.value) {
-    return []
+}): ToggleGroupSelection => {
+  if (selection.kind !== 'values') {
+    return { kind: 'values', values: [value] }
   }
 
-  const isCurrentlySelected = selectedValues.includes(value)
+  const isCurrentlySelected = selection.values.includes(value)
 
   if (selectionMode === 'single') {
     if (isCurrentlySelected) {
-      return []
+      return NONE_SELECTION
     }
 
-    return [value]
+    return { kind: 'values', values: [value] }
   }
 
   if (isCurrentlySelected) {
-    return selectedValues.filter(selectedValue => selectedValue !== value)
+    const nextValues = selection.values.filter(selectedValue => selectedValue !== value)
+
+    if (nextValues.length === 0) {
+      return NONE_SELECTION
+    }
+
+    return { kind: 'values', values: nextValues }
   }
 
-  const newValues = [...selectedValues, value]
-
-  return newValues
+  return {
+    kind: 'values',
+    values: [...selection.values, value],
+  }
 }
 
 export const useToggleGroup = ({
-  allOption,
   selectionMode = 'multiple',
   value: controlledValue,
   defaultValue,
   onChange,
 }: UseToggleGroupParams): UseToggleGroupReturn => {
-  const initialValue = normalizeValue({
-    selectedValues: defaultValue ?? [],
+  const initialSelection = normalizeSelection({
+    selection: defaultValue ?? NONE_SELECTION,
     selectionMode,
-    allOption,
   })
-  const [internalSelectedValues, setInternalSelectedValues] = useState<ToggleGroupValue>(
-    initialValue
-  )
+  const [internalSelection, setInternalSelection] = useState<ToggleGroupSelection>(initialSelection)
 
-  const selectedValues = normalizeValue({
-    selectedValues: controlledValue ?? internalSelectedValues,
+  const selection = normalizeSelection({
+    selection: controlledValue ?? internalSelection,
     selectionMode,
-    allOption,
   })
 
-  const updateValue = useCallback(
-    (nextValue: ToggleGroupValue) => {
+  const updateSelection = useCallback(
+    (nextSelection: ToggleGroupSelection) => {
+      const normalizedSelection = normalizeSelection({
+        selection: nextSelection,
+        selectionMode,
+      })
+
       if (controlledValue === undefined) {
-        setInternalSelectedValues(nextValue)
+        setInternalSelection(normalizedSelection)
       }
 
-      onChange?.(nextValue)
+      onChange?.(normalizedSelection)
     },
-    [controlledValue, onChange]
+    [controlledValue, onChange, selectionMode]
   )
 
   const isSelected = useCallback(
-    (value: string) => {
-      if (allOption && value === allOption.value) {
-        return selectedValues.length === 0
-      }
-
-      return selectedValues.includes(value)
-    },
-    [allOption, selectedValues]
+    (value: string) => selection.kind === 'values' && selection.values.includes(value),
+    [selection]
   )
 
   const toggle = useCallback(
     (nextSelectedValue: string) => {
-      const nextValue = getNextValue({
-        selectedValues,
+      const nextSelection = getNextSelection({
+        selection,
         value: nextSelectedValue,
-        allOption,
         selectionMode,
       })
 
-      updateValue(nextValue)
+      updateSelection(nextSelection)
     },
-    [allOption, selectedValues, selectionMode, updateValue]
+    [selection, selectionMode, updateSelection]
   )
 
-  const reset = useCallback(() => {
-    updateValue([])
-  }, [updateValue])
+  const selectAll = useCallback(() => {
+    updateSelection(ALL_SELECTION)
+  }, [updateSelection])
 
-  return { selectedValues, isSelected, toggle, reset }
+  const reset = useCallback(() => {
+    updateSelection(NONE_SELECTION)
+  }, [updateSelection])
+
+  return {
+    selection,
+    isAllSelected: selection.kind === 'all',
+    isSelected,
+    toggle,
+    selectAll,
+    reset,
+  }
 }

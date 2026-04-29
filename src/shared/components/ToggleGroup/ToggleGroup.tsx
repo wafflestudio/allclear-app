@@ -1,19 +1,20 @@
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native'
 import { ToggleGroupItem } from './ToggleGroupItem'
 import type {
+  ToggleGroupAllItem,
   ToggleGroupOption,
   ToggleGroupSelectionMode,
-  ToggleGroupValue,
+  ToggleGroupSelection,
 } from './types'
 import { useToggleGroup } from './useToggleGroup'
 
 export type ToggleGroupProps = {
   options: ToggleGroupOption[]
-  allOption?: ToggleGroupOption
+  allItem?: ToggleGroupAllItem
   selectionMode?: ToggleGroupSelectionMode
-  value?: ToggleGroupValue
-  defaultValue?: ToggleGroupValue
-  onChange?: (value: ToggleGroupValue) => void
+  value?: ToggleGroupSelection
+  defaultValue?: ToggleGroupSelection
+  onChange?: (value: ToggleGroupSelection) => void
   disabled?: boolean
   style?: StyleProp<ViewStyle>
   itemStyle?: StyleProp<ViewStyle>
@@ -21,7 +22,7 @@ export type ToggleGroupProps = {
 
 export const ToggleGroup = ({
   options,
-  allOption,
+  allItem,
   selectionMode,
   value,
   defaultValue,
@@ -30,18 +31,26 @@ export const ToggleGroup = ({
   style,
   itemStyle,
 }: ToggleGroupProps) => {
-  const { isSelected, toggle } = useToggleGroup({
-    allOption,
+  const { isAllSelected, isSelected, selectAll, toggle } = useToggleGroup({
     selectionMode,
     value,
     defaultValue,
     onChange,
   })
-  const renderedOptions = allOption ? [allOption, ...options] : options
 
   return (
     <View style={[styles.container, style]}>
-      {renderedOptions.map(option => (
+      {allItem ? (
+        <ToggleGroupItem
+          key="$all"
+          label={allItem.label}
+          selected={isAllSelected}
+          onPress={selectAll}
+          disabled={disabled || allItem.disabled}
+          style={itemStyle}
+        />
+      ) : null}
+      {options.map(option => (
         <ToggleGroupItem
           key={option.value}
           label={option.label}
