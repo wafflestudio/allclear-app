@@ -1,15 +1,18 @@
 import { useCallback, useState } from 'react'
-import type { ToggleGroupSelection, ToggleGroupSelectionMode } from './types'
+import type {
+  SearchFilterToggleGroupSelection,
+  SearchFilterToggleGroupSelectionMode,
+} from './types'
 
-export type UseToggleGroupParams = {
-  selectionMode?: ToggleGroupSelectionMode
-  value?: ToggleGroupSelection
-  defaultValue?: ToggleGroupSelection
-  onChange?: (value: ToggleGroupSelection) => void
+export type UseSearchFilterToggleGroupParams = {
+  selectionMode?: SearchFilterToggleGroupSelectionMode
+  value?: SearchFilterToggleGroupSelection
+  defaultValue?: SearchFilterToggleGroupSelection
+  onChange?: (value: SearchFilterToggleGroupSelection) => void
 }
 
-export type UseToggleGroupReturn = {
-  selection: ToggleGroupSelection
+export type UseSearchFilterToggleGroupReturn = {
+  selection: SearchFilterToggleGroupSelection
   isAllSelected: boolean
   isSelected: (value: string) => boolean
   toggle: (value: string) => void
@@ -17,16 +20,16 @@ export type UseToggleGroupReturn = {
   reset: () => void
 }
 
-const NONE_SELECTION: ToggleGroupSelection = { kind: 'none' }
-const ALL_SELECTION: ToggleGroupSelection = { kind: 'all' }
+const NONE_SELECTION: SearchFilterToggleGroupSelection = { kind: 'none' }
+const ALL_SELECTION: SearchFilterToggleGroupSelection = { kind: 'all' }
 
 const sanitizeExternalSelection = ({
   selection,
   selectionMode,
 }: {
-  selection: ToggleGroupSelection
-  selectionMode: ToggleGroupSelectionMode
-}): ToggleGroupSelection => {
+  selection: SearchFilterToggleGroupSelection
+  selectionMode: SearchFilterToggleGroupSelectionMode
+}): SearchFilterToggleGroupSelection => {
   if (selection.kind !== 'values') {
     return selection
   }
@@ -55,10 +58,10 @@ const getNextSelection = ({
   value,
   selectionMode,
 }: {
-  selection: ToggleGroupSelection
+  selection: SearchFilterToggleGroupSelection
   value: string
-  selectionMode: ToggleGroupSelectionMode
-}): ToggleGroupSelection => {
+  selectionMode: SearchFilterToggleGroupSelectionMode
+}): SearchFilterToggleGroupSelection => {
   if (selection.kind !== 'values') {
     return { kind: 'values', values: [value] }
   }
@@ -89,17 +92,18 @@ const getNextSelection = ({
   }
 }
 
-export const useToggleGroup = ({
+export const useSearchFilterToggleGroup = ({
   selectionMode = 'multiple',
   value: controlledValue,
   defaultValue,
   onChange,
-}: UseToggleGroupParams): UseToggleGroupReturn => {
+}: UseSearchFilterToggleGroupParams): UseSearchFilterToggleGroupReturn => {
   const initialSelection = sanitizeExternalSelection({
     selection: defaultValue ?? NONE_SELECTION,
     selectionMode,
   })
-  const [internalSelection, setInternalSelection] = useState<ToggleGroupSelection>(initialSelection)
+  const [internalSelection, setInternalSelection] =
+    useState<SearchFilterToggleGroupSelection>(initialSelection)
 
   const selection =
     controlledValue === undefined
@@ -110,7 +114,7 @@ export const useToggleGroup = ({
         })
 
   const updateSelection = useCallback(
-    (nextSelection: ToggleGroupSelection) => {
+    (nextSelection: SearchFilterToggleGroupSelection) => {
       if (controlledValue === undefined) {
         setInternalSelection(nextSelection)
       }

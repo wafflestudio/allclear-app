@@ -1,26 +1,26 @@
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native'
-import { ToggleGroupItem } from './ToggleGroupItem'
+import { SearchFilterToggleGroupItem } from './SearchFilterToggleGroupItem'
 import type {
-  ToggleGroupAllItem,
-  ToggleGroupOption,
-  ToggleGroupSelectionMode,
-  ToggleGroupSelection,
+  SearchFilterToggleGroupAllItem,
+  SearchFilterToggleGroupOption,
+  SearchFilterToggleGroupSelection,
+  SearchFilterToggleGroupSelectionMode,
 } from './types'
-import { useToggleGroup } from './useToggleGroup'
+import { useSearchFilterToggleGroup } from './useSearchFilterToggleGroup'
 
-export type ToggleGroupProps = {
-  options: ToggleGroupOption[]
-  allItem?: ToggleGroupAllItem
-  selectionMode?: ToggleGroupSelectionMode
-  value?: ToggleGroupSelection
-  defaultValue?: ToggleGroupSelection
-  onChange?: (value: ToggleGroupSelection) => void
+export type SearchFilterToggleGroupProps = {
+  options: SearchFilterToggleGroupOption[]
+  allItem?: SearchFilterToggleGroupAllItem
+  selectionMode?: SearchFilterToggleGroupSelectionMode
+  value?: SearchFilterToggleGroupSelection
+  defaultValue?: SearchFilterToggleGroupSelection
+  onChange?: (value: SearchFilterToggleGroupSelection) => void
   disabled?: boolean
   style?: StyleProp<ViewStyle>
   itemStyle?: StyleProp<ViewStyle>
 }
 
-export const ToggleGroup = ({
+export const SearchFilterToggleGroup = ({
   options,
   allItem,
   selectionMode,
@@ -30,8 +30,8 @@ export const ToggleGroup = ({
   disabled,
   style,
   itemStyle,
-}: ToggleGroupProps) => {
-  const { isAllSelected, isSelected, selectAll, toggle } = useToggleGroup({
+}: SearchFilterToggleGroupProps) => {
+  const { isAllSelected, isSelected, selectAll, toggle } = useSearchFilterToggleGroup({
     selectionMode,
     value,
     defaultValue,
@@ -41,7 +41,7 @@ export const ToggleGroup = ({
   return (
     <View style={[styles.container, style]}>
       {allItem ? (
-        <ToggleGroupItem
+        <SearchFilterToggleGroupItem
           key="$all"
           label={allItem.label}
           selected={isAllSelected}
@@ -51,7 +51,7 @@ export const ToggleGroup = ({
         />
       ) : null}
       {options.map(option => (
-        <ToggleGroupItem
+        <SearchFilterToggleGroupItem
           key={option.value}
           label={option.label}
           selected={isSelected(option.value)}

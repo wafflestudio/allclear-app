@@ -12,7 +12,7 @@ const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 const SELECTED_BACKGROUND_COLOR = '#874FFF'
 const UNSELECTED_BACKGROUND_COLOR = 'rgba(255, 255, 255, 0)'
 
-export type ToggleGroupItemProps = {
+export type SearchFilterToggleGroupItemProps = {
   label: string
   selected: boolean
   onPress: () => void
@@ -20,13 +20,13 @@ export type ToggleGroupItemProps = {
   style?: StyleProp<ViewStyle>
 }
 
-export const ToggleGroupItem = ({
+export const SearchFilterToggleGroupItem = ({
   label,
   selected,
   onPress,
   disabled,
   style,
-}: ToggleGroupItemProps) => {
+}: SearchFilterToggleGroupItemProps) => {
   const progress = useSharedValue(selected ? 1 : 0)
 
   useEffect(() => {
