@@ -14,7 +14,6 @@ export type SearchFilterToggleGroupProps = {
   selectionMode?: SearchFilterToggleGroupSelectionMode
   value: SearchFilterToggleGroupSelection
   onChange: (value: SearchFilterToggleGroupSelection) => void
-  disabled?: boolean
   style?: StyleProp<ViewStyle>
   itemStyle?: StyleProp<ViewStyle>
 }
@@ -25,7 +24,6 @@ export const SearchFilterToggleGroup = ({
   selectionMode,
   value,
   onChange,
-  disabled,
   style,
   itemStyle,
 }: SearchFilterToggleGroupProps) => {
@@ -43,7 +41,6 @@ export const SearchFilterToggleGroup = ({
           label={allItem.label}
           selected={isAllSelected}
           onPress={selectAll}
-          disabled={disabled || allItem.disabled}
           style={itemStyle}
         />
       ) : null}
@@ -53,7 +50,6 @@ export const SearchFilterToggleGroup = ({
           label={option.label}
           selected={isSelected(option.value)}
           onPress={() => toggle(option.value)}
-          disabled={disabled || option.disabled}
           style={itemStyle}
         />
       ))}

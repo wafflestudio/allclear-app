@@ -16,7 +16,6 @@ export type SearchFilterToggleGroupItemProps = {
   label: string
   selected: boolean
   onPress: () => void
-  disabled?: boolean
   style?: StyleProp<ViewStyle>
 }
 
@@ -24,7 +23,6 @@ export const SearchFilterToggleGroupItem = ({
   label,
   selected,
   onPress,
-  disabled,
   style,
 }: SearchFilterToggleGroupItemProps) => {
   const progress = useSharedValue(selected ? 1 : 0)
@@ -44,7 +42,6 @@ export const SearchFilterToggleGroupItem = ({
   return (
     <AnimatedPressable
       onPress={onPress}
-      disabled={disabled}
       hitSlop={8}
       style={[styles.container, selected ? styles.selected : styles.unselected, animatedStyle, style]}
     >
