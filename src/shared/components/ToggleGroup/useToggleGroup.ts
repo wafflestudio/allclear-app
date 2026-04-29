@@ -20,7 +20,7 @@ export type UseToggleGroupReturn = {
 const NONE_SELECTION: ToggleGroupSelection = { kind: 'none' }
 const ALL_SELECTION: ToggleGroupSelection = { kind: 'all' }
 
-const normalizeSelection = ({
+const sanitizeExternalSelection = ({
   selection,
   selectionMode,
 }: {
@@ -95,31 +95,29 @@ export const useToggleGroup = ({
   defaultValue,
   onChange,
 }: UseToggleGroupParams): UseToggleGroupReturn => {
-  const initialSelection = normalizeSelection({
+  const initialSelection = sanitizeExternalSelection({
     selection: defaultValue ?? NONE_SELECTION,
     selectionMode,
   })
   const [internalSelection, setInternalSelection] = useState<ToggleGroupSelection>(initialSelection)
 
-  const selection = normalizeSelection({
-    selection: controlledValue ?? internalSelection,
-    selectionMode,
-  })
+  const selection =
+    controlledValue === undefined
+      ? internalSelection
+      : sanitizeExternalSelection({
+          selection: controlledValue,
+          selectionMode,
+        })
 
   const updateSelection = useCallback(
     (nextSelection: ToggleGroupSelection) => {
-      const normalizedSelection = normalizeSelection({
-        selection: nextSelection,
-        selectionMode,
-      })
-
       if (controlledValue === undefined) {
-        setInternalSelection(normalizedSelection)
+        setInternalSelection(nextSelection)
       }
 
-      onChange?.(normalizedSelection)
+      onChange?.(nextSelection)
     },
-    [controlledValue, onChange, selectionMode]
+    [controlledValue, onChange]
   )
 
   const isSelected = useCallback(
