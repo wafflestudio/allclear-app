@@ -31,7 +31,7 @@ const linking = {
 	prefixes: ['allclear://', 'https://all-clear.cc', 'https://dev.all-clear.cc', ENV.WEB_URL],
 	config: {
 		screens: {
-			'홈': {
+			홈: {
 				screens: {
 					[SCREEN_TYPE.CLUB_DETAIL]: 'club/:uuid',
 				},
@@ -82,10 +82,7 @@ function App(): React.JSX.Element {
 								<LoginBottomSheetProvider>
 									<UserVoiceBottomSheetProvider>
 										<ManageClubBottomSheetProvider>
-											<NavigationContainer 
-												ref={_navigationRef}
-												linking={linking}
-											>
+											<NavigationContainer ref={_navigationRef} linking={linking}>
 												<TabNavigator />
 											</NavigationContainer>
 										</ManageClubBottomSheetProvider>

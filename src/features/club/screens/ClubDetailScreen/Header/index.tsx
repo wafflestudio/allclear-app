@@ -149,9 +149,9 @@ const Header = ({ club, onBack }: Props) => {
 			</TouchableOpacity>
 			<View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
 				{
-				<TouchableOpacity onPress={() => handleShare(club)}>
-					<Icon color={Colors.WHITE} name="share-variant" size={24} />
-				</TouchableOpacity>
+					<TouchableOpacity onPress={() => handleShare(club)}>
+						<Icon color={Colors.WHITE} name="share-variant" size={24} />
+					</TouchableOpacity>
 				}
 				{isSaved ? (
 					<TouchableOpacity onPress={handleRemoveSavedClub}>

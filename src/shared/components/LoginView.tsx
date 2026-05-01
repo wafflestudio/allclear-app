@@ -28,29 +28,24 @@ const LoginView = ({ closeBottomSheet }: Props) => {
 	const { authService, userService } = useContext(serviceContext)
 
 	const onAppleButtonPress = async () => {
-		// performs login request
 		const appleAuthRequestResponse = await appleAuth.performRequest({
 			requestedOperation: appleAuth.Operation.LOGIN,
-			// Note: it appears putting FULL_NAME first is important, see issue #293
 			requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
 		})
 
-		// get current authentication state for user
-		// /!\ This method must be tested on a real device. On the iOS simulator it always throws an error.
-		const credentialState = await appleAuth.getCredentialStateForUser(appleAuthRequestResponse.user)
-
-		// use credentialState response to ensure the user is authenticated
-		if (credentialState === appleAuth.State.AUTHORIZED && appleAuthRequestResponse.identityToken) {
-			const token = await authService.callback(
-				AuthProvider.APPLE,
-				appleAuthRequestResponse.identityToken,
-			)
-			await AsyncStorage.setItem(LOGIN_TOKEN, token)
-			const user = await userService.getUser()
-			setUser(user)
-			closeBottomSheet()
-			queryClient.invalidateQueries(['manageClubs'])
+		if (!appleAuthRequestResponse.identityToken) {
+			return
 		}
+
+		const token = await authService.callback(
+			AuthProvider.APPLE,
+			appleAuthRequestResponse.identityToken,
+		)
+		await AsyncStorage.setItem(LOGIN_TOKEN, token)
+		const user = await userService.getUser()
+		setUser(user)
+		closeBottomSheet()
+		queryClient.invalidateQueries(['manageClubs'])
 	}
 
 	const onKakaoButtonPress = async () => {
