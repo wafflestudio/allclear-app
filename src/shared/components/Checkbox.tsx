@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     includeFontPadding: false,
     lineHeight: 12,
+    marginTop: 2,
   },
   labelChecked: {
     color: Colors.POINTCOLOR,
