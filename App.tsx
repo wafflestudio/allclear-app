@@ -31,7 +31,7 @@ const linking = {
 	prefixes: ['allclear://', 'https://all-clear.cc', 'https://dev.all-clear.cc', ENV.WEB_URL],
 	config: {
 		screens: {
-			홈: {
+			HomeTab: {
 				screens: {
 					[SCREEN_TYPE.CLUB_DETAIL]: 'club/:uuid',
 				},
