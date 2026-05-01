@@ -17,6 +17,7 @@ export const Colors = {
 	TEXT_LIGHT_WHITE: '#ccc',
 	MAIN_YELLOW: '#FFD700',
 	MAIN_BLUE: '#0050B5',
+	POINT_PURPLE: '#874FFF',
 	SUB_YELLOW: '#FCC800',
 	ERROR_RED: '#CD0000',
 	WHITE: '#FFFFFF',

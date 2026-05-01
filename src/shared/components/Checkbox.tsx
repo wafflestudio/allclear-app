@@ -9,10 +9,7 @@ import {
   ViewStyle,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-
-const COLORS = {
-  purple: '#874FFF',
-} as const
+import { Colors } from '@/shared/constants/colors'
 
 type Props = {
   label: string
@@ -39,9 +36,9 @@ const Checkbox = ({
     >
       <View style={styles.iconContainer}>
         <Icon
-          color={COLORS.purple}
+          color={Colors.POINT_PURPLE}
           name={checked ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
-          size={10}
+          size={12}
         />
       </View>
       <Text style={[styles.label, checked && styles.labelChecked, textStyle]}>{label}</Text>
@@ -53,28 +50,27 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 5,
+    gap: 4,
   },
   pressed: {
     opacity: 0.7,
   },
   iconContainer: {
     alignItems: 'center',
-    height: 10,
+    height: 12,
     justifyContent: 'center',
-    width: 10,
+    width: 12,
   },
   label: {
-    color: COLORS.purple,
+    color: Colors.POINT_PURPLE,
     fontFamily: 'Pretendard',
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '600',
     includeFontPadding: false,
-    lineHeight: 10,
-    marginTop: 1,
+    lineHeight: 12,
   },
   labelChecked: {
-    color: COLORS.purple,
+    color: Colors.POINT_PURPLE,
   },
 })
 
