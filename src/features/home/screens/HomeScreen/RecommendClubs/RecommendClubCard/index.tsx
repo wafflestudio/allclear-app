@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 		padding: 8,
 		borderRadius: 12,
 		borderWidth: 1,
-		borderColor: Colors.FYI_GRAY_300,
+		borderColor: '#E0E0E0', // #deprecated color
 	},
 	imageWrapper: {
 		position: 'relative',
@@ -106,6 +106,6 @@ const styles = StyleSheet.create({
 	},
 	description: {
 		fontSize: 12,
-		color: Colors.GRAY_40,
+		color: '#8F8686', // #deprecated color
 	},
 })

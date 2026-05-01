@@ -31,6 +31,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/Octicons'
 import HtmlView from '@/shared/components/HtmlView'
 import Header from '@/features/club/screens/ClubDetailScreen/Header'
+import { Colors } from '@/shared/constants/colors'
 
 dayjs.locale('ko')
 
@@ -458,13 +459,13 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		marginTop: 12,
 		padding: 16,
-		backgroundColor: '#FFFFFF',
+		backgroundColor: Colors.TEXT_BUTTON_SELECTED,
 	},
 	mainImageWrapper: {
 		width: 100,
 		height: 100,
 		borderRadius: 12,
-		backgroundColor: '#FFFFFF',
+		backgroundColor: Colors.TEXT_BUTTON_SELECTED,
 		justifyContent: 'center',
 		alignItems: 'center',
 		padding: 16,

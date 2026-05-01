@@ -163,20 +163,20 @@ const MyPageScreen = () => {
 									}}
 								/>
 								<View style={{ marginTop: 24 }}>
-									<Text style={{ fontSize: 20, fontWeight: 'bold', color: Colors.WHITE }}>
+									<Text style={{ fontSize: 20, fontWeight: 'bold', color: Colors.TEXT_BUTTON_SELECTED }}>
 										{user?.nickname || '이름 정보가 없습니다'}
 									</Text>
-									<Text style={{ fontSize: 14, color: Colors.WHITE, opacity: 0.5, marginTop: 8 }}>
+									<Text style={{ fontSize: 14, color: Colors.TEXT_BUTTON_SELECTED, opacity: 0.5, marginTop: 8 }}>
 										{user?.college || '단과대 정보가 없습니다'}
 										{user?.major && ' ' + user.major}
 									</Text>
-									<Text style={{ fontSize: 14, color: Colors.WHITE, opacity: 0.5, marginTop: 6 }}>
+									<Text style={{ fontSize: 14, color: Colors.TEXT_BUTTON_SELECTED, opacity: 0.5, marginTop: 6 }}>
 										{user?.admissionClass ? `${user.admissionClass} 학번` : '학번 정보가 없습니다'}
 									</Text>
 								</View>
 
 								<View style={{ marginTop: 24 }}>
-									<Text style={{ fontSize: 14, color: Colors.WHITE, opacity: 0.5, marginTop: 8 }}>
+									<Text style={{ fontSize: 14, color: Colors.TEXT_BUTTON_SELECTED, opacity: 0.5, marginTop: 8 }}>
 										{'활동한 동아리'}
 									</Text>
 									{myClubs && myClubs.length > 0 ? (
@@ -215,7 +215,7 @@ const MyPageScreen = () => {
 														/>
 														<Text
 															style={{
-																color: Colors.WHITE,
+																color: Colors.TEXT_BUTTON_SELECTED,
 																fontSize: 12,
 																fontWeight: '600',
 																marginLeft: 4,
@@ -227,7 +227,7 @@ const MyPageScreen = () => {
 											))}
 											{extraClubsCount > 0 && (
 												<View style={{ marginLeft: 8 }}>
-													<Text style={{ color: '#fff', fontSize: 16 }}>+{extraClubsCount}</Text>
+													<Text style={{ color: Colors.TEXT_BUTTON_SELECTED, fontSize: 16 }}>+{extraClubsCount}</Text>
 												</View>
 											)}
 										</View>
@@ -235,7 +235,7 @@ const MyPageScreen = () => {
 										<Text
 											style={{
 												fontSize: 14,
-												color: Colors.WHITE,
+												color: Colors.TEXT_BUTTON_SELECTED,
 												opacity: 1,
 												marginTop: 8,
 												fontWeight: '500',
@@ -351,15 +351,15 @@ const MyPageScreen = () => {
 					<View style={styles.managerContainer}>
 						<Icon
 							style={{ position: 'absolute', top: 33, right: 24 }}
-							color={Colors.WHITE}
+							color={'#FFFFFF' /* #deprecated color */}
 							name="arrow-forward-ios"
 							size={16}
 						/>
 						<TouchableOpacity onPress={handleManageClub}>
-							<Text style={{ color: '#FFFFFF', fontSize: 14, marginBottom: 4 }}>
+							<Text style={{ color: Colors.TEXT_BUTTON_SELECTED, fontSize: 14, marginBottom: 4 }}>
 								동아리 운영진이신가요?
 							</Text>
-							<Text style={{ color: '#ffffff', opacity: 0.4, fontSize: 12 }}>
+							<Text style={{ color: Colors.TEXT_BUTTON_SELECTED, opacity: 0.4, fontSize: 12 }}>
 								관리자 계정 활성화 요청하기
 							</Text>
 						</TouchableOpacity>
@@ -383,12 +383,12 @@ const MyPageScreen = () => {
 									alignItems: 'center',
 								}}>
 								<IconMaterialCommunity
-									color={Colors.GRAY_40}
+									color={'#8F8686' /* #deprecated color */}
 									name="heart"
 									size={16}
 									style={{ marginRight: 4 }}
 								/>
-								<Text style={{ color: Colors.GRAY_40 }}>저장한 동아리</Text>
+								<Text style={{ color: '#8F8686' /* #deprecated color */ }}>저장한 동아리</Text>
 							</View>
 							<Icon color={'#3A3434'} name="arrow-forward-ios" size={12} />
 						</View>
@@ -400,10 +400,10 @@ const MyPageScreen = () => {
 						<Text style={styles.option}>개발자에게 요청하기</Text>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={handleLogout}>
-						<Text style={[styles.option, { color: Colors.GRAY_20 }]}>로그아웃</Text>
+						<Text style={[styles.option, { color: '#E6E0DF' /* #deprecated color */ }]}>로그아웃</Text>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={handleLeave}>
-						<Text style={[styles.option, { color: Colors.GRAY_20 }]}>회원탈퇴</Text>
+						<Text style={[styles.option, { color: '#E6E0DF' /* #deprecated color */ }]}>회원탈퇴</Text>
 					</TouchableOpacity>
 				</View>
 			</ScrollView>

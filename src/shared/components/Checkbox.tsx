@@ -36,7 +36,7 @@ const Checkbox = ({
     >
       <View style={styles.iconContainer}>
         <Icon
-          color={Colors.POINT_PURPLE}
+          color={Colors.POINTCOLOR}
           name={checked ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
           size={12}
         />
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     width: 12,
   },
   label: {
-    color: Colors.POINT_PURPLE,
+    color: Colors.POINTCOLOR,
     fontFamily: 'Pretendard',
     fontSize: 12,
     fontWeight: '600',
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     lineHeight: 12,
   },
   labelChecked: {
-    color: Colors.POINT_PURPLE,
+    color: Colors.POINTCOLOR,
   },
 })
 

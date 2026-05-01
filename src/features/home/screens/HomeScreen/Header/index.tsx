@@ -42,7 +42,7 @@ const Header = () => {
 					onChangeText={setSearchText}
 					onSubmitEditing={handleSubmitText}
 					placeholder="밴드 동아리"
-					placeholderTextColor={Colors.FYI_GRAY_600}
+					placeholderTextColor={'#757575' /* #deprecated color */}
 					leftIcon={<Icon name="search1" size={20} style={{ marginLeft: 4 }} color="#000" />}
 					rightIcon={
 						searchText ? (
@@ -65,7 +65,7 @@ export default Header
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: Colors.WHITE,
+		backgroundColor: '#FFFFFF', // #deprecated color
 	},
 	titleSection: {
 		paddingHorizontal: 32,
@@ -93,8 +93,8 @@ const styles = StyleSheet.create({
 		paddingVertical: 8,
 	},
 	inputContainer: {
-		backgroundColor: Colors.WHITE,
-		borderColor: Colors.FYI_GRAY_300,
+		backgroundColor: '#FFFFFF', // #deprecated color
+		borderColor: '#E0E0E0', // #deprecated color
 		borderRadius: 8,
 		borderWidth: 1,
 		height: 48,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 	input: {
 		fontSize: 14,
 		padding: 4,
-		color: Colors.FYI_BLACK,
+		color: '#212121', // #deprecated color
 	},
 	inputInnerContainer: {
 		borderBottomWidth: 0,

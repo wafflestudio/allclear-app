@@ -121,7 +121,7 @@ const EditProfileScreen = () => {
 				<View style={{ marginBottom: 32 }}>
 					<Text
 						style={{
-							color: Colors.GRAY_40,
+							color: '#8F8686', // #deprecated color
 							fontWeight: 'bold',
 							marginBottom: 8,
 						}}>
@@ -132,7 +132,7 @@ const EditProfileScreen = () => {
 							borderRadius: 12,
 							paddingHorizontal: 20,
 							paddingVertical: 16,
-							backgroundColor: Colors.WHITE,
+							backgroundColor: '#FFFFFF', // #deprecated color
 						}}
 						value={name}
 						onChangeText={setName}
@@ -144,7 +144,7 @@ const EditProfileScreen = () => {
 				<View style={{ marginBottom: 8, zIndex: 10, position: 'relative' }}>
 					<Text
 						style={{
-							color: Colors.GRAY_40,
+							color: '#8F8686', // #deprecated color
 							fontWeight: 'bold',
 							marginBottom: 8,
 						}}>
@@ -168,7 +168,7 @@ const EditProfileScreen = () => {
 						}}
 						dropDownContainerStyle={{
 							borderWidth: 0,
-							backgroundColor: Colors.WHITE,
+							backgroundColor: '#FFFFFF', // #deprecated color
 							paddingHorizontal: 12,
 							paddingVertical: 4,
 							zIndex: 11,
@@ -181,7 +181,7 @@ const EditProfileScreen = () => {
 				<View style={{ marginBottom: 32, zIndex: 9, position: 'relative' }}>
 					<DropDownPicker
 						disabled={!college}
-						disabledStyle={{ backgroundColor: Colors.GRAY_20 }}
+						disabledStyle={{ backgroundColor: '#E6E0DF' /* #deprecated color */ }}
 						open={openMajorDropDown}
 						setOpen={val => {
 							setOpenCollegeDropDown(false)
@@ -200,7 +200,7 @@ const EditProfileScreen = () => {
 						}}
 						dropDownContainerStyle={{
 							borderWidth: 0,
-							backgroundColor: Colors.WHITE,
+							backgroundColor: '#FFFFFF', // #deprecated color
 							paddingHorizontal: 12,
 							paddingVertical: 4,
 						}}
@@ -213,7 +213,7 @@ const EditProfileScreen = () => {
 				<View style={{ marginBottom: 40 }}>
 					<Text
 						style={{
-							color: Colors.GRAY_40,
+							color: '#8F8686', // #deprecated color
 							fontWeight: 'bold',
 							marginBottom: 8,
 						}}>
@@ -221,7 +221,7 @@ const EditProfileScreen = () => {
 					</Text>
 					<View
 						style={{
-							backgroundColor: Colors.WHITE,
+							backgroundColor: '#FFFFFF', // #deprecated color
 							borderWidth: 0,
 							borderRadius: 12,
 							paddingHorizontal: 20,
@@ -231,16 +231,16 @@ const EditProfileScreen = () => {
 							justifyContent: 'space-between',
 						}}>
 						<TouchableOpacity onPress={() => setAdmissionClass(Math.max(admissionClass - 1, 0))}>
-							<CommunityIcon name="minus" size={24} color={Colors.GRAY_30} />
+							<CommunityIcon name="minus" size={24} color={'#C5BBB8' /* #deprecated color */} />
 						</TouchableOpacity>
 						<Text
 							style={{
 								fontSize: 16,
 								fontWeight: 'bold',
-								color: Colors.GRAY_50,
+								color: '#3A3434', // #deprecated color
 							}}>{`${admissionClass}학번`}</Text>
 						<TouchableOpacity onPress={() => setAdmissionClass(Math.min(admissionClass + 1, 30))}>
-							<CommunityIcon name="plus" size={24} color={Colors.GRAY_30} />
+							<CommunityIcon name="plus" size={24} color={'#C5BBB8' /* #deprecated color */} />
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -253,12 +253,12 @@ const EditProfileScreen = () => {
 						padding: 16,
 						borderRadius: 12,
 						marginBottom: 12,
-						backgroundColor: Colors.GRAY_50,
+						backgroundColor: '#3A3434', // #deprecated color
 						marginTop: 'auto',
 					}}>
 					<Text
 						style={{
-							color: Colors.WHITE,
+							color: '#FFFFFF', // #deprecated color
 							fontSize: 16,
 							textAlign: 'center',
 							fontWeight: 'bold',
@@ -282,9 +282,9 @@ const useCollegeMajors = () => {
 }
 
 function renderArrowDownIcon() {
-	return <Icon name="keyboard-arrow-down" size={24} style={{ color: Colors.GRAY_30 }} />
+	return <Icon name="keyboard-arrow-down" size={24} style={{ color: '#C5BBB8' /* #deprecated color */ }} />
 }
 
 function renderArrowUpIcon() {
-	return <Icon name="keyboard-arrow-up" size={24} style={{ color: Colors.GRAY_30 }} />
+	return <Icon name="keyboard-arrow-up" size={24} style={{ color: '#C5BBB8' /* #deprecated color */ }} />
 }
