@@ -4,7 +4,7 @@ import {
 	GetMyClubReviewResponse,
 	ListReviewKeywordsResponse,
 	ReviewRepository,
-} from 'repositories/review'
+} from '@/repositories/review'
 
 export type ReviewService = {
 	createClubReviews: (req: CreateClubReviewsRequest) => Promise<void>

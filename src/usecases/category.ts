@@ -1,4 +1,4 @@
-import { CategoryRepository, ListCategoriesResponse } from 'repositories/category'
+import { CategoryRepository, ListCategoriesResponse } from '@/repositories/category'
 
 export type CategoryService = {
 	listCategories: () => Promise<ListCategoriesResponse>

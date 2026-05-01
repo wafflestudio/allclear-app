@@ -1,10 +1,10 @@
-import { User } from 'entities/user'
+import { User } from '@/entities/user'
 import {
 	CreateUserVoiceRequest,
 	ListCollegeMajorsResponse,
 	UpdateUserRequest,
 	UserRepository,
-} from 'repositories/user'
+} from '@/repositories/user'
 
 export type UserService = {
 	getUser: () => Promise<User>

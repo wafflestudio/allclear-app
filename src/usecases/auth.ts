@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { AuthRepository } from 'repositories/auth'
+import { AuthRepository } from '@/repositories/auth'
 
 export enum AuthProvider {
 	KAKAO = 'kakao',
