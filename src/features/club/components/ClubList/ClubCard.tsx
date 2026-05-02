@@ -1,4 +1,3 @@
-import React from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 
 import { Colors } from '@/shared/constants/colors'
@@ -10,17 +9,10 @@ type Props = {
 	category?: Category['name']
 }
 
-const addAlpha = (hex: string, opacity: number) => {
-	const r = parseInt(hex.slice(1, 3), 16)
-	const g = parseInt(hex.slice(3, 5), 16)
-	const b = parseInt(hex.slice(5, 7), 16)
-	return `rgba(${r}, ${g}, ${b}, ${opacity})`
-}
-
 const ClubCard = ({ club, category }: Props) => {
 	const categoryDetail = category ? CategoryMap[category] : undefined
-	const borderColor = categoryDetail ? categoryDetail.themeColor : Colors.FYI_GRAY_300
-	const backgroundColor = categoryDetail ? addAlpha(borderColor, 0.1) : Colors.WHITE
+	const borderColor = categoryDetail ? categoryDetail.themeColor : Colors.GRAY
+	const backgroundColor = categoryDetail ? categoryDetail.backgroundColor : Colors.WHITE
 
 	return (
 		<View style={styles.container}>
@@ -90,7 +82,7 @@ const styles = StyleSheet.create({
 		marginBottom: 2,
 	},
 	description: {
-		color: '#757474',
+		color: Colors.BODYTEXT_SUB,
 		fontSize: 14,
 	},
 	reviewView: {
