@@ -1,8 +1,6 @@
-import { Colors } from '@/shared/constants/colors'
 import { Club } from '@/entities/club'
 import { useRef, useState } from 'react'
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native'
-import { Blurhash } from 'react-native-blurhash'
 
 type Props = {
 	club: Club
@@ -15,16 +13,6 @@ const RecommendClubCard = ({ club }: Props) => {
 	return (
 		<View style={styles.card}>
 			<View style={styles.imageWrapper}>
-				{!isFadeInFinished && (
-					<View style={styles.blurOverlay}>
-						<Blurhash
-							blurhash={club.blurHash || 'UFE.X=9uRNtR~q9tD%bu-=D*Vss:I.Rit5sl'}
-							decodeWidth={32}
-							decodeHeight={32}
-							style={styles.image}
-						/>
-					</View>
-				)}
 				<Animated.Image
 					style={[styles.image, styles.roundedImage, { opacity: animatedOpacityValue }]}
 					source={{ uri: club.imageUri }}
@@ -74,15 +62,6 @@ const styles = StyleSheet.create({
 		marginBottom: 12,
 		justifyContent: 'center',
 		alignItems: 'center',
-	},
-	blurOverlay: {
-		elevation: 5,
-		borderRadius: 12,
-		borderBottomLeftRadius: 0,
-		borderBottomRightRadius: 0,
-		overflow: 'hidden',
-		position: 'absolute',
-		top: 0,
 	},
 	image: {
 		width: 148,

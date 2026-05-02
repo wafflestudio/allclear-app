@@ -1,12 +1,10 @@
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Colors } from '@/shared/constants/colors'
 import { Category } from '@/entities/category'
 import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
 import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import { useRef, useState } from 'react'
 import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Blurhash } from 'react-native-blurhash'
 
 type NavigationProps = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
 
@@ -38,16 +36,6 @@ const CategoryCard = ({ category }: Props) => {
 				onPress={() => handleMoveToClubList(category.name)}
 				style={styles.touchable}>
 				<View style={styles.imageContainer}>
-					{!isFadeInFinished && (
-						<View style={styles.blurOverlay}>
-							<Blurhash
-								blurhash={category.blurHash || 'UFE.X=9uRNtR~q9tD%bu-=D*Vss:I.Rit5sl'}
-								decodeWidth={32}
-								decodeHeight={32}
-								style={styles.blurHash}
-							/>
-						</View>
-					)}
 					<Animated.View
 						pointerEvents="none"
 						style={[styles.imageOverlay, { opacity: animatedOpacityValue }]}>
@@ -97,17 +85,6 @@ const styles = StyleSheet.create({
 		alignItems: 'flex-start',
 		justifyContent: 'flex-end',
 		marginBottom: 8,
-	},
-	blurOverlay: {
-		position: 'absolute',
-		zIndex: 1,
-		width: '100%',
-		left: 0,
-		top: 0,
-	},
-	blurHash: {
-		width: '100%',
-		height: 90,
 	},
 	imageOverlay: {
 		position: 'absolute',
