@@ -9,7 +9,7 @@ import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import React, { useContext } from 'react'
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import ClubListItem from '@/shared/components/ClubListItem'
+import ClubCard from '@/features/club/components/ClubList/ClubCard'
 import Header from '@/features/club/screens/SearchResultClubListScreen/Header'
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST>
@@ -57,7 +57,12 @@ const SearchResultClubListScreen = ({ route, navigation }: Props) => {
 								source={require('@/assets/images/not-found.png')}
 								style={{ width: 200, height: 200 }}
 							/>
-							<Text style={{ fontSize: 16, fontWeight: 'normal', color: '#212121' /* #deprecated color */ }}>
+							<Text
+								style={{
+									fontSize: 16,
+									fontWeight: 'normal',
+									color: '#212121' /* #deprecated color */,
+								}}>
 								멍멍! (대충 검색결과가 없다는 뜻이에요)
 							</Text>
 						</View>
@@ -69,7 +74,7 @@ const SearchResultClubListScreen = ({ route, navigation }: Props) => {
 						data={categoryClubs}
 						renderItem={({ item }) => (
 							<TouchableOpacity onPress={() => openDetailPage(item)}>
-								<ClubListItem club={item} />
+								<ClubCard club={item} />
 							</TouchableOpacity>
 						)}
 						// Performance settings

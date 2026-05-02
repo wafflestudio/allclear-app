@@ -17,7 +17,7 @@ const addAlpha = (hex: string, opacity: number) => {
 	return `rgba(${r}, ${g}, ${b}, ${opacity})`
 }
 
-const ClubListItem = ({ club, category }: Props) => {
+const ClubCard = ({ club, category }: Props) => {
 	const categoryDetail = category ? CategoryMap[category] : undefined
 	const borderColor = categoryDetail ? categoryDetail.themeColor : Colors.FYI_GRAY_300
 	const backgroundColor = categoryDetail ? addAlpha(borderColor, 0.1) : Colors.WHITE
@@ -118,4 +118,4 @@ const styles = StyleSheet.create({
 	},
 })
 
-export default ClubListItem
+export default ClubCard

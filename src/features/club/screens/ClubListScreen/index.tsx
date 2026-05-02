@@ -10,7 +10,7 @@ import React, { useContext } from 'react'
 import { Dimensions, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LinearGradient from 'react-native-linear-gradient'
-import ClubListItem from '@/shared/components/ClubListItem'
+import ClubCard from '@/features/club/components/ClubList/ClubCard'
 import Header from '@/features/club/screens/ClubListScreen/Header'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 
@@ -79,7 +79,7 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 									opacity: pressed ? 0.5 : 1,
 								})}
 								onPress={() => openDetailPage(item)}>
-								<ClubListItem club={item} category={category} />
+								<ClubCard club={item} category={category} />
 							</Pressable>
 						)}
 						removeClippedSubviews={true}

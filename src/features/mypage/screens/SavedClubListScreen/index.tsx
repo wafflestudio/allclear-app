@@ -7,7 +7,7 @@ import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import React, { useContext } from 'react'
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import ClubListItem from '@/shared/components/ClubListItem'
+import ClubCard from '@/features/club/components/ClubList/ClubCard'
 import { navigation } from '@/shared/utils/navigation'
 import Header from '@/features/mypage/screens/SavedClubListScreen/Header'
 
@@ -43,7 +43,12 @@ const SavedClubListScreen = () => {
 								source={require('@/assets/images/mypage/notfoundclub.png')}
 								style={{ width: 148, height: 100 }}
 							/>
-							<Text style={{ fontSize: 14, fontWeight: 'normal', color: '#8F8686' /* #deprecated color */ }}>
+							<Text
+								style={{
+									fontSize: 14,
+									fontWeight: 'normal',
+									color: '#8F8686' /* #deprecated color */,
+								}}>
 								아직 저장한 동아리가 없어요
 							</Text>
 						</View>
@@ -55,7 +60,7 @@ const SavedClubListScreen = () => {
 						data={savedClubs}
 						renderItem={({ item }) => (
 							<TouchableOpacity onPress={() => openDetailPage(item)}>
-								<ClubListItem club={item} />
+								<ClubCard club={item} />
 							</TouchableOpacity>
 						)}
 						// Performance settings
