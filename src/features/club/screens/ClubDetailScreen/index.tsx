@@ -115,18 +115,17 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 				club_name: club?.name ?? '',
 				entry_point: entry_point ?? '',
 			}}>
-			<SafeAreaView edges={['top']} style={{ flex: 0, backgroundColor: categoryDetail.safeArea }} />
+			<SafeAreaView
+				edges={['top']}
+				style={{ flex: 0, backgroundColor: categoryDetail.themeColor }}
+			/>
 			<SafeAreaView edges={['left', 'right']} style={{ flex: 1, padding: 0, overflow: 'scroll' }}>
-				<Image
-					source={categoryDetail.source}
-					style={{ width: '100%', height: deviceWidth * 0.8, position: 'absolute' }}
-				/>
 				<Header club={club} onBack={handleBackButton} />
 				{isLoading && (
 					<View style={{ height: deviceHeight }}>
 						<ActivityIndicator
 							size="large"
-							color={categoryDetail.safeArea}
+							color={categoryDetail.themeColor}
 							style={{ marginTop: deviceHeight * 0.3 }}
 						/>
 					</View>
@@ -208,17 +207,17 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 								<TouchableOpacity
 									style={{
 										...styles.reviewCta,
-										borderColor: categoryDetail.safeArea,
+										borderColor: categoryDetail.themeColor,
 									}}
 									onPress={() => handlePressPrimaryCTA(club)}>
 									<View style={styles.reviewCtaText}>
 										<Icon
 											name="pencil"
 											size={16}
-											color={categoryDetail.safeArea}
+											color={categoryDetail.themeColor}
 											style={{ marginRight: 8 }}
 										/>
-										<Text style={{ color: categoryDetail.safeArea, fontSize: 12 }}>
+										<Text style={{ color: categoryDetail.themeColor, fontSize: 12 }}>
 											내 활동 경험 공유하기
 										</Text>
 									</View>
@@ -326,7 +325,7 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 												<Text
 													style={{
 														marginLeft: 'auto',
-														color: categoryDetail.safeArea,
+														color: categoryDetail.themeColor,
 														fontWeight: 'bold',
 													}}>
 													{keyword.totalUpvotes}
@@ -339,7 +338,7 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 														backgroundColor: getReviewBackgroundColor(
 															keyword.totalUpvotes,
 															club.totalReviews,
-															categoryDetail.safeArea,
+															categoryDetail.themeColor,
 														),
 														width: getReviewWidth(keyword.totalUpvotes, club.totalReviews),
 													},

@@ -25,7 +25,13 @@ import { getReviewService } from '@/usecases/review'
 import { getUserService } from '@/usecases/user'
 import { _navigationRef, setIsNavigationReady } from '@/shared/utils/navigation'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			staleTime: 5 * 60 * 1000,
+		},
+	},
+})
 
 function App(): React.JSX.Element {
 	const { Provider: ServiceProvider } = serviceContext

@@ -86,18 +86,17 @@ const ClubReviewScreen = ({ route }: Props) => {
 				club_name: club?.name ?? '',
 				entry_point: 'club_detail',
 			}}>
-			<SafeAreaView edges={['top']} style={{ flex: 0, backgroundColor: categoryDetail.safeArea }} />
+			<SafeAreaView
+				edges={['top']}
+				style={{ flex: 0, backgroundColor: categoryDetail.themeColor }}
+			/>
 			<SafeAreaView edges={['left', 'right']} style={{ flex: 1, padding: 0, overflow: 'scroll' }}>
-				<Image
-					source={categoryDetail.source}
-					style={{ width: '100%', height: deviceWidth * 0.8, position: 'absolute' }}
-				/>
 				<Header club={club} onBack={handleBackButton} />
 				{isLoading && (
 					<View style={{ height: deviceHeight }}>
 						<ActivityIndicator
 							size="large"
-							color={categoryDetail.safeArea}
+							color={categoryDetail.themeColor}
 							style={{ marginTop: deviceHeight * 0.3 }}
 						/>
 					</View>
@@ -127,8 +126,8 @@ const ClubReviewScreen = ({ route }: Props) => {
 														styles.keyword,
 														selectedKeywordIds.includes(keyword.id)
 															? {
-																	backgroundColor: `${categoryDetail.safeArea}`,
-																	borderColor: `${categoryDetail.safeArea}`,
+																	backgroundColor: `${categoryDetail.themeColor}`,
+																	borderColor: `${categoryDetail.themeColor}`,
 																}
 															: null,
 													]}>
@@ -207,7 +206,7 @@ const ClubReviewScreen = ({ route }: Props) => {
 							disabled={isSubmitting || selectedKeywordIds.length === 0}
 							style={[
 								styles.submitCta,
-								{ backgroundColor: categoryDetail.safeArea },
+								{ backgroundColor: categoryDetail.themeColor },
 								isSubmitting || selectedKeywordIds.length === 0 ? { opacity: 0.4 } : null,
 							]}
 							onPress={handleSaveReview}>

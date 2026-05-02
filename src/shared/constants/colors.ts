@@ -1,4 +1,9 @@
 export const Colors = {
+	// Default
+	WHITE: '#FFFFFF',
+	BLACK: '#000000',
+	GRAY: '#C1C1C1',
+
 	// Background
 	BACKGROUND_MAIN: '#FAFAFA',
 	BACKGROUND_SUB: '#F3F0F5',

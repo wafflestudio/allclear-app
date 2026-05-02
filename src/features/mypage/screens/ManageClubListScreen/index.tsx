@@ -9,7 +9,7 @@ import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
 import React, { useContext } from 'react'
 import { FlatList, Text, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import ClubListItem from '@/shared/components/ClubListItem'
+import ClubCard from '@/features/club/components/ClubList/ClubCard'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 import Header from '@/features/mypage/screens/ManageClubListScreen/Header'
 
@@ -60,7 +60,7 @@ const ManageClubListScreen = ({ navigation }: Props) => {
 				data={manageClubs}
 				renderItem={({ item }) => (
 					<TouchableOpacity onPress={() => openManageClubDetailPage(item)}>
-						<ClubListItem club={item} />
+						<ClubCard club={item} />
 					</TouchableOpacity>
 				)}
 				// Performance settings
