@@ -3,26 +3,23 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { Colors } from '@/shared/constants/colors'
-import { Category } from '@/entities/category'
 
 type Props = {
-	category?: Category['name']
+	title: string
 	onBack: () => void
 }
 
-const Header = ({ category, onBack }: Props) => {
-	if (!category) return null
-
+const Header = ({ title, onBack }: Props) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.titleContainer}>
 				<Text style={styles.title} numberOfLines={1}>
-					{category} 동아리
+					{title}
 				</Text>
 			</View>
 
 			<TouchableOpacity style={styles.backButton} onPress={onBack}>
-				<Icon name="chevron-left" size={28} color="#757474" />
+				<Icon name="chevron-left" size={28} color={Colors.BODYTEXT_SUB} />
 			</TouchableOpacity>
 		</View>
 	)
@@ -48,7 +45,7 @@ const styles = StyleSheet.create({
 	title: {
 		fontSize: 18,
 		fontWeight: 'bold',
-		color: '#757474',
+		color: Colors.BODYTEXT_SUB,
 	},
 	backButton: {
 		width: 32,
