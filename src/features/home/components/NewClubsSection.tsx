@@ -4,13 +4,13 @@ import { Club } from '@/entities/club'
 import useExposeEventLog from '@/shared/hooks/useExposeEventLog'
 import { useContext, useRef } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View, ViewToken } from 'react-native'
-import RecommendClubCard from '@/features/home/screens/HomeScreen/RecommendClubs/RecommendClubCard'
+import ClubPreviewCard from '@/shared/components/ClubPreviewCard'
 
 type Props = {
 	openDetailPage: (club: Club) => void
 }
 
-const RecommendClubs = ({ openDetailPage }: Props) => {
+const NewClubsSection = ({ openDetailPage }: Props) => {
 	const { data: latestClubs } = useLatestClubs()
 	const { logExposeEvent } = useExposeEventLog()
 
@@ -39,7 +39,7 @@ const RecommendClubs = ({ openDetailPage }: Props) => {
 				data={latestClubs}
 				renderItem={({ item }) => (
 					<TouchableOpacity onPress={() => openDetailPage(item)}>
-						<RecommendClubCard club={item} />
+						{/* <ClubPreviewCard club={item} /> */}
 					</TouchableOpacity>
 				)}
 				// Performance settings
@@ -53,7 +53,7 @@ const RecommendClubs = ({ openDetailPage }: Props) => {
 	)
 }
 
-export default RecommendClubs
+export default NewClubsSection
 
 const styles = StyleSheet.create({
 	container: {
