@@ -64,10 +64,10 @@ const UserVoiceView = ({ closeBottomSheet }: Props) => {
 				<TouchableOpacity
 					disabled={!input}
 					onPress={handleSubmit}
-					style={[styles.button, { backgroundColor: Colors.GRAY_50, marginTop: 'auto' }]}>
+					style={[styles.button, { backgroundColor: '#3A3434' /* #deprecated color */, marginTop: 'auto' }]}>
 					<Text
 						style={{
-							color: Colors.WHITE,
+							color: '#FFFFFF', // #deprecated color
 							fontSize: 16,
 							textAlign: 'center',
 							fontWeight: 'bold',
@@ -112,12 +112,12 @@ const styles = StyleSheet.create({
 	input: {
 		height: '100%',
 		maxHeight: 120,
-		backgroundColor: Colors.WHITE,
+		backgroundColor: '#FFFFFF', // #deprecated color
 		paddingHorizontal: 16,
 		paddingVertical: 8,
 		borderRadius: 12,
 		fontSize: 16,
-		color: Colors.GRAY_50,
+		color: '#3A3434', // #deprecated color
 		textAlignVertical: 'top',
 	},
 

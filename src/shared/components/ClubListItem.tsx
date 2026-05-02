@@ -44,7 +44,9 @@ const ClubListItem = ({ club, category }: Props) => {
 								{ borderColor: borderColor, backgroundColor: backgroundColor },
 							]}>
 							<Text style={styles.reviewKeywordIcon}>{keyword.iconUri?.trim()}</Text>
-							<Text style={styles.reviewKeywordTitle} numberOfLines={1}>{keyword.title}</Text>
+							<Text style={styles.reviewKeywordTitle} numberOfLines={1}>
+								{keyword.title}
+							</Text>
 						</View>
 					))}
 				</View>

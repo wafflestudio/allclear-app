@@ -143,7 +143,7 @@ const ClubReviewScreen = ({ route }: Props) => {
 															styles.keywordTitle,
 															selectedKeywordIds.includes(keyword.id)
 																? {
-																		color: '#ffffff',
+																		color: Colors.TEXT_BUTTON_SELECTED,
 																		fontWeight: 'bold',
 																	}
 																: null,
@@ -172,7 +172,7 @@ const ClubReviewScreen = ({ route }: Props) => {
 												marginBottom: 12,
 												borderWidth: 1,
 												borderRadius: 4,
-												borderColor: Colors.GRAY_20,
+												borderColor: '#E6E0DF', // #deprecated color
 											}}
 											multiline
 											placeholder={'동아리 활동 후기를 자유롭게 작성해주세요'}
@@ -185,7 +185,7 @@ const ClubReviewScreen = ({ route }: Props) => {
 										style={{
 											position: 'absolute',
 											fontSize: 13,
-											color: Colors.GRAY_30,
+											color: '#C5BBB8', // #deprecated color
 											bottom: 24,
 											right: 12,
 										}}>
@@ -195,7 +195,7 @@ const ClubReviewScreen = ({ route }: Props) => {
 								<Text
 									style={{
 										fontSize: 10,
-										color: Colors.GRAY_30,
+										color: '#C5BBB8', // #deprecated color
 									}}>
 									{'※ 욕설이나 비방이 포함된 경우 임의로 삭제될 수 있습니다'}
 								</Text>
@@ -212,7 +212,7 @@ const ClubReviewScreen = ({ route }: Props) => {
 							onPress={handleSaveReview}>
 							<Text
 								style={{
-									color: '#ffffff',
+									color: Colors.TEXT_BUTTON_SELECTED,
 									fontSize: 16,
 									fontWeight: 'bold',
 									textAlign: 'center',
@@ -283,7 +283,7 @@ const useCreateClubReview = ({
 const styles = StyleSheet.create({
 	container: {},
 	title: {
-		color: Colors.WHITE,
+		color: '#FFFFFF', // #deprecated color
 		fontWeight: 'bold',
 		letterSpacing: -1,
 		fontSize: 20,
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
 		letterSpacing: -1,
 	},
 	categoryContainer: {
-		backgroundColor: '#ffffff',
+		backgroundColor: Colors.TEXT_BUTTON_SELECTED,
 		borderRadius: 12,
 		padding: 16,
 		marginBottom: 16,

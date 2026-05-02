@@ -31,7 +31,7 @@ const Header = ({ onBack }: Props) => {
 			<View style={{ marginLeft: 12 }}>
 				<Text
 					style={{
-						color: Colors.GRAY_50,
+						color: '#3A3434', // #deprecated color
 						fontSize: 14,
 						fontWeight: 'bold',
 						letterSpacing: -0.5,

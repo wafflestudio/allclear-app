@@ -35,8 +35,8 @@ function createTabBarIcon(source: ImageSourcePropType): BottomTabNavigationOptio
 
 const screenOptions: BottomTabNavigationOptions = {
 	headerShown: false,
-	tabBarActiveTintColor: Colors.GRAY_50,
-	tabBarInactiveTintColor: Colors.GRAY_30,
+	tabBarActiveTintColor: '#3A3434', // #deprecated color
+	tabBarInactiveTintColor: '#C5BBB8', // #deprecated color
 	tabBarShowLabel: false,
 	tabBarStyle: {
 		paddingHorizontal: 60,

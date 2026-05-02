@@ -137,6 +137,5 @@ const styles = StyleSheet.create({
 	emptyStateText: {
 		fontSize: 16,
 		fontWeight: 'normal',
-		color: Colors.FYI_BLACK,
 	},
 })

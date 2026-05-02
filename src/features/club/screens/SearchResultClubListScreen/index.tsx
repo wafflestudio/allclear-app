@@ -57,7 +57,7 @@ const SearchResultClubListScreen = ({ route, navigation }: Props) => {
 								source={require('@/assets/images/not-found.png')}
 								style={{ width: 200, height: 200 }}
 							/>
-							<Text style={{ fontSize: 16, fontWeight: 'normal', color: Colors.FYI_BLACK }}>
+							<Text style={{ fontSize: 16, fontWeight: 'normal', color: '#212121' /* #deprecated color */ }}>
 								멍멍! (대충 검색결과가 없다는 뜻이에요)
 							</Text>
 						</View>

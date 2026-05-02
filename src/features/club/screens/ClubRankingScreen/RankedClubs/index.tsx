@@ -45,7 +45,7 @@ const RankedClubs = () => {
 					paddingHorizontal: 12,
 				}}>
 				<View style={{ marginBottom: 12 }}>
-					<Text style={{ fontSize: 16, fontWeight: 'bold', color: Colors.GRAY_50 }}>
+					<Text style={{ fontSize: 16, fontWeight: 'bold', color: '#3A3434' /* #deprecated color */ }}>
 						활동 후기가 많은 동아리
 					</Text>
 				</View>
@@ -113,10 +113,10 @@ const RankedClubs = () => {
 									paddingHorizontal: 8,
 									paddingVertical: 4,
 									borderRadius: 40,
-									backgroundColor: Colors.GRAY_50,
+									backgroundColor: '#3A3434', // #deprecated color,
 									marginBottom: 12,
 								}}>
-								<Text style={{ color: Colors.WHITE, fontWeight: 'bold', textAlign: 'center' }}>
+								<Text style={{ color: '#FFFFFF' /* #deprecated color */, fontWeight: 'bold', textAlign: 'center' }}>
 									1위
 								</Text>
 							</View>
@@ -128,7 +128,7 @@ const RankedClubs = () => {
 									style={{
 										fontSize: 20,
 										fontWeight: 'bold',
-										color: Colors.GRAY_50,
+										color: '#3A3434', // #deprecated color,
 									}}>
 									{clubRankings?.[0].clubName}
 								</Text>
@@ -137,7 +137,7 @@ const RankedClubs = () => {
 								<Text
 									style={{
 										fontSize: 12,
-										color: Colors.GRAY_50,
+										color: '#3A3434', // #deprecated color,
 										opacity: 0.6,
 									}}>
 									{clubRankings?.[0].totalReviews}건
@@ -169,7 +169,7 @@ const RankedClubs = () => {
 										/>
 										<Text
 											style={{
-												color: Colors.WHITE,
+												color: '#FFFFFF', // #deprecated color,
 												fontSize: 14,
 												fontWeight: 'bold',
 												marginLeft: 8,
@@ -181,7 +181,7 @@ const RankedClubs = () => {
 										style={[
 											styles.rankingPortion,
 											{
-												backgroundColor: Colors.GRAY_50,
+												backgroundColor: '#3A3434', // #deprecated color,
 												width: `${(7 - index) * 3 + 60}%`,
 											},
 										]}
@@ -211,7 +211,7 @@ const RankedClubs = () => {
 									)}
 									<Text
 										style={{
-											color: Colors.WHITE,
+											color: '#FFFFFF', // #deprecated color,
 											fontSize: 14,
 											fontWeight: 'bold',
 											marginLeft: 8,
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
 	},
 	rankingPortion: {
 		position: 'absolute',
-		backgroundColor: Colors.GRAY_50,
+		backgroundColor: '#3A3434', // #deprecated color,
 		zIndex: -1,
 		top: 0,
 		left: 0,
