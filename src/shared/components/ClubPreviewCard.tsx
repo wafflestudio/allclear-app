@@ -34,9 +34,18 @@ type Props = {
 	imageStyle?: StyleProp<ImageStyle>
 }
 
-const RecommendedClubCard = ({ title, description, imageSource, onPress, style, imageStyle }: Props) => {
+const ClubPreviewCard = ({
+	title,
+	description,
+	imageSource,
+	onPress,
+	style,
+	imageStyle,
+}: Props) => {
 	return (
-		<Pressable style={({ pressed }) => [styles.card, style, pressed && styles.pressed]} onPress={onPress}>
+		<Pressable
+			style={({ pressed }) => [styles.card, style, pressed && styles.pressed]}
+			onPress={onPress}>
 			<View style={styles.imageWrapper}>
 				<Image source={imageSource} style={[styles.image, imageStyle]} resizeMode="cover" />
 			</View>
@@ -57,7 +66,7 @@ const RecommendedClubCard = ({ title, description, imageSource, onPress, style, 
 	)
 }
 
-export default RecommendedClubCard
+export default ClubPreviewCard
 
 const styles = StyleSheet.create({
 	card: {
