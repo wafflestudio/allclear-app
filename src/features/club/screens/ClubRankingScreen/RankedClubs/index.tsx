@@ -8,6 +8,8 @@ import React, { useContext } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 import { navigation } from '@/shared/utils/navigation'
+import { typography } from '@/shared/constants/typography'
+import { ms, s, vs } from '@/shared/utils/scale'
 
 const RankedClubs = () => {
 	const { clubService } = useContext(serviceContext)
@@ -36,40 +38,21 @@ const RankedClubs = () => {
 	}
 
 	return (
-		<View style={{ padding: 24 }}>
-			<View
-				style={{
-					display: 'flex',
-					flexDirection: 'row',
-					justifyContent: 'space-between',
-					paddingHorizontal: 12,
-				}}>
-				<View style={{ marginBottom: 12 }}>
-					<Text style={{ fontSize: 16, fontWeight: 'bold', color: '#3A3434' /* #deprecated color */ }}>
-						활동 후기가 많은 동아리
-					</Text>
+		<View style={styles.container}>
+			<View style={styles.headerRow}>
+				<View style={styles.titleWrapper}>
+					<Text style={styles.sectionTitle}>활동 후기가 많은 동아리</Text>
 				</View>
 			</View>
 
 			{isLoading && (
 				<TouchableOpacity>
-					<View
-						style={{
-							padding: 36,
-							height: 240,
-							backgroundColor: 'white',
-							borderRadius: 8,
-							borderWidth: 1,
-							borderColor: '#E6E0DF',
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}>
-						<SkeletonPlaceholder borderRadius={4}>
+					<View style={styles.featuredSkeletonCard}>
+						<SkeletonPlaceholder borderRadius={ms(4)}>
 							<SkeletonPlaceholder.Item flexDirection="row" alignItems="center">
 								<SkeletonPlaceholder.Item>
-									<SkeletonPlaceholder.Item width={300} height={20} />
-									<SkeletonPlaceholder.Item marginTop={6} width={180} height={20} />
+									<SkeletonPlaceholder.Item width={s(300)} height={vs(20)} />
+									<SkeletonPlaceholder.Item marginTop={vs(6)} width={s(180)} height={vs(20)} />
 								</SkeletonPlaceholder.Item>
 							</SkeletonPlaceholder.Item>
 						</SkeletonPlaceholder>
@@ -82,64 +65,23 @@ const RankedClubs = () => {
 					onPress={() =>
 						handlePress(clubRankings[0].clubId, clubRankings[0].ranking, 'rankingCard')
 					}>
-					<View
-						style={{
-							padding: 36,
-							backgroundColor: 'white',
-							borderRadius: 8,
-							borderWidth: 1,
-							borderColor: '#E6E0DF',
-							display: 'flex',
-							justifyContent: 'center',
-							alignItems: 'center',
-						}}>
+					<View style={styles.featuredCard}>
 						<View>
 							<Image
-								style={{ width: 60, height: 60 }}
+								style={styles.trophyIcon}
 								source={require('@/assets/icons/trophy.png')}
 							/>
 						</View>
 
-						<View
-							style={{
-								marginTop: 12,
-								display: 'flex',
-								justifyContent: 'center',
-								alignItems: 'center',
-							}}>
-							<View
-								style={{
-									width: 40,
-									paddingHorizontal: 8,
-									paddingVertical: 4,
-									borderRadius: 40,
-									backgroundColor: '#3A3434', // #deprecated color,
-									marginBottom: 12,
-								}}>
-								<Text style={{ color: '#FFFFFF' /* #deprecated color */, fontWeight: 'bold', textAlign: 'center' }}>
-									1위
-								</Text>
+						<View style={styles.featuredContent}>
+							<View style={styles.rankBadge}>
+								<Text style={styles.rankBadgeText}>1위</Text>
 							</View>
-							<View
-								style={{
-									marginBottom: 12,
-								}}>
-								<Text
-									style={{
-										fontSize: 20,
-										fontWeight: 'bold',
-										color: '#3A3434', // #deprecated color,
-									}}>
-									{clubRankings?.[0].clubName}
-								</Text>
+							<View style={styles.featuredClubNameWrapper}>
+								<Text style={styles.featuredClubName}>{clubRankings?.[0].clubName}</Text>
 							</View>
 							<View>
-								<Text
-									style={{
-										fontSize: 12,
-										color: '#3A3434', // #deprecated color,
-										opacity: 0.6,
-									}}>
+								<Text style={styles.featuredReviewCount}>
 									{clubRankings?.[0].totalReviews}건
 								</Text>
 							</View>
@@ -158,22 +100,13 @@ const RankedClubs = () => {
 						}))
 						.map((ranking, index) => (
 							<TouchableOpacity key={ranking.clubId}>
-								<View style={{ position: 'relative' }}>
+								<View style={styles.relative}>
 									<View style={styles.rankingResult}>
 										<Image
 											source={getRankingIconSource(index)}
-											style={{
-												width: 24,
-												height: 24,
-											}}
+											style={styles.rankingIcon}
 										/>
-										<Text
-											style={{
-												color: '#FFFFFF', // #deprecated color,
-												fontSize: 14,
-												fontWeight: 'bold',
-												marginLeft: 8,
-											}}>
+										<Text style={styles.rankingName}>
 											{`---`}
 										</Text>
 									</View>
@@ -198,29 +131,18 @@ const RankedClubs = () => {
 						<TouchableOpacity
 							key={ranking.clubId}
 							onPress={() => handlePress(ranking.clubId, ranking.ranking, 'rankingBar')}>
-							<View style={{ position: 'relative' }}>
+							<View style={styles.relative}>
 								<View style={styles.rankingResult}>
 									{index < 3 && (
 										<Image
 											source={getRankingIconSource(index)}
-											style={{
-												width: 24,
-												height: 24,
-											}}
+											style={styles.rankingIcon}
 										/>
 									)}
-									<Text
-										style={{
-											color: '#FFFFFF', // #deprecated color,
-											fontSize: 14,
-											fontWeight: 'bold',
-											marginLeft: 8,
-										}}>
+									<Text style={styles.rankingName}>
 										{`${ranking.clubName}`}
 									</Text>
-									<Text style={{ marginLeft: 'auto', fontWeight: 'bold' }}>
-										{ranking.totalReviews}
-									</Text>
+									<Text style={styles.rankingCount}>{ranking.totalReviews}</Text>
 								</View>
 								<View
 									style={[
@@ -263,17 +185,105 @@ function getRankingIconSource(index: number) {
 }
 
 const styles = StyleSheet.create({
+	container: {
+		padding: ms(24),
+	},
+	headerRow: {
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		paddingHorizontal: s(12),
+	},
+	titleWrapper: {
+		marginBottom: vs(12),
+	},
+	sectionTitle: {
+		...typography.headerL,
+		color: '#3A3434' /* #deprecated color */,
+	},
+	featuredSkeletonCard: {
+		padding: ms(36),
+		height: vs(240),
+		backgroundColor: Colors.WHITE,
+		borderRadius: ms(8),
+		borderWidth: 1,
+		borderColor: '#E6E0DF',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	featuredCard: {
+		padding: ms(36),
+		backgroundColor: Colors.WHITE,
+		borderRadius: ms(8),
+		borderWidth: 1,
+		borderColor: '#E6E0DF',
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	trophyIcon: {
+		width: ms(60),
+		height: ms(60),
+	},
+	featuredContent: {
+		marginTop: vs(12),
+		display: 'flex',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	rankBadge: {
+		width: s(40),
+		paddingHorizontal: s(8),
+		paddingVertical: vs(4),
+		borderRadius: ms(40),
+		backgroundColor: '#3A3434', // #deprecated color,
+		marginBottom: vs(12),
+	},
+	rankBadgeText: {
+		...typography.bodyMSemibold,
+		color: Colors.WHITE,
+		textAlign: 'center',
+	},
+	featuredClubNameWrapper: {
+		marginBottom: vs(12),
+	},
+	featuredClubName: {
+		...typography.headerXL,
+		color: '#3A3434', // #deprecated color,
+	},
+	featuredReviewCount: {
+		...typography.bodySRegular,
+		color: '#3A3434', // #deprecated color,
+		opacity: 0.6,
+	},
+	relative: {
+		position: 'relative',
+	},
 	rankingContainer: {
-		marginTop: 8,
-		gap: 8,
+		marginTop: vs(8),
+		gap: vs(8),
 	},
 	rankingResult: {
 		display: 'flex',
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingVertical: 12,
-		paddingHorizontal: 10,
-		borderRadius: 6,
+		paddingVertical: vs(12),
+		paddingHorizontal: s(10),
+		borderRadius: ms(6),
+	},
+	rankingIcon: {
+		width: ms(24),
+		height: ms(24),
+	},
+	rankingName: {
+		...typography.bodyMSemibold,
+		color: Colors.WHITE,
+		marginLeft: s(8),
+	},
+	rankingCount: {
+		...typography.bodyMSemibold,
+		marginLeft: 'auto',
 	},
 	rankingPortion: {
 		position: 'absolute',
@@ -281,7 +291,7 @@ const styles = StyleSheet.create({
 		zIndex: -1,
 		top: 0,
 		left: 0,
-		borderRadius: 8,
+		borderRadius: ms(8),
 		height: '100%',
 	},
 })

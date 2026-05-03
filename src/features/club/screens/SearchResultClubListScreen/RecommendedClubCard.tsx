@@ -12,6 +12,8 @@ import {
 } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import { Colors } from '@/shared/constants/colors'
+import { typography } from '@/shared/constants/typography'
+import { ms, s, vs } from '@/shared/utils/scale'
 
 const COLORS = {
 	offWhite: Colors.BACKGROUND_MAIN,
@@ -20,8 +22,8 @@ const COLORS = {
 	transparentOffWhite: 'rgba(250, 250, 250, 0)',
 } as const
 
-const CARD_WIDTH = 140
-const CARD_RADIUS = 10
+const CARD_WIDTH = s(140)
+const CARD_RADIUS = ms(10)
 
 type Props = {
 	title: string
@@ -81,20 +83,16 @@ const styles = StyleSheet.create({
 		borderRadius: CARD_RADIUS,
 	},
 	textContainer: {
-		paddingHorizontal: 11,
-		paddingBottom: 15,
+		paddingHorizontal: s(11),
+		paddingBottom: vs(15),
 	},
 	title: {
+		...typography.bodyMSemibold,
 		color: COLORS.title,
-		fontSize: 14,
-		fontWeight: '600',
-		lineHeight: 14,
-		marginBottom: 4,
+		marginBottom: vs(4),
 	},
 	description: {
+		...typography.bodySRegular,
 		color: COLORS.description,
-		fontSize: 12,
-		fontWeight: '400',
-		lineHeight: 18,
 	},
 })

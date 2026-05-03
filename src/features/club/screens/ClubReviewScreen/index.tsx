@@ -15,7 +15,6 @@ import React, { useContext, useEffect } from 'react'
 import {
 	ActivityIndicator,
 	Dimensions,
-	Image,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -26,6 +25,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 import { navigation } from '@/shared/utils/navigation'
 import Header from '@/features/club/screens/ClubReviewScreen/Header'
+import { typography } from '@/shared/constants/typography'
+import { ms, s, vs } from '@/shared/utils/scale'
 
 dayjs.locale('ko')
 
@@ -40,13 +41,11 @@ type Props = {
 	navigation: DetailsScreenNavigationProp
 }
 
-const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 
 const ClubReviewScreen = ({ route }: Props) => {
 	const { uuid, category } = route.params as DetailsScreenRouteProp['params']
 	const [selectedKeywordIds, setSelectedKeywordIds] = React.useState<ReviewKeyword['id'][]>([])
-	// const [reviewContent, setReviewContent] = React.useState('')
 
 	const { data: reviewKeywordCategories } = useReviewKeywordCategories()
 	const { data: club, isLoading } = useClub({ uuid })
@@ -102,8 +101,8 @@ const ClubReviewScreen = ({ route }: Props) => {
 					</View>
 				)}
 				{club && (
-					<ScrollView style={{ paddingHorizontal: 16 }}>
-						<View style={{ marginLeft: 12 }}>
+					<ScrollView style={styles.scrollView}>
+						<View style={styles.titleWrapper}>
 							<Text style={styles.title}>{`${club.name} 에서의 경험을 공유해주세요 😀`}</Text>
 						</View>
 						<View style={styles.container}>
@@ -131,21 +130,12 @@ const ClubReviewScreen = ({ route }: Props) => {
 																}
 															: null,
 													]}>
-													<Text
-														style={{
-															fontSize: 13,
-															marginRight: 4,
-														}}>
-														{keyword.iconUri?.trim()}
-													</Text>
+													<Text style={styles.keywordIcon}>{keyword.iconUri?.trim()}</Text>
 													<Text
 														style={[
 															styles.keywordTitle,
 															selectedKeywordIds.includes(keyword.id)
-																? {
-																		color: Colors.TEXT_BUTTON_SELECTED,
-																		fontWeight: 'bold',
-																	}
+																? styles.selectedKeywordTitle
 																: null,
 														]}>
 														{keyword.title}
@@ -156,50 +146,6 @@ const ClubReviewScreen = ({ route }: Props) => {
 									</View>
 								</View>
 							))}
-							{/* <View style={styles.categoryContainer}>
-								<Text style={styles.categoryTitle}>{'상세 활동 후기'}</Text>
-								<View>
-									<KeyboardAvoidingView
-										keyboardVerticalOffset={50}
-										behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-										style={{ flex: 1 }}>
-										<TextInput
-											style={{
-												height: 100,
-												paddingHorizontal: 12,
-												paddingVertical: 8,
-												fontSize: 13,
-												marginBottom: 12,
-												borderWidth: 1,
-												borderRadius: 4,
-												borderColor: '#E6E0DF', // #deprecated color
-											}}
-											multiline
-											placeholder={'동아리 활동 후기를 자유롭게 작성해주세요'}
-											value={reviewContent}
-											onChangeText={setReviewContent}
-										/>
-									</KeyboardAvoidingView>
-
-									<Text
-										style={{
-											position: 'absolute',
-											fontSize: 13,
-											color: '#C5BBB8', // #deprecated color
-											bottom: 24,
-											right: 12,
-										}}>
-										{reviewContent.length}자 / 200자
-									</Text>
-								</View>
-								<Text
-									style={{
-										fontSize: 10,
-										color: '#C5BBB8', // #deprecated color
-									}}>
-									{'※ 욕설이나 비방이 포함된 경우 임의로 삭제될 수 있습니다'}
-								</Text>
-							</View> */}
 						</View>
 
 						<TouchableOpacity
@@ -210,15 +156,7 @@ const ClubReviewScreen = ({ route }: Props) => {
 								isSubmitting || selectedKeywordIds.length === 0 ? { opacity: 0.4 } : null,
 							]}
 							onPress={handleSaveReview}>
-							<Text
-								style={{
-									color: Colors.TEXT_BUTTON_SELECTED,
-									fontSize: 16,
-									fontWeight: 'bold',
-									textAlign: 'center',
-								}}>
-								{'저장하기'}
-							</Text>
+							<Text style={styles.submitCtaText}>{'저장하기'}</Text>
 						</TouchableOpacity>
 					</ScrollView>
 				)}
@@ -281,39 +219,35 @@ const useCreateClubReview = ({
 }
 
 const styles = StyleSheet.create({
+	scrollView: {
+		paddingHorizontal: s(16),
+	},
+	titleWrapper: {
+		marginLeft: s(12),
+	},
 	container: {},
 	title: {
 		color: '#FFFFFF', // #deprecated color
-		fontWeight: 'bold',
-		letterSpacing: -1,
-		fontSize: 20,
-		marginVertical: 20,
-	},
-	clubName: {
-		fontWeight: 'bold',
-		fontSize: 20,
-		color: '#494141',
-		marginBottom: 20,
-		letterSpacing: -1,
+		...typography.headerXL,
+		marginVertical: vs(20),
 	},
 	categoryContainer: {
 		backgroundColor: Colors.TEXT_BUTTON_SELECTED,
-		borderRadius: 12,
-		padding: 16,
-		marginBottom: 16,
+		borderRadius: ms(12),
+		padding: ms(16),
+		marginBottom: vs(16),
 	},
 	categoryTitle: {
-		fontSize: 16,
-		fontWeight: 'bold',
+		...typography.headerL,
 		color: '#494141',
-		marginBottom: 12,
+		marginBottom: vs(12),
 	},
 	keywordContainer: {
 		display: 'flex',
 		flexDirection: 'row',
 		flexWrap: 'wrap',
-		gap: 12,
-		marginTop: 8,
+		gap: ms(12),
+		marginTop: vs(8),
 	},
 	keyword: {
 		display: 'flex',
@@ -321,16 +255,31 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 		alignSelf: 'flex-start',
-		padding: 8,
-		paddingHorizontal: 12,
-		borderRadius: 32,
+		padding: ms(8),
+		paddingHorizontal: s(12),
+		borderRadius: ms(32),
 		borderWidth: 1,
 		borderColor: '#f1d9d9',
 	},
-	keywordTitle: {},
+	keywordIcon: {
+		...typography.bodyMRegular,
+		marginRight: s(4),
+	},
+	keywordTitle: {
+		...typography.bodyMRegular,
+	},
+	selectedKeywordTitle: {
+		...typography.bodyMSemibold,
+		color: Colors.TEXT_BUTTON_SELECTED,
+	},
 	submitCta: {
-		padding: 16,
-		borderRadius: 12,
-		marginVertical: 16,
+		padding: ms(16),
+		borderRadius: ms(12),
+		marginVertical: vs(16),
+	},
+	submitCtaText: {
+		...typography.headerL,
+		color: Colors.TEXT_BUTTON_SELECTED,
+		textAlign: 'center',
 	},
 })
