@@ -1,5 +1,9 @@
+import { useQueryClient } from '@tanstack/react-query'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import { getAnnouncementsQueryOptions } from '@/features/home/utils/announcementQueries'
+import { serviceContext } from '@/shared/contexts/serviceContext'
+import React, { useContext, useEffect } from 'react'
 import ClubDetailScreen from '@/features/club/screens/ClubDetailScreen'
 import ClubListScreen from '@/features/club/screens/ClubListScreen'
 import ClubReviewScreen from '@/features/club/screens/ClubReviewScreen'
@@ -9,6 +13,13 @@ import SearchResultClubListScreen from '@/features/club/screens/SearchResultClub
 const Stack = createNativeStackNavigator<StackParamList>()
 
 export function HomeTab() {
+	const { announcementService } = useContext(serviceContext)
+	const queryClient = useQueryClient()
+
+	useEffect(() => {
+		queryClient.prefetchQuery(getAnnouncementsQueryOptions(announcementService))
+	}, [announcementService, queryClient])
+
 	return (
 		<Stack.Navigator screenOptions={{ headerBackTitleVisible: false, headerShown: false }}>
 			<Stack.Screen key={SCREEN_TYPE.HOME} name={SCREEN_TYPE.HOME} component={HomeScreen} />

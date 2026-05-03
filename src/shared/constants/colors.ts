@@ -22,6 +22,7 @@ export const Colors = {
 
 	// Point Color
 	POINTCOLOR: '#874FFF',
+	POINTCOLOR_10: 'rgba(135, 79, 255, 0.1)',
 	POINTCOLOR_SUB: '#FFFFFF',
 
 	// Icon
