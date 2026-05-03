@@ -1,10 +1,23 @@
 import { TextStyle } from 'react-native'
 import { ms, vs } from '@/shared/utils/scale'
 
-const base = (fontSize: number, fontWeight: TextStyle['fontWeight'], lineHeight?: number): TextStyle => ({
-	fontFamily: 'Pretendard',
+type FontWeight = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900'
+
+const fontFamilyByWeight: Record<FontWeight, string> = {
+	'100': 'Pretendard-Thin',
+	'200': 'Pretendard-ExtraLight',
+	'300': 'Pretendard-Light',
+	'400': 'Pretendard-Regular',
+	'500': 'Pretendard-Medium',
+	'600': 'Pretendard-SemiBold',
+	'700': 'Pretendard-Bold',
+	'800': 'Pretendard-ExtraBold',
+	'900': 'Pretendard-Black',
+}
+
+const base = (fontSize: number, fontWeight: FontWeight, lineHeight?: number): TextStyle => ({
+	fontFamily: fontFamilyByWeight[fontWeight],
 	fontSize: ms(fontSize),
-	fontWeight,
 	...(lineHeight ? { lineHeight: vs(lineHeight) } : {}),
 })
 
