@@ -3,20 +3,20 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Category } from '@/entities/category'
 import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
 import useClickEventLog from '@/shared/hooks/useClickEventLog'
-import { useRef, useState } from 'react'
-import { Animated, Easing, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ImageSourcePropType, Pressable, StyleSheet, Text } from 'react-native'
+import { Colors } from '@/shared/constants/colors'
+import { ms, s, vs } from '@/shared/utils/scale'
+import { typography } from '@/shared/constants/typography'
 
 type NavigationProps = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
 
 type Props = {
 	category: Category
+	icon: ImageSourcePropType
 }
 
-const CategoryCard = ({ category }: Props) => {
+const CategoryCard = ({ category, icon }: Props) => {
 	const { logClickEvent } = useClickEventLog()
-
-	const [isFadeInFinished, setIsFadeInFinished] = useState(false)
-	const animatedOpacityValue = useRef(new Animated.Value(0)).current
 
 	const navigation = useNavigation<NavigationProps>()
 
@@ -31,92 +31,36 @@ const CategoryCard = ({ category }: Props) => {
 	}
 
 	return (
-		<View style={styles.wrapper}>
-			<TouchableOpacity
-				onPress={() => handleMoveToClubList(category.name)}
-				style={styles.touchable}>
-				<View style={styles.imageContainer}>
-					<Animated.View
-						pointerEvents="none"
-						style={[styles.imageOverlay, { opacity: animatedOpacityValue }]}>
-						<Image
-							source={{ uri: category.thumbnailUri }}
-							style={styles.thumbnail}
-							onLoad={() => {
-								if (isFadeInFinished) return
-								Animated.timing(animatedOpacityValue, {
-									toValue: 1,
-									delay: 0,
-									isInteraction: false,
-									useNativeDriver: false,
-									easing: Easing.in(Easing.ease),
-								}).start(() => setIsFadeInFinished(true))
-							}}
-						/>
-					</Animated.View>
-					<View pointerEvents="none" style={styles.textOverlay}>
-						<Image resizeMethod="resize" style={styles.icon} source={{ uri: category.iconUri }} />
-						<Text style={styles.label}>{category.name}</Text>
-					</View>
-				</View>
-			</TouchableOpacity>
-		</View>
+		<Pressable
+			onPress={() => handleMoveToClubList(category.name)}
+			style={({ pressed }) => [styles.container, pressed && styles.containerPressed]}>
+			<Image style={styles.icon} source={icon} resizeMode="contain" />
+			<Text style={styles.label}>{category.name}</Text>
+		</Pressable>
 	)
 }
 export default CategoryCard
 
 const styles = StyleSheet.create({
-	wrapper: {
-		justifyContent: 'center',
-		flex: 1,
-		marginHorizontal: 4,
-	},
-	touchable: {
-		backgroundColor: '#FFFFFF', // #deprecated color
-		justifyContent: 'center',
+	container: {
+		flexDirection: 'column',
 		alignItems: 'center',
+		justifyContent: 'center',
+		width: s(70),
+		height: s(70),
+		borderRadius: ms(10),
+		backgroundColor: Colors.WHITE,
 	},
-	imageContainer: {
-		position: 'relative',
-		borderRadius: 8,
-		overflow: 'hidden',
-		width: '100%',
-		height: 90,
-		alignItems: 'flex-start',
-		justifyContent: 'flex-end',
-		marginBottom: 8,
-	},
-	imageOverlay: {
-		position: 'absolute',
-		left: 0,
-		top: 0,
-		right: 0,
-		bottom: 0,
-		zIndex: 2,
-	},
-	thumbnail: {
-		width: '100%',
-		height: 90,
-	},
-	textOverlay: {
-		position: 'absolute',
-		left: 8,
-		bottom: 8,
-		zIndex: 3,
-		elevation: 12,
-		flexDirection: 'row',
-		alignItems: 'center',
+	containerPressed: {
+		opacity: 0.6,
 	},
 	icon: {
-		width: 32,
-		height: 32,
+		width: s(30),
+		height: s(30),
+		marginVertical: vs(5),
 	},
 	label: {
-		color: '#FFFFFF', // #deprecated color
-		fontSize: 14,
-		lineHeight: 16,
-		letterSpacing: -1,
-		fontWeight: '700',
-		marginLeft: 4,
+		...typography.bodySMedium,
+		color: Colors.BODYTEXT_SUB,
 	},
 })
