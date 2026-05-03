@@ -9,16 +9,7 @@ import {
 } from 'react-native'
 import { Colors } from '@/shared/constants/colors'
 
-const COLORS = {
-  purple: Colors.BUTTON_SELECTED,
-  purplePressed: '#6C40CA',
-  white: Colors.TEXT_BUTTON_SELECTED,
-  gray300: Colors.BODYTEXT_DISABLED,
-  gray200: '#E0E0E0',
-  gray100: Colors.TEXTBOX_SELECTED,
-} as const
-
-export type ButtonVariant = 'primary' | 'outline' | 'ghost'
+export type ButtonVariant = 'primary' | 'outline'
 
 export type ButtonProps = {
   label: string
@@ -63,7 +54,7 @@ export const Button = ({
     <Pressable
       style={({ pressed }) => [
         containerStyle,
-        pressed && (variant === 'primary' ? { backgroundColor: COLORS.purplePressed } : { opacity: 0.7 }),
+        pressed && (variant === 'primary' ? { backgroundColor: Colors.BUTTON_PUSH } : { opacity: 0.7 }),
       ]}
       onPress={onPress}
       disabled={disabled}
@@ -76,7 +67,6 @@ export const Button = ({
 const disabledVariantMap: Record<ButtonVariant, keyof typeof variantStyles> = {
   primary: 'primaryDisabled',
   outline: 'outlineDisabled',
-  ghost: 'ghostDisabled',
 }
 
 const getVariantStyle = (
@@ -102,29 +92,20 @@ const borderedContainer: ViewStyle = {
 
 const variantStyles = {
   primary: {
-    container: { backgroundColor: COLORS.purple } as ViewStyle,
-    text: { color: COLORS.white } as TextStyle,
+    container: { backgroundColor: Colors.BUTTON_SELECTED } as ViewStyle,
+    text: { color: Colors.TEXT_BUTTON_SELECTED } as TextStyle,
   },
   primaryDisabled: {
-    container: { backgroundColor: COLORS.gray100 } as ViewStyle,
-    text: { color: COLORS.gray300 } as TextStyle,
+    container: { backgroundColor: Colors.TEXTBOX_SELECTED } as ViewStyle,
+    text: { color: Colors.BODYTEXT_DISABLED } as TextStyle,
   },
   outline: {
-    container: { ...borderedContainer, borderColor: COLORS.purple } as ViewStyle,
-    text: { color: COLORS.purple } as TextStyle,
+    container: { ...borderedContainer, borderColor: Colors.BUTTON_SELECTED } as ViewStyle,
+    text: { color: Colors.BUTTON_SELECTED } as TextStyle,
   },
-  // TODO: outlineDisabled와 ghost의 borderColor가 동일함 (피그마 기준). 검토 필요
   outlineDisabled: {
-    container: { ...borderedContainer, borderColor: COLORS.gray300 } as ViewStyle,
-    text: { color: COLORS.gray300 } as TextStyle,
-  },
-  ghost: {
-    container: { ...borderedContainer, borderColor: COLORS.gray300 } as ViewStyle,
-    text: { color: COLORS.gray300 } as TextStyle,
-  },
-  ghostDisabled: {
-    container: { ...borderedContainer, borderColor: COLORS.gray200 } as ViewStyle,
-    text: { color: COLORS.gray200 } as TextStyle,
+    container: { ...borderedContainer, borderColor: Colors.BODYTEXT_DISABLED } as ViewStyle,
+    text: { color: Colors.BODYTEXT_DISABLED } as TextStyle,
   },
 }
 
