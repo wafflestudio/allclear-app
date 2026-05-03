@@ -15,6 +15,7 @@ export const Colors = {
 
 	// Button
 	BUTTON_SELECTED: '#874FFF',
+	BUTTON_PUSH: '#4F2E94',
 	BUTTON_UNSELECTED: '#C1C1C1',
 
 	// Text / Button
