@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { Club } from '@/entities/club'
-import { useContext, useEffect, useRef } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
+import { useCallback, useContext, useRef } from 'react'
 import { FlatList, StyleSheet, View } from 'react-native'
 import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import ClubPreviewCard from '@/shared/components/ClubPreviewCard'
@@ -55,32 +56,38 @@ const LatestClubsSection = ({ openDetailPage }: Props) => {
 		isAutoScrollFinishedRef.current = currentOffset >= maxScrollOffsetRef.current
 	}
 
-	useEffect(() => {
-		if (latestClubCount <= 1) {
-			return
-		}
-
-		const intervalId = setInterval(() => {
-			if (
-				isUserInteractingRef.current ||
-				isAutoScrollFinishedRef.current ||
-				maxScrollOffsetRef.current <= 0
-			) {
+	useFocusEffect(
+		useCallback(() => {
+			if (latestClubCount <= 1) {
 				return
 			}
 
-			const nextOffset = Math.min(
-				scrollOffsetRef.current + AUTO_SCROLL_STEP,
-				maxScrollOffsetRef.current,
-			)
+			scrollOffsetRef.current = 0
+			isAutoScrollFinishedRef.current = false
+			listRef.current?.scrollToOffset({ offset: 0, animated: false })
 
-			scrollOffsetRef.current = nextOffset
-			isAutoScrollFinishedRef.current = nextOffset >= maxScrollOffsetRef.current
-			listRef.current?.scrollToOffset({ offset: nextOffset, animated: false })
-		}, AUTO_SCROLL_INTERVAL_MS)
+			const intervalId = setInterval(() => {
+				if (
+					isUserInteractingRef.current ||
+					isAutoScrollFinishedRef.current ||
+					maxScrollOffsetRef.current <= 0
+				) {
+					return
+				}
 
-		return () => clearInterval(intervalId)
-	}, [latestClubCount])
+				const nextOffset = Math.min(
+					scrollOffsetRef.current + AUTO_SCROLL_STEP,
+					maxScrollOffsetRef.current,
+				)
+
+				scrollOffsetRef.current = nextOffset
+				isAutoScrollFinishedRef.current = nextOffset >= maxScrollOffsetRef.current
+				listRef.current?.scrollToOffset({ offset: nextOffset, animated: false })
+			}, AUTO_SCROLL_INTERVAL_MS)
+
+			return () => clearInterval(intervalId)
+		}, [latestClubCount]),
+	)
 
 	return (
 		<FlatList
