@@ -24,6 +24,21 @@ import { getEventLogService } from '@/usecases/eventLog'
 import { getReviewService } from '@/usecases/review'
 import { getUserService } from '@/usecases/user'
 import { _navigationRef, setIsNavigationReady } from '@/shared/utils/navigation'
+import { SCREEN_TYPE } from '@/entities/screen'
+import { ENV } from '@/config/ENV'
+
+const linking = {
+	prefixes: ['allclear://', 'https://all-clear.cc', 'https://dev.all-clear.cc', ENV.WEB_URL],
+	config: {
+		screens: {
+			HomeTab: {
+				screens: {
+					[SCREEN_TYPE.CLUB_DETAIL]: 'club/:uuid',
+				},
+			},
+		},
+	},
+}
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -73,7 +88,7 @@ function App(): React.JSX.Element {
 								<LoginBottomSheetProvider>
 									<UserVoiceBottomSheetProvider>
 										<ManageClubBottomSheetProvider>
-											<NavigationContainer ref={_navigationRef}>
+											<NavigationContainer ref={_navigationRef} linking={linking}>
 												<TabNavigator />
 											</NavigationContainer>
 										</ManageClubBottomSheetProvider>
