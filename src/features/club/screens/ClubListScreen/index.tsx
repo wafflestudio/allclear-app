@@ -50,7 +50,7 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 			}}>
 			<SafeAreaView
 				edges={['top', 'left', 'right']}
-				style={{ flex: 1, backgroundColor: Colors.WHITE, overflow: 'scroll' }}>
+				style={{ flex: 1, backgroundColor: Colors.BACKGROUND_MAIN, overflow: 'scroll' }}>
 				<LinearGradient
 					colors={['transparent', categoryDetail.backgroundColor]}
 					style={StyleSheet.absoluteFillObject}
