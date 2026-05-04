@@ -1,16 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Colors } from '@/shared/constants/colors'
 import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import dayjs from 'dayjs'
 import { Club } from '@/entities/club'
 import React, { useContext, useEffect } from 'react'
-import { TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { requestReview } from 'react-native-store-review'
 import Toast from 'react-native-toast-message'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { REVIEW_LAST_ASKED_KEY } from '@/shared/constants/localStorage'
+import { ms } from '@/shared/utils/scale'
 
 const getLastAskedDate = async (): Promise<dayjs.Dayjs | null> => {
 	try {
@@ -88,7 +88,7 @@ const Header = ({ club, onBack }: Props) => {
 				visibilityTime: 2000,
 			})
 			queryClient.invalidateQueries()
-		} catch (error) {
+		} catch {
 			setIsSaved(false)
 			Toast.show({
 				type: 'info',
@@ -106,7 +106,7 @@ const Header = ({ club, onBack }: Props) => {
 			setIsSaved(false)
 			await clubService.removeSavedClub({ clubId: club.uuid })
 			queryClient.invalidateQueries()
-		} catch (error) {
+		} catch {
 			setIsSaved(true)
 			Toast.show({
 				type: 'info',
@@ -118,26 +118,17 @@ const Header = ({ club, onBack }: Props) => {
 	}
 
 	return (
-		<View
-			style={{
-				position: 'relative',
-				padding: 20,
-				display: 'flex',
-				flexDirection: 'row',
-				alignItems: 'flex-start',
-				justifyContent: 'space-between',
-				zIndex: 3,
-			}}>
+		<View style={styles.container}>
 			<TouchableOpacity onPress={handleBack}>
-				<Icon color={'#FFFFFF' /* #deprecated color */} name="chevron-left" size={24} />
+				<Icon color={'#FFFFFF' /* #deprecated color */} name="chevron-left" size={ms(24)} />
 			</TouchableOpacity>
 			{isSaved ? (
 				<TouchableOpacity onPress={handleRemoveSavedClub}>
-					<Icon color={'#FFFFFF' /* #deprecated color */} name="heart" size={24} />
+					<Icon color={'#FFFFFF' /* #deprecated color */} name="heart" size={ms(24)} />
 				</TouchableOpacity>
 			) : (
 				<TouchableOpacity onPress={handleCreateSavedClub}>
-					<Icon color={'#FFFFFF' /* #deprecated color */} name="heart-outline" size={24} />
+					<Icon color={'#FFFFFF' /* #deprecated color */} name="heart-outline" size={ms(24)} />
 				</TouchableOpacity>
 			)}
 		</View>
@@ -145,6 +136,18 @@ const Header = ({ club, onBack }: Props) => {
 }
 
 export default Header
+
+const styles = StyleSheet.create({
+	container: {
+		position: 'relative',
+		padding: ms(20),
+		display: 'flex',
+		flexDirection: 'row',
+		alignItems: 'flex-start',
+		justifyContent: 'space-between',
+		zIndex: 3,
+	},
+})
 
 const useSavedClubs = () => {
 	const { user } = useProfile()

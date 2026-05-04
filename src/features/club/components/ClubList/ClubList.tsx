@@ -1,9 +1,11 @@
 import { Category } from '@/entities/category'
 import { Club } from '@/entities/club'
-import { Image, Dimensions, View, Text } from 'react-native'
+import { Image, StyleSheet, View, Text, useWindowDimensions } from 'react-native'
 import { FlatList, Pressable } from 'react-native-gesture-handler'
 import ClubCard from './ClubCard'
 import { Colors } from '@/shared/constants/colors'
+import { typography } from '@/shared/constants/typography'
+import { s, vs } from '@/shared/utils/scale'
 
 type Props = {
 	clubs: Club[] | undefined
@@ -12,18 +14,14 @@ type Props = {
 }
 
 const ClubList = ({ clubs, category, openDetailPage }: Props) => {
+	const { width } = useWindowDimensions()
+
 	if (!clubs) return null
 	if (clubs.length === 0) {
 		return (
-			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+			<View style={styles.emptyContainer}>
 				<Image source={require('@/assets/images/not-found.png')} />
-				<Text
-					style={{
-						textAlign: 'center',
-						fontSize: 12,
-						marginTop: 20,
-						color: Colors.BODYTEXT_SUB,
-					}}>
+				<Text style={styles.emptyText}>
 					앗 검색 결과가 없어요!{'\n'} 다른 키워드로 검색해주세요
 				</Text>
 			</View>
@@ -34,13 +32,13 @@ const ClubList = ({ clubs, category, openDetailPage }: Props) => {
 		<FlatList
 			keyExtractor={item => item.id}
 			data={clubs}
-			style={{ flex: 1, width: '100%' }}
-			contentContainerStyle={{ gap: 25, paddingVertical: 8 }}
+			style={styles.list}
+			contentContainerStyle={styles.listContent}
 			renderItem={({ item }) => (
 				<Pressable
 					style={({ pressed }) => ({
-						width: Dimensions.get('window').width,
-						paddingHorizontal: 20,
+						width,
+						paddingHorizontal: s(20),
 						opacity: pressed ? 0.5 : 1,
 					})}
 					onPress={() => openDetailPage(item)}>
@@ -55,5 +53,27 @@ const ClubList = ({ clubs, category, openDetailPage }: Props) => {
 		/>
 	)
 }
+
+const styles = StyleSheet.create({
+	emptyContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	emptyText: {
+		...typography.bodySRegular,
+		textAlign: 'center',
+		marginTop: vs(20),
+		color: Colors.BODYTEXT_SUB,
+	},
+	list: {
+		flex: 1,
+		width: '100%',
+	},
+	listContent: {
+		gap: vs(25),
+		paddingVertical: vs(8),
+	},
+})
 
 export default ClubList

@@ -1,8 +1,10 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 
 import { Colors } from '@/shared/constants/colors'
+import { typography } from '@/shared/constants/typography'
 import { Category, CategoryMap } from '@/entities/category'
 import { Club } from '@/entities/club'
+import { ms, s, vs } from '@/shared/utils/scale'
 
 type Props = {
 	club: Club
@@ -52,60 +54,59 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		width: '100%',
-		height: 90,
+		height: ms(90),
 	},
 	imageWrapper: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: Colors.WHITE,
-		width: 90,
-		height: 90,
-		marginRight: 16,
+		width: ms(90),
+		height: ms(90),
+		marginRight: s(16),
 		borderWidth: 0.5,
-		borderRadius: 8,
+		borderRadius: ms(8),
 	},
 	image: {
-		width: 70,
-		height: 70,
+		width: ms(70),
+		height: ms(70),
 	},
 	contentWrapper: {
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'space-between',
 		height: '100%',
-		paddingTop: 1,
-		paddingBottom: 3,
+		paddingTop: vs(1),
+		paddingBottom: vs(3),
 	},
 	title: {
-		fontWeight: 'bold',
-		fontSize: 16,
-		marginBottom: 2,
+		...typography.headerL,
+		marginBottom: vs(2),
 	},
 	description: {
+		...typography.bodyMRegular,
 		color: Colors.BODYTEXT_SUB,
-		fontSize: 14,
 	},
 	reviewView: {
 		flexDirection: 'row',
 		marginTop: 'auto',
-		gap: 4,
-		paddingTop: 6,
+		gap: ms(4),
+		paddingTop: vs(6),
 	},
 	reviewKeyword: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingVertical: 4,
-		paddingHorizontal: 8,
-		borderRadius: 24,
+		paddingVertical: vs(4),
+		paddingHorizontal: s(8),
+		borderRadius: ms(24),
 		borderWidth: 0.5,
 		flexShrink: 1,
 	},
 	reviewKeywordIcon: {
-		fontSize: 9,
-		marginRight: 4,
+		...typography.bodyXSSemibold,
+		marginRight: s(4),
 	},
 	reviewKeywordTitle: {
-		fontSize: 9,
+		...typography.bodyXSSemibold,
 		flexShrink: 1,
 	},
 })
