@@ -26,7 +26,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string></string>
+			<string/>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>$(KAKAO_URL_SCHEME)</string>
@@ -66,7 +66,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -88,10 +88,15 @@
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
-		<string>Pretendard-Bold.ttf</string>
-		<string>Pretendard-Light.ttf</string>
-		<string>Pretendard-Medium.ttf</string>
-		<string>Pretendard-Regular.ttf</string>
+		<string>Pretendard-Regular.otf</string>
+		<string>Pretendard-Black.otf</string>
+		<string>Pretendard-Medium.otf</string>
+		<string>Pretendard-Light.otf</string>
+		<string>Pretendard-ExtraBold.otf</string>
+		<string>Pretendard-Bold.otf</string>
+		<string>Pretendard-Thin.otf</string>
+		<string>Pretendard-ExtraLight.otf</string>
+		<string>Pretendard-SemiBold.otf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen.storyboard</string>
