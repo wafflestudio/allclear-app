@@ -6,9 +6,7 @@ import { Category, CategoryMap } from '@/entities/category'
 import { Club } from '@/entities/club'
 import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
 import React, { useContext } from 'react'
-import { StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import LinearGradient from 'react-native-linear-gradient'
 import Header from '@/features/club/components/ClubList/Header'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import ClubList from '@/features/club/components/ClubList/ClubList'
@@ -51,11 +49,6 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 			<SafeAreaView
 				edges={['top', 'left', 'right']}
 				style={{ flex: 1, backgroundColor: Colors.BACKGROUND_MAIN, overflow: 'scroll' }}>
-				<LinearGradient
-					colors={['transparent', categoryDetail.backgroundColor]}
-					style={StyleSheet.absoluteFillObject}
-					pointerEvents="none"
-				/>
 				<Header title={headerTitle} onBack={handleMoveToHomePage} />
 				<ClubList clubs={clubs} category={category} openDetailPage={openDetailPage} />
 			</SafeAreaView>
