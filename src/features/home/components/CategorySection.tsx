@@ -1,33 +1,11 @@
-import { View, Text, Image, ImageSourcePropType, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet } from 'react-native'
 import CategoryCard from '@/features/home/components/CategoryCard'
 import { Colors } from '@/shared/constants/colors'
-import { Category } from '@/entities/category'
+import { CategoryMap } from '@/shared/constants/category'
 import { ms, s, vs } from '@/shared/utils/scale'
 import { typography } from '@/shared/constants/typography'
 
-const iconMap: Record<Category['name'], ImageSourcePropType> = {
-	학술: require('@/assets/icons/category/academic.png'),
-	종교: require('@/assets/icons/category/religion.png'),
-	봉사: require('@/assets/icons/category/volunteer.png'),
-	공연: require('@/assets/icons/category/performance.png'),
-	운동: require('@/assets/icons/category/sports.png'),
-	홍보: require('@/assets/icons/category/promotion.png'),
-	취미: require('@/assets/icons/category/hobby.png'),
-	문화: require('@/assets/icons/category/culture.png'),
-	진로: require('@/assets/icons/category/career.png'),
-}
-
-const categories: Category['name'][] = [
-	'학술',
-	'종교',
-	'봉사',
-	'공연',
-	'운동',
-	'홍보',
-	'취미',
-	'문화',
-	'진로',
-]
+const categoryList = Object.values(CategoryMap)
 
 const CategorySection = () => (
 	<View style={styles.container}>
@@ -41,11 +19,11 @@ const CategorySection = () => (
 					</Text>
 				</View>
 			</View>
-			<CategoryCard category={{ name: categories[0] }} icon={iconMap[categories[0]]} />
+			<CategoryCard category={{ name: categoryList[0].name }} icon={categoryList[0].icon} />
 		</View>
 		<View style={styles.grid}>
-			{categories.slice(1).map(name => (
-				<CategoryCard key={name} category={{ name }} icon={iconMap[name]} />
+			{categoryList.slice(1).map(({ name, icon }) => (
+				<CategoryCard key={name} category={{ name }} icon={icon} />
 			))}
 		</View>
 	</View>

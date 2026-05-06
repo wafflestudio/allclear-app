@@ -2,7 +2,8 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
-import { Category, CategoryMap } from '@/entities/category'
+import { Category } from '@/entities/category'
+import { CategoryMap } from '@/shared/constants/category'
 import { Club } from '@/entities/club'
 import { ms, s, vs } from '@/shared/utils/scale'
 

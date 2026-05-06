@@ -6,7 +6,7 @@ import { useManageClubBottomSheet } from '@/shared/contexts/manageClubBottomShee
 import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { useUserVoiceBottomSheet } from '@/shared/contexts/userVoiceBottomSheetContext'
-import { CategoryMap } from '@/entities/category'
+import { CategoryMap } from '@/shared/constants/category'
 import { Club } from '@/entities/club'
 import { SCREEN_TYPE } from '@/entities/screen'
 import React, { useContext } from 'react'
