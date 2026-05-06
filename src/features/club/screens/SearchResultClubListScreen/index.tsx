@@ -12,7 +12,10 @@ import Header from '@/features/club/components/ClubList/Header'
 import ClubList from '@/features/club/components/ClubList/ClubList'
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST>
-type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
+type DetailsScreenNavigationProp = NativeStackNavigationProp<
+	StackParamList,
+	SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST
+>
 
 type Props = {
 	route: DetailsScreenRouteProp
@@ -20,7 +23,7 @@ type Props = {
 }
 
 const SearchResultClubListScreen = ({ route, navigation }: Props) => {
-	const { query } = route.params as DetailsScreenRouteProp['params']
+	const { query } = route.params
 	const { data: clubs } = useCategoryClubs({ query })
 
 	const openDetailPage = (club: Club) => {

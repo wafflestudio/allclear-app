@@ -38,7 +38,10 @@ import { ms, s, vs } from '@/shared/utils/scale'
 dayjs.locale('ko')
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.CLUB_DETAIL>
-type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
+type DetailsScreenNavigationProp = NativeStackNavigationProp<
+	StackParamList,
+	SCREEN_TYPE.CLUB_DETAIL
+>
 
 type Props = {
 	route: DetailsScreenRouteProp

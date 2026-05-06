@@ -33,7 +33,7 @@ dayjs.locale('ko')
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.CLUB_REVIEW>
 type DetailsScreenNavigationProp = NativeStackNavigationProp<
 	StackParamList,
-	SCREEN_TYPE.CLUB_DETAIL
+	SCREEN_TYPE.CLUB_REVIEW
 >
 
 type Props = {
@@ -44,7 +44,7 @@ type Props = {
 const deviceHeight = Dimensions.get('window').height
 
 const ClubReviewScreen = ({ route }: Props) => {
-	const { uuid, category } = route.params as DetailsScreenRouteProp['params']
+	const { uuid, category } = route.params
 	const [selectedKeywordIds, setSelectedKeywordIds] = React.useState<ReviewKeyword['id'][]>([])
 
 	const { data: reviewKeywordCategories } = useReviewKeywordCategories()
