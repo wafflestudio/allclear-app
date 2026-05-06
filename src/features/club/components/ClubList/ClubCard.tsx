@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
 	image: {
 		width: s(70),
 		height: s(70),
+		borderRadius: ms(8),
 	},
 	contentWrapper: {
 		flex: 1,
