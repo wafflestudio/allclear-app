@@ -15,20 +15,34 @@ import { typography } from '@/shared/constants/typography'
 
 const Tab = createBottomTabNavigator()
 
-const renderHomeTabIcon = createTabBarIcon(require('@/assets/icons/tab/home.png'))
-const renderExploreTabIcon = createTabBarIcon(require('@/assets/icons/tab/explore.png'))
-const renderSavedTabIcon = createTabBarIcon(require('@/assets/icons/tab/saved.png'))
-const renderMyPageTabIcon = createTabBarIcon(require('@/assets/icons/tab/mypage.png'))
+const renderHomeTabIcon = createTabBarIcon(
+	require('@/assets/icons/tab/home-default.png'),
+	require('@/assets/icons/tab/home-active.png'),
+)
+const renderExploreTabIcon = createTabBarIcon(
+	require('@/assets/icons/tab/explore-default.png'),
+	require('@/assets/icons/tab/explore-active.png'),
+)
+const renderSavedTabIcon = createTabBarIcon(
+	require('@/assets/icons/tab/saved-default.png'),
+	require('@/assets/icons/tab/saved-active.png'),
+)
+const renderMyPageTabIcon = createTabBarIcon(
+	require('@/assets/icons/tab/mypage-default.png'),
+	require('@/assets/icons/tab/mypage-active.png'),
+)
 
-function createTabBarIcon(source: ImageSourcePropType): BottomTabNavigationOptions['tabBarIcon'] {
-	return function TabBarIcon({ color }) {
+function createTabBarIcon(
+	defaultSource: ImageSourcePropType,
+	activeSource: ImageSourcePropType,
+): BottomTabNavigationOptions['tabBarIcon'] {
+	return function TabBarIcon({ focused }) {
 		return (
 			<Image
-				source={source}
+				source={focused ? activeSource : defaultSource}
 				style={{
 					width: s(22),
 					height: s(22),
-					tintColor: color,
 					resizeMode: 'contain' as const,
 					marginTop: vs(10),
 				}}
