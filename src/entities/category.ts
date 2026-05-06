@@ -2,9 +2,6 @@ import { ImageSourcePropType } from 'react-native'
 
 export type Category = {
 	name: '학술' | '종교' | '공연' | '봉사' | '운동' | '홍보' | '취미' | '문화' | '진로'
-	description: string
-	iconUri: string
-	thumbnailUri: string
 }
 
 export type CategoryDetail = {
