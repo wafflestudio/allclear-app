@@ -15,7 +15,7 @@ import ClubList from '@/features/club/components/ClubList/ClubList'
 import { Colors } from '@/shared/constants/colors'
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.CLUB_LIST>
-type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
+type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.CLUB_LIST>
 
 type Props = {
 	route: DetailsScreenRouteProp
@@ -23,7 +23,7 @@ type Props = {
 }
 
 const ClubListScreen = ({ route, navigation }: Props) => {
-	const { name, category } = route.params as DetailsScreenRouteProp['params']
+	const { name, category } = route.params
 	const { data: clubs } = useCategoryClubs({ name, category })
 
 	if (!category) return null
@@ -50,7 +50,7 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 			}}>
 			<SafeAreaView
 				edges={['top', 'left', 'right']}
-				style={{ flex: 1, backgroundColor: Colors.WHITE, overflow: 'scroll' }}>
+				style={{ flex: 1, backgroundColor: Colors.BACKGROUND_MAIN, overflow: 'scroll' }}>
 				<LinearGradient
 					colors={['transparent', categoryDetail.backgroundColor]}
 					style={StyleSheet.absoluteFillObject}

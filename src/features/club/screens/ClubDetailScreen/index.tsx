@@ -38,7 +38,10 @@ import { ms, s, vs } from '@/shared/utils/scale'
 dayjs.locale('ko')
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.CLUB_DETAIL>
-type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
+type DetailsScreenNavigationProp = NativeStackNavigationProp<
+	StackParamList,
+	SCREEN_TYPE.CLUB_DETAIL
+>
 
 type Props = {
 	route: DetailsScreenRouteProp
@@ -48,7 +51,7 @@ type Props = {
 const deviceHeight = Dimensions.get('window').height
 
 const ClubDetailScreen = ({ route, navigation }: Props) => {
-	const { uuid, category, entry_point } = route.params as DetailsScreenRouteProp['params']
+	const { uuid, category, entry_point } = route.params
 
 	const { logClickEvent } = useClickEventLog()
 	const { openBottomSheet } = useLoginBottomSheet()
