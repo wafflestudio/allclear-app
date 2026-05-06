@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { Colors } from '@/shared/constants/colors'
@@ -14,46 +14,49 @@ type Props = {
 const Header = ({ title, onBack }: Props) => {
 	return (
 		<View style={styles.container}>
-			<View style={styles.titleContainer}>
+			<Pressable style={styles.backButton} onPress={onBack}>
+				<Icon name="chevron-left" size={ms(28)} color={Colors.BODYTEXT_SUB} />
+			</Pressable>
+
+			<View style={styles.titleWrapper}>
 				<Text style={styles.title} numberOfLines={1}>
 					{title}
 				</Text>
 			</View>
-
-			<TouchableOpacity style={styles.backButton} onPress={onBack}>
-				<Icon name="chevron-left" size={ms(28)} color={Colors.BODYTEXT_SUB} />
-			</TouchableOpacity>
 		</View>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
-		width: '100%',
-		height: vs(56),
+		position: 'relative',
 		flexDirection: 'row',
 		alignItems: 'center',
+		width: '100%',
+		height: vs(56),
 		paddingHorizontal: s(16),
-		backgroundColor: Colors.WHITE,
 	},
-	titleContainer: {
+	backButton: {
+		position: 'absolute',
+		left: s(16),
+		top: 0,
+		bottom: 0,
+		justifyContent: 'center',
+		width: ms(32),
+		zIndex: 1,
+	},
+	titleWrapper: {
 		position: 'absolute',
 		left: 0,
 		right: 0,
-		alignItems: 'center',
+		top: 0,
+		bottom: 0,
 		justifyContent: 'center',
-		paddingHorizontal: s(48),
+		alignItems: 'center',
 	},
 	title: {
 		...typography.headerL,
 		color: Colors.BODYTEXT_SUB,
-	},
-	backButton: {
-		width: ms(32),
-		height: ms(32),
-		alignItems: 'center',
-		justifyContent: 'center',
-		zIndex: 10,
 	},
 })
 
