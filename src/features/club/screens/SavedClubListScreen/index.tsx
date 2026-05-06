@@ -34,7 +34,11 @@ const SavedClubListScreen = () => {
 				edges={['top', 'left', 'right']}
 				style={{ flex: 1, backgroundColor: Colors.BACKGROUND_MAIN, overflow: 'scroll' }}>
 				<Header title="저장한 동아리" onBack={handleBack} />
-				<ClubList clubs={savedClubs} openDetailPage={openDetailPage} />
+				<ClubList
+					clubs={savedClubs}
+					openDetailPage={openDetailPage}
+					emptyPlaceholder="저장한 동아리가 없어요"
+				/>
 			</SafeAreaView>
 		</WithViewEventLog>
 	)

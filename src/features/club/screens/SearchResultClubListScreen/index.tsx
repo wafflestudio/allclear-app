@@ -48,7 +48,11 @@ const SearchResultClubListScreen = ({ route, navigation }: Props) => {
 				edges={['top', 'left', 'right']}
 				style={{ flex: 1, backgroundColor: Colors.WHITE, overflow: 'scroll' }}>
 				<Header title="검색 결과" onBack={handleMoveToHomePage} />
-				<ClubList clubs={clubs} openDetailPage={openDetailPage} />
+				<ClubList
+					clubs={clubs}
+					openDetailPage={openDetailPage}
+					emptyPlaceholder="앗 검색 결과가 없어요!\n다른 키워드로 검색해주세요"
+				/>
 			</SafeAreaView>
 		</WithViewEventLog>
 	)

@@ -50,7 +50,12 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 				edges={['top', 'left', 'right']}
 				style={{ flex: 1, backgroundColor: Colors.BACKGROUND_MAIN, overflow: 'scroll' }}>
 				<Header title={headerTitle} onBack={handleMoveToHomePage} />
-				<ClubList clubs={clubs} category={category} openDetailPage={openDetailPage} />
+				<ClubList
+					clubs={clubs}
+					category={category}
+					openDetailPage={openDetailPage}
+					emptyPlaceholder="조건에 맞는 동아리가 없어요"
+				/>
 			</SafeAreaView>
 		</WithViewEventLog>
 	)
