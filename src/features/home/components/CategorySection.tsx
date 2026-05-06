@@ -43,11 +43,11 @@ const styles = StyleSheet.create({
 		shadowColor: Colors.BLACK,
 		shadowOffset: {
 			width: 0,
-			height: vs(6),
+			height: 2,
 		},
-		shadowOpacity: 0.08,
-		shadowRadius: ms(12),
-		elevation: 5,
+		shadowOpacity: 0.12,
+		shadowRadius: 4,
+		elevation: 3,
 	},
 	titleContainer: {
 		flexDirection: 'row',
