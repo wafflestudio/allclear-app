@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import WebView, { WebViewMessageEvent } from 'react-native-webview'
