@@ -10,27 +10,33 @@ import {
 	View,
 	ViewStyle,
 } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
-
-const COLORS = {
-	transparentOffWhite: 'rgba(250, 250, 250, 0)',
-} as const
-
-const CARD_WIDTH = 110
-const CARD_RADIUS = 10
+import { ms, s, vs } from '@/shared/utils/scale'
 
 type Props = {
 	title: string
 	description: string
 	imageSource: ImageSourcePropType
 	onPress?: () => void
+	variant?: 'sm' | 'lg'
 	style?: StyleProp<ViewStyle>
 	imageStyle?: StyleProp<ImageStyle>
 }
 
+const variantStyles = {
+	sm: {
+		container: { width: s(100) },
+		textWrapper: { paddingHorizontal: s(10), paddingVertical: vs(6) },
+	},
+	lg: {
+		container: { width: s(140) },
+		textWrapper: { paddingHorizontal: s(10), paddingVertical: vs(10) },
+	},
+}
+
 const ClubPreviewCard = ({
+	variant = 'sm',
 	title,
 	description,
 	imageSource,
@@ -38,19 +44,21 @@ const ClubPreviewCard = ({
 	style,
 	imageStyle,
 }: Props) => {
+	const v = variantStyles[variant]
+
 	return (
 		<Pressable
-			style={({ pressed }) => [styles.card, style, pressed && styles.pressed]}
+			style={({ pressed }) => [
+				styles.cardContainer,
+				v.container,
+				style,
+				pressed && { opacity: 0.9 },
+			]}
 			onPress={onPress}>
 			<View style={styles.imageWrapper}>
 				<Image source={imageSource} style={[styles.image, imageStyle]} resizeMode="cover" />
-				<LinearGradient
-					colors={[COLORS.transparentOffWhite, COLORS.transparentOffWhite, Colors.WHITE]}
-					locations={[0, 0.4, 1]}
-					style={styles.gradient}
-				/>
 			</View>
-			<View style={styles.textContainer}>
+			<View style={[styles.textWrapper, v.textWrapper]}>
 				<Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
 					{title}
 				</Text>
@@ -65,39 +73,38 @@ const ClubPreviewCard = ({
 export default ClubPreviewCard
 
 const styles = StyleSheet.create({
-	card: {
-		width: CARD_WIDTH,
-		position: 'relative',
-		borderRadius: CARD_RADIUS,
+	cardContainer: {
 		overflow: 'hidden',
 		backgroundColor: Colors.WHITE,
-	},
-	pressed: {
-		opacity: 0.9,
+		borderRadius: ms(15),
+		shadowColor: Colors.BLACK,
+		shadowOffset: {
+			width: 0,
+			height: 1,
+		},
+		shadowOpacity: 0.12,
+		shadowRadius: 2,
+		elevation: 1,
 	},
 	imageWrapper: {
 		width: '100%',
 		aspectRatio: 1,
-		position: 'relative',
 	},
 	image: {
 		width: '100%',
 		height: '100%',
 	},
-	gradient: {
-		...StyleSheet.absoluteFillObject,
-	},
-	textContainer: {
+	textWrapper: {
 		backgroundColor: Colors.WHITE,
-		paddingHorizontal: 11,
-		paddingBottom: 15,
 	},
 	title: {
 		...typography.bodyMSemibold,
 		color: Colors.BODYTEXT_MAIN,
+		marginBottom: vs(2),
 	},
 	description: {
 		...typography.bodySRegular,
+		lineHeight: ms(15),
 		color: Colors.BODYTEXT_SUB,
 	},
 })
