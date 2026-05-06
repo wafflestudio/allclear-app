@@ -13,17 +13,13 @@ import {
 import LinearGradient from 'react-native-linear-gradient'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
-import { ms, s, vs } from '@/shared/utils/scale'
 
 const COLORS = {
-	offWhite: Colors.BACKGROUND_MAIN,
-	title: Colors.BODYTEXT_MAIN,
-	description: Colors.BODYTEXT_SUB,
 	transparentOffWhite: 'rgba(250, 250, 250, 0)',
 } as const
 
-const CARD_WIDTH = s(140)
-const CARD_RADIUS = ms(10)
+const CARD_WIDTH = 110
+const CARD_RADIUS = 10
 
 type Props = {
 	title: string
@@ -34,17 +30,26 @@ type Props = {
 	imageStyle?: StyleProp<ImageStyle>
 }
 
-const RecommendedClubCard = ({ title, description, imageSource, onPress, style, imageStyle }: Props) => {
+const ClubPreviewCard = ({
+	title,
+	description,
+	imageSource,
+	onPress,
+	style,
+	imageStyle,
+}: Props) => {
 	return (
-		<Pressable style={({ pressed }) => [styles.card, style, pressed && styles.pressed]} onPress={onPress}>
+		<Pressable
+			style={({ pressed }) => [styles.card, style, pressed && styles.pressed]}
+			onPress={onPress}>
 			<View style={styles.imageWrapper}>
 				<Image source={imageSource} style={[styles.image, imageStyle]} resizeMode="cover" />
+				<LinearGradient
+					colors={[COLORS.transparentOffWhite, COLORS.transparentOffWhite, Colors.WHITE]}
+					locations={[0, 0.4, 1]}
+					style={styles.gradient}
+				/>
 			</View>
-			<LinearGradient
-				colors={[COLORS.transparentOffWhite, COLORS.offWhite]}
-				locations={[0.4638, 0.6473]}
-				style={styles.gradient}
-			/>
 			<View style={styles.textContainer}>
 				<Text numberOfLines={1} ellipsizeMode="tail" style={styles.title}>
 					{title}
@@ -57,7 +62,7 @@ const RecommendedClubCard = ({ title, description, imageSource, onPress, style, 
 	)
 }
 
-export default RecommendedClubCard
+export default ClubPreviewCard
 
 const styles = StyleSheet.create({
 	card: {
@@ -65,7 +70,7 @@ const styles = StyleSheet.create({
 		position: 'relative',
 		borderRadius: CARD_RADIUS,
 		overflow: 'hidden',
-		backgroundColor: COLORS.offWhite,
+		backgroundColor: Colors.WHITE,
 	},
 	pressed: {
 		opacity: 0.9,
@@ -73,6 +78,7 @@ const styles = StyleSheet.create({
 	imageWrapper: {
 		width: '100%',
 		aspectRatio: 1,
+		position: 'relative',
 	},
 	image: {
 		width: '100%',
@@ -80,19 +86,18 @@ const styles = StyleSheet.create({
 	},
 	gradient: {
 		...StyleSheet.absoluteFillObject,
-		borderRadius: CARD_RADIUS,
 	},
 	textContainer: {
-		paddingHorizontal: s(11),
-		paddingBottom: vs(15),
+		backgroundColor: Colors.WHITE,
+		paddingHorizontal: 11,
+		paddingBottom: 15,
 	},
 	title: {
 		...typography.bodyMSemibold,
-		color: COLORS.title,
-		marginBottom: vs(4),
+		color: Colors.BODYTEXT_MAIN,
 	},
 	description: {
 		...typography.bodySRegular,
-		color: COLORS.description,
+		color: Colors.BODYTEXT_SUB,
 	},
 })
