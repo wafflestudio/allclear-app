@@ -46,7 +46,7 @@ const AlertModal = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: Colors.DIM_BLACK,
+    backgroundColor: Colors.BACKGROUND_DIM,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
@@ -60,13 +60,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: Colors.FYI_BLACK,
+    color: Colors.BLACK,
     textAlign: 'center',
   },
   description: {
     fontSize: 14,
     fontWeight: '400',
-    color: Colors.FYI_BLACK,
+    color: Colors.BLACK,
     textAlign: 'center',
     marginTop: 12,
   },
