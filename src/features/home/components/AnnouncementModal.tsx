@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Button from '@/shared/components/Button'
 import Checkbox from '@/shared/components/Checkbox'
 import { Colors } from '@/shared/constants/colors'
+import { typography } from '@/shared/constants/typography'
+import { ms, s, vs } from '@/shared/utils/scale'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type Props = {
@@ -26,7 +28,7 @@ const AnnouncementModal = ({
 	const { height: windowHeight } = useWindowDimensions()
 	const insets = useSafeAreaInsets()
 
-	const modalHeight = Math.min(500, windowHeight - insets.top - insets.bottom - 40)
+	const modalHeight = Math.min(vs(500), windowHeight - insets.top - insets.bottom - vs(40))
 
 	const handleDismiss = () => {
 		if (hideChecked) {
@@ -56,7 +58,7 @@ const AnnouncementModal = ({
 								<Text style={styles.badgeText}>공지</Text>
 							</View>
 							<Pressable style={styles.closeButton} hitSlop={8} onPress={handleDismiss}>
-								<Icon name="close" size={22} color={Colors.BODYTEXT_SUB} />
+								<Icon name="close" size={ms(22)} color={Colors.BODYTEXT_SUB} />
 							</Pressable>
 						</View>
 						<Text style={styles.title}>{title}</Text>
@@ -79,7 +81,7 @@ const AnnouncementModal = ({
 							textStyle={styles.checkboxLabel}
 						/>
 						<View style={styles.buttonWrapper}>
-							<Button label="확인" onPress={handleDismiss} width={188} style={styles.button} />
+							<Button label="확인" onPress={handleDismiss} width={s(188)} style={styles.button} />
 						</View>
 					</View>
 				</View>
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingHorizontal: 20,
+		paddingHorizontal: s(20),
 	},
 	backdrop: {
 		...StyleSheet.absoluteFillObject,
@@ -105,13 +107,13 @@ const styles = StyleSheet.create({
 	container: {
 		width: '100%',
 		backgroundColor: Colors.POINTCOLOR_SUB,
-		borderRadius: 28,
-		paddingHorizontal: 24,
-		paddingTop: 20,
-		paddingBottom: 24,
+		borderRadius: ms(28),
+		paddingHorizontal: s(24),
+		paddingTop: vs(20),
+		paddingBottom: vs(24),
 	},
 	headerSection: {
-		gap: 18,
+		gap: vs(18),
 	},
 	header: {
 		flexDirection: 'row',
@@ -120,26 +122,23 @@ const styles = StyleSheet.create({
 	},
 	badge: {
 		backgroundColor: Colors.POINTCOLOR_10,
-		borderRadius: 999,
-		paddingHorizontal: 10,
-		paddingVertical: 6,
+		borderRadius: ms(999),
+		paddingHorizontal: s(10),
+		paddingVertical: vs(6),
 	},
 	badgeText: {
-		fontSize: 12,
-		fontWeight: '700',
+		...typography.bodyXSSemibold,
 		color: Colors.POINTCOLOR,
 	},
 	closeButton: {
-		padding: 2,
+		padding: ms(2),
 	},
 	title: {
-		fontSize: 24,
-		fontWeight: '700',
+		...typography.headerXXL,
 		color: Colors.BODYTEXT_MAIN,
-		lineHeight: 30,
 	},
 	bodySection: {
-		marginTop: 16,
+		marginTop: vs(16),
 		flex: 1,
 		minHeight: 0,
 	},
@@ -147,31 +146,32 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	descriptionContent: {
-		paddingRight: 4,
+		paddingRight: s(4),
 	},
 	description: {
-		fontSize: 15,
-		fontWeight: '400',
+		...typography.bodyMRegular,
+		fontSize: ms(15),
+		lineHeight: vs(22),
 		color: Colors.BODYTEXT_SUB,
-		lineHeight: 22,
 	},
 	footer: {
-		marginTop: 16,
-		gap: 40,
+		marginTop: vs(16),
+		gap: vs(40),
 	},
 	checkbox: {
 		alignSelf: 'flex-start',
 	},
 	checkboxLabel: {
-		fontSize: 13,
-		lineHeight: 16,
+		...typography.bodySSmallMedium,
+		fontSize: ms(13),
+		lineHeight: vs(16),
 		color: Colors.POINTCOLOR,
 	},
 	buttonWrapper: {
 		alignItems: 'center',
 	},
 	button: {
-		borderRadius: 12,
+		borderRadius: ms(12),
 	},
 })
 
