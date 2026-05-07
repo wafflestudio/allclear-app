@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { BlurView } from '@react-native-community/blur'
 import { Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Button from '@/shared/components/Button'
@@ -39,7 +40,15 @@ const AnnouncementModal = ({
 	return (
 		<Modal visible={visible} transparent animationType="fade" onRequestClose={handleDismiss}>
 			<View style={styles.overlay}>
-				<Pressable style={styles.backdrop} onPress={handleDismiss} />
+				<Pressable style={styles.backdrop} onPress={handleDismiss}>
+					<BlurView
+						style={styles.blur}
+						blurType="light"
+						blurAmount={1}
+						overlayColor="transparent"
+						reducedTransparencyFallbackColor="transparent"
+					/>
+				</Pressable>
 				<View style={[styles.container, { height: modalHeight }]}>
 					<View style={styles.headerSection}>
 						<View style={styles.header}>
@@ -88,7 +97,10 @@ const styles = StyleSheet.create({
 	},
 	backdrop: {
 		...StyleSheet.absoluteFillObject,
-		backgroundColor: Colors.BACKGROUND_DIM
+		backgroundColor: Colors.BACKGROUND_DIM,
+	},
+	blur: {
+		...StyleSheet.absoluteFillObject,
 	},
 	container: {
 		width: '100%',
