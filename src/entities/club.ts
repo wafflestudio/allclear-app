@@ -17,7 +17,6 @@ export type Club = {
 	membershipFee: string
 	tags: string[]
 	imageUri: string
-	blurHash: string | null
 	article: string
 	articleUploadedAt: string | null
 	// v240121

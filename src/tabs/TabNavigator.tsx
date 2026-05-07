@@ -5,28 +5,46 @@ import {
 import { Colors } from '@/shared/constants/colors'
 import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
 import { useProfile } from '@/shared/contexts/profileContext'
-import { Image, type ImageSourcePropType } from 'react-native'
+import { Image, Pressable, type ImageSourcePropType } from 'react-native'
 import { HomeTab } from '@/tabs/HomeTab'
 import { MyPageTab } from '@/tabs/MyPageTab'
-import { RankingTab } from '@/tabs/RankingTab'
+import { s, vs } from '@/shared/utils/scale'
+import { SavedTab } from './SaveTab'
+import { RankingTab } from './RankingTab'
+import { typography } from '@/shared/constants/typography'
 
 const Tab = createBottomTabNavigator()
 
-const renderHomeTabIcon = createTabBarIcon(require('@/assets/images/tab/home.png'))
-const renderRankingTabIcon = createTabBarIcon(require('@/assets/images/tab/ranking.png'))
-const renderMyPageTabIcon = createTabBarIcon(require('@/assets/images/tab/mypage.png'))
+const renderHomeTabIcon = createTabBarIcon(
+	require('@/assets/icons/tab/home-default.png'),
+	require('@/assets/icons/tab/home-active.png'),
+)
+const renderExploreTabIcon = createTabBarIcon(
+	require('@/assets/icons/tab/explore-default.png'),
+	require('@/assets/icons/tab/explore-active.png'),
+)
+const renderSavedTabIcon = createTabBarIcon(
+	require('@/assets/icons/tab/saved-default.png'),
+	require('@/assets/icons/tab/saved-active.png'),
+)
+const renderMyPageTabIcon = createTabBarIcon(
+	require('@/assets/icons/tab/mypage-default.png'),
+	require('@/assets/icons/tab/mypage-active.png'),
+)
 
-const TAB_BAR_ICON_SIZE = 24
-
-function createTabBarIcon(source: ImageSourcePropType): BottomTabNavigationOptions['tabBarIcon'] {
-	return function TabBarIcon({ color }) {
+function createTabBarIcon(
+	defaultSource: ImageSourcePropType,
+	activeSource: ImageSourcePropType,
+): BottomTabNavigationOptions['tabBarIcon'] {
+	return function TabBarIcon({ focused }) {
 		return (
 			<Image
-				source={source}
+				source={focused ? activeSource : defaultSource}
 				style={{
-					width: TAB_BAR_ICON_SIZE,
-					height: TAB_BAR_ICON_SIZE,
-					tintColor: color,
+					width: s(22),
+					height: s(22),
+					resizeMode: 'contain' as const,
+					marginTop: vs(10),
 				}}
 			/>
 		)
@@ -35,13 +53,20 @@ function createTabBarIcon(source: ImageSourcePropType): BottomTabNavigationOptio
 
 const screenOptions: BottomTabNavigationOptions = {
 	headerShown: false,
-	tabBarActiveTintColor: '#3A3434', // #deprecated color
-	tabBarInactiveTintColor: '#C5BBB8', // #deprecated color
-	tabBarShowLabel: false,
+	tabBarActiveTintColor: Colors.BUTTON_SELECTED,
+	tabBarInactiveTintColor: Colors.BUTTON_UNSELECTED,
 	tabBarStyle: {
-		paddingHorizontal: 60,
-		alignItems: 'center',
+		height: vs(80),
+		backgroundColor: Colors.BACKGROUND_SUB,
+		borderTopWidth: 0, // iOS 그림자 제거
+		elevation: 0, // Android 그림자 제거
 	},
+	tabBarLabelStyle: {
+		...typography.bodySMedium,
+	},
+	tabBarButton: props => (
+		<Pressable {...props} style={({ pressed }) => [props.style, { opacity: pressed ? 0.6 : 1 }]} />
+	),
 }
 
 export function TabNavigator() {
@@ -50,15 +75,16 @@ export function TabNavigator() {
 
 	return (
 		<Tab.Navigator screenOptions={screenOptions}>
-			<Tab.Screen options={{ tabBarIcon: renderHomeTabIcon }} name="HomeTab" component={HomeTab} />
+			<Tab.Screen options={{ tabBarIcon: renderHomeTabIcon }} name="홈" component={HomeTab} />
 			<Tab.Screen
-				options={{ tabBarIcon: renderRankingTabIcon }}
-				name="RankingTab"
+				options={{ tabBarIcon: renderExploreTabIcon }}
+				name="탐색"
 				component={RankingTab}
 			/>
+			<Tab.Screen options={{ tabBarIcon: renderSavedTabIcon }} name="저장" component={SavedTab} />
 			<Tab.Screen
 				options={{ tabBarIcon: renderMyPageTabIcon }}
-				name="MyPageTab"
+				name="마이"
 				component={MyPageTab}
 				listeners={{
 					tabPress: e => {

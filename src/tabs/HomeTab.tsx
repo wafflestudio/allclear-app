@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import { getAnnouncementsQueryOptions } from '@/features/home/utils/announcementQueries'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import React, { useContext, useEffect } from 'react'

@@ -6,9 +6,9 @@ import { useManageClubBottomSheet } from '@/shared/contexts/manageClubBottomShee
 import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { useUserVoiceBottomSheet } from '@/shared/contexts/userVoiceBottomSheetContext'
-import { CategoryMap } from '@/entities/category'
+import { CategoryMap } from '@/shared/constants/category'
 import { Club } from '@/entities/club'
-import { SCREEN_TYPE } from '@/entities/screen'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
 import React, { useContext } from 'react'
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
@@ -163,20 +163,43 @@ const MyPageScreen = () => {
 									}}
 								/>
 								<View style={{ marginTop: 24 }}>
-									<Text style={{ fontSize: 20, fontWeight: 'bold', color: Colors.TEXT_BUTTON_SELECTED }}>
+									<Text
+										style={{
+											fontSize: 20,
+											fontWeight: 'bold',
+											color: Colors.TEXT_BUTTON_SELECTED,
+										}}>
 										{user?.nickname || '이름 정보가 없습니다'}
 									</Text>
-									<Text style={{ fontSize: 14, color: Colors.TEXT_BUTTON_SELECTED, opacity: 0.5, marginTop: 8 }}>
+									<Text
+										style={{
+											fontSize: 14,
+											color: Colors.TEXT_BUTTON_SELECTED,
+											opacity: 0.5,
+											marginTop: 8,
+										}}>
 										{user?.college || '단과대 정보가 없습니다'}
 										{user?.major && ' ' + user.major}
 									</Text>
-									<Text style={{ fontSize: 14, color: Colors.TEXT_BUTTON_SELECTED, opacity: 0.5, marginTop: 6 }}>
+									<Text
+										style={{
+											fontSize: 14,
+											color: Colors.TEXT_BUTTON_SELECTED,
+											opacity: 0.5,
+											marginTop: 6,
+										}}>
 										{user?.admissionClass ? `${user.admissionClass} 학번` : '학번 정보가 없습니다'}
 									</Text>
 								</View>
 
 								<View style={{ marginTop: 24 }}>
-									<Text style={{ fontSize: 14, color: Colors.TEXT_BUTTON_SELECTED, opacity: 0.5, marginTop: 8 }}>
+									<Text
+										style={{
+											fontSize: 14,
+											color: Colors.TEXT_BUTTON_SELECTED,
+											opacity: 0.5,
+											marginTop: 8,
+										}}>
 										{'활동한 동아리'}
 									</Text>
 									{myClubs && myClubs.length > 0 ? (
@@ -211,7 +234,7 @@ const MyPageScreen = () => {
 														<Image
 															resizeMethod="resize"
 															style={{ width: 24, height: 24 }}
-															source={CategoryMap[club.category].coloredSource}
+															source={CategoryMap[club.category].icon}
 														/>
 														<Text
 															style={{
@@ -227,7 +250,9 @@ const MyPageScreen = () => {
 											))}
 											{extraClubsCount > 0 && (
 												<View style={{ marginLeft: 8 }}>
-													<Text style={{ color: Colors.TEXT_BUTTON_SELECTED, fontSize: 16 }}>+{extraClubsCount}</Text>
+													<Text style={{ color: Colors.TEXT_BUTTON_SELECTED, fontSize: 16 }}>
+														+{extraClubsCount}
+													</Text>
 												</View>
 											)}
 										</View>
@@ -262,7 +287,7 @@ const MyPageScreen = () => {
 						</TouchableOpacity>
 
 						<Image
-							source={require('@/assets/images/tab/snu.png')}
+							source={require('@/assets/images/mypage/snu-profile-icon.png')}
 							style={{
 								width: 40,
 								height: 40,
@@ -400,10 +425,14 @@ const MyPageScreen = () => {
 						<Text style={styles.option}>개발자에게 요청하기</Text>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={handleLogout}>
-						<Text style={[styles.option, { color: '#E6E0DF' /* #deprecated color */ }]}>로그아웃</Text>
+						<Text style={[styles.option, { color: '#E6E0DF' /* #deprecated color */ }]}>
+							로그아웃
+						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity onPress={handleLeave}>
-						<Text style={[styles.option, { color: '#E6E0DF' /* #deprecated color */ }]}>회원탈퇴</Text>
+						<Text style={[styles.option, { color: '#E6E0DF' /* #deprecated color */ }]}>
+							회원탈퇴
+						</Text>
 					</TouchableOpacity>
 				</View>
 			</ScrollView>

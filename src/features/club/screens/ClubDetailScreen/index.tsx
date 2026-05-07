@@ -8,10 +8,10 @@ import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
-import { CategoryMap } from '@/entities/category'
+import { CategoryMap } from '@/shared/constants/category'
 import { Club } from '@/entities/club'
 import { ReviewKeyword, ReviewKeywordCategory } from '@/entities/review'
-import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import React, { useContext } from 'react'
@@ -32,22 +32,26 @@ import Icon from 'react-native-vector-icons/Octicons'
 import HtmlView from '@/shared/components/HtmlView'
 import Header from '@/features/club/screens/ClubDetailScreen/Header'
 import { Colors } from '@/shared/constants/colors'
+import { typography } from '@/shared/constants/typography'
+import { ms, s, vs } from '@/shared/utils/scale'
 
 dayjs.locale('ko')
 
 type DetailsScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.CLUB_DETAIL>
-type DetailsScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
+type DetailsScreenNavigationProp = NativeStackNavigationProp<
+	StackParamList,
+	SCREEN_TYPE.CLUB_DETAIL
+>
 
 type Props = {
 	route: DetailsScreenRouteProp
 	navigation: DetailsScreenNavigationProp
 }
 
-const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
 
 const ClubDetailScreen = ({ route, navigation }: Props) => {
-	const { uuid, category, entry_point } = route.params as DetailsScreenRouteProp['params']
+	const { uuid, category, entry_point } = route.params
 
 	const { logClickEvent } = useClickEventLog()
 	const { openBottomSheet } = useLoginBottomSheet()
@@ -115,24 +119,23 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 				club_name: club?.name ?? '',
 				entry_point: entry_point ?? '',
 			}}>
-			<SafeAreaView edges={['top']} style={{ flex: 0, backgroundColor: categoryDetail.safeArea }} />
+			<SafeAreaView
+				edges={['top']}
+				style={{ flex: 0, backgroundColor: categoryDetail.themeColor }}
+			/>
 			<SafeAreaView edges={['left', 'right']} style={{ flex: 1, padding: 0, overflow: 'scroll' }}>
-				<Image
-					source={categoryDetail.source}
-					style={{ width: '100%', height: deviceWidth * 0.8, position: 'absolute' }}
-				/>
 				<Header club={club} onBack={handleBackButton} />
 				{isLoading && (
 					<View style={{ height: deviceHeight }}>
 						<ActivityIndicator
 							size="large"
-							color={categoryDetail.safeArea}
+							color={categoryDetail.themeColor}
 							style={{ marginTop: deviceHeight * 0.3 }}
 						/>
 					</View>
 				)}
 				{club && (
-					<ScrollView style={{ padding: 16 }}>
+					<ScrollView style={styles.scrollView}>
 						<View style={styles.mainImageWrapper}>
 							<Image
 								style={styles.mainImage}
@@ -196,10 +199,8 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 								<View style={styles.reviewScrollWrapper}>
 									{reviewKeywords?.map((keyword: ReviewKeyword) => (
 										<View style={styles.reviewScrollCard}>
-											<Text style={{ fontSize: 13, marginRight: 4 }}>
-												{keyword.iconUri?.trim()}
-											</Text>
-											<Text style={{ color: '#1e1e1e', fontSize: 12 }}>{keyword.title}</Text>
+											<Text style={styles.reviewScrollIcon}>{keyword.iconUri?.trim()}</Text>
+											<Text style={styles.reviewScrollTitle}>{keyword.title}</Text>
 										</View>
 									))}
 								</View>
@@ -208,17 +209,17 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 								<TouchableOpacity
 									style={{
 										...styles.reviewCta,
-										borderColor: categoryDetail.safeArea,
+										borderColor: categoryDetail.themeColor,
 									}}
 									onPress={() => handlePressPrimaryCTA(club)}>
 									<View style={styles.reviewCtaText}>
 										<Icon
 											name="pencil"
-											size={16}
-											color={categoryDetail.safeArea}
-											style={{ marginRight: 8 }}
+											size={ms(16)}
+											color={categoryDetail.themeColor}
+											style={styles.reviewCtaIcon}
 										/>
-										<Text style={{ color: categoryDetail.safeArea, fontSize: 12 }}>
+										<Text style={[styles.reviewCtaLabel, { color: categoryDetail.themeColor }]}>
 											내 활동 경험 공유하기
 										</Text>
 									</View>
@@ -230,14 +231,12 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 							<View style={styles.detailTitleWrapper}>
 								<Text style={styles.detailTitle}>모집공고</Text>
 								<TouchableOpacity onPress={() => Linking.openURL('https://tally.so/r/EkQrQN')}>
-									<Text style={{ color: '#8F8686', fontSize: 12, textDecorationLine: 'underline' }}>
-										모집 공고 업데이트 요청하기
-									</Text>
+									<Text style={styles.detailRequestText}>모집 공고 업데이트 요청하기</Text>
 								</TouchableOpacity>
 							</View>
 							{club.articleUploadedAt && (
 								<View style={styles.update}>
-									<Text style={{ color: '#8F8686', fontSize: 12 }}>
+									<Text style={styles.detailMetaText}>
 										{dayjs(club.articleUploadedAt).format(
 											(dayjs(club.articleUploadedAt).year() === dayjs().year() ? '' : 'YY년 ') +
 												'M월 D일 dddd A h시에 업데이트 되었어요',
@@ -262,14 +261,9 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 												</Text>
 												<Text style={styles.loginText}>{`로그인이 필요해요!`}</Text>
 												<TouchableOpacity
-													style={{
-														padding: 4,
-														marginTop: 12,
-													}}
+													style={styles.loginButton}
 													onPress={handleOpenBottomSheet}>
-													<Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
-														로그인 하러 가기
-													</Text>
+													<Text style={styles.loginButtonText}>로그인 하러 가기</Text>
 												</TouchableOpacity>
 											</View>
 										</>
@@ -285,18 +279,10 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 									/>
 								</View>
 							) : (
-								<View style={{ height: 200, justifyContent: 'center', alignItems: 'center' }}>
-									<Text style={{ color: '#8F8686', fontSize: 12 }}>{`상세정보가 없어요.`}</Text>
-									<Text
-										style={{
-											color: '#8F8686',
-											fontSize: 12,
-										}}>{`${club.name} 동아리원 여러분!`}</Text>
-									<Text
-										style={{
-											color: '#8F8686',
-											fontSize: 12,
-										}}>{`상세 정보를 전달해주시면 추가해 놓을게요`}</Text>
+								<View style={styles.emptyArticleWrapper}>
+									<Text style={styles.emptyText}>{`상세정보가 없어요.`}</Text>
+									<Text style={styles.emptyText}>{`${club.name} 동아리원 여러분!`}</Text>
+									<Text style={styles.emptyText}>{`상세 정보를 전달해주시면 추가해 놓을게요`}</Text>
 								</View>
 							)}
 						</View>
@@ -315,20 +301,12 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 							{club.reviewKeywords.length > 0 ? (
 								<View style={styles.reviewResultContainer}>
 									{club.reviewKeywords.map(keyword => (
-										<View style={{ position: 'relative' }}>
+										<View style={styles.relative}>
 											<View style={styles.reviewResult}>
-												<Text style={{ fontSize: 14, marginRight: 4 }}>
-													{keyword.iconUri?.trim()}
-												</Text>
-												<Text style={{ color: '#1e1e1e', fontSize: 13, fontWeight: 'bold' }}>
-													{`"${keyword.title}"`}
-												</Text>
+												<Text style={styles.reviewResultIcon}>{keyword.iconUri?.trim()}</Text>
+												<Text style={styles.reviewResultTitle}>{`"${keyword.title}"`}</Text>
 												<Text
-													style={{
-														marginLeft: 'auto',
-														color: categoryDetail.safeArea,
-														fontWeight: 'bold',
-													}}>
+													style={[styles.reviewResultCount, { color: categoryDetail.themeColor }]}>
 													{keyword.totalUpvotes}
 												</Text>
 											</View>
@@ -339,7 +317,7 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 														backgroundColor: getReviewBackgroundColor(
 															keyword.totalUpvotes,
 															club.totalReviews,
-															categoryDetail.safeArea,
+															categoryDetail.themeColor,
 														),
 														width: getReviewWidth(keyword.totalUpvotes, club.totalReviews),
 													},
@@ -349,34 +327,19 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 									))}
 								</View>
 							) : (
-								<View style={{ height: 150, justifyContent: 'center', alignItems: 'center' }}>
-									<Text
-										style={{
-											color: '#8F8686',
-											fontSize: 12,
-										}}>{`혹시 ${club.name}에서 활동하셨나요?`}</Text>
-									<Text
-										style={{
-											color: '#8F8686',
-											fontSize: 12,
-											marginTop: 4,
-										}}>{`다음에 들어올 부원들을 위해 여러분의 경험을 공유해주세요!`}</Text>
+								<View style={styles.emptyReviewWrapper}>
+									<Text style={styles.emptyText}>{`혹시 ${club.name}에서 활동하셨나요?`}</Text>
+									<Text style={styles.emptyReviewDescription}>
+										{`다음에 들어올 부원들을 위해 여러분의 경험을 공유해주세요!`}
+									</Text>
 									<TouchableOpacity onPress={() => handlePressSecondaryCTA(club)}>
-										<Text
-											style={{
-												color: '#8F8686',
-												marginTop: 16,
-												fontSize: 12,
-												textDecorationLine: 'underline',
-											}}>
-											내 활동 경험 공유하기
-										</Text>
+										<Text style={styles.emptyReviewLink}>내 활동 경험 공유하기</Text>
 									</TouchableOpacity>
 								</View>
 							)}
 						</View>
 
-						<View style={{ marginBottom: 32 }} />
+						<View style={styles.scrollBottomSpacer} />
 					</ScrollView>
 				)}
 			</SafeAreaView>
@@ -429,8 +392,14 @@ function getReviewWidth(curReview: number, maxReview: number): `${number}%` {
 }
 
 const styles = StyleSheet.create({
+	scrollView: {
+		padding: ms(16),
+	},
+	relative: {
+		position: 'relative',
+	},
 	blur: {
-		borderRadius: 12,
+		borderRadius: ms(12),
 		position: 'absolute',
 		top: 0,
 		left: 0,
@@ -441,34 +410,42 @@ const styles = StyleSheet.create({
 	loginWrapper: {
 		position: 'absolute',
 		width: '100%',
-		margin: 12,
+		margin: ms(12),
 		zIndex: 2,
-		marginTop: 40,
+		marginTop: vs(40),
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
 	loginText: {
+		...typography.bodyMRegular,
 		color: '#8F8686',
-		fontSize: 14,
 		textAlign: 'center',
-		marginTop: 12,
+		marginTop: vs(12),
+	},
+	loginButton: {
+		padding: ms(4),
+		marginTop: vs(12),
+	},
+	loginButtonText: {
+		...typography.bodyMSemibold,
+		textDecorationLine: 'underline',
 	},
 	container: {
-		borderRadius: 12,
-		marginTop: 12,
-		padding: 16,
+		borderRadius: ms(12),
+		marginTop: vs(12),
+		padding: ms(16),
 		backgroundColor: Colors.TEXT_BUTTON_SELECTED,
 	},
 	mainImageWrapper: {
-		width: 100,
-		height: 100,
-		borderRadius: 12,
+		width: ms(100),
+		height: ms(100),
+		borderRadius: ms(12),
 		backgroundColor: Colors.TEXT_BUTTON_SELECTED,
 		justifyContent: 'center',
 		alignItems: 'center',
-		padding: 16,
+		padding: ms(16),
 	},
 	mainImage: {
 		width: '100%',
@@ -476,38 +453,35 @@ const styles = StyleSheet.create({
 		resizeMode: 'contain',
 	},
 	clubName: {
-		fontWeight: 'bold',
-		fontSize: 20,
+		...typography.headerXL,
 		color: '#494141',
-		marginBottom: 8,
+		marginBottom: vs(8),
 	},
 	clubDescription: {
-		fontSize: 14,
+		...typography.bodyMRegular,
 		color: '#8F8686',
-		marginBottom: 16,
+		marginBottom: vs(16),
 	},
 	tagWrapper: {
 		flexDirection: 'row',
 		alignItems: 'flex-start',
 		flexWrap: 'wrap',
-		gap: 8,
+		gap: ms(8),
 	},
 	tag: {
-		color: '#8F8686',
-		fontSize: 12,
-		padding: 6,
-		borderRadius: 4,
+		padding: ms(6),
+		borderRadius: ms(4),
 		backgroundColor: '#F9F8F6',
 	},
 	tagText: {
+		...typography.bodySRegular,
 		color: '#8F8686',
-		fontSize: 12,
 	},
 	informationWrapper: {
-		paddingHorizontal: 16,
+		paddingHorizontal: s(16),
 		display: 'flex',
 		flexDirection: 'row',
-		gap: 32,
+		gap: s(32),
 		justifyContent: 'center',
 	},
 	iconWrapper: {
@@ -515,16 +489,16 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		alignItems: 'center',
 		justifyContent: 'center',
-		marginBottom: 8,
-		gap: 4,
+		marginBottom: vs(8),
+		gap: ms(4),
 	},
 	icon: {
-		width: 64,
-		height: 64,
+		width: ms(64),
+		height: ms(64),
 	},
 	iconDescription: {
-		fontSize: 12,
-		marginTop: 4,
+		...typography.bodySRegular,
+		marginTop: vs(4),
 		color: '#8F8686',
 	},
 	reviewScrollWrapper: {
@@ -535,23 +509,31 @@ const styles = StyleSheet.create({
 		display: 'flex',
 		flexDirection: 'row',
 		alignItems: 'center',
-		padding: 8,
-		paddingHorizontal: 12,
-		marginHorizontal: 4,
-		borderRadius: 32,
+		padding: ms(8),
+		paddingHorizontal: s(12),
+		marginHorizontal: s(4),
+		borderRadius: ms(32),
 		borderWidth: 1,
 		borderColor: '#f1d9d9',
 	},
+	reviewScrollIcon: {
+		...typography.bodyMRegular,
+		marginRight: s(4),
+	},
+	reviewScrollTitle: {
+		...typography.bodySRegular,
+		color: '#1e1e1e',
+	},
 	reviewCtaWrapper: {
-		marginTop: 16,
+		marginTop: vs(16),
 		display: 'flex',
 		flexDirection: 'row',
 		justifyContent: 'center',
 	},
 	reviewCta: {
 		width: '100%',
-		padding: 12,
-		borderRadius: 32,
+		padding: ms(12),
+		borderRadius: ms(32),
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'center',
@@ -561,54 +543,108 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
+	reviewCtaIcon: {
+		marginRight: s(8),
+	},
+	reviewCtaLabel: {
+		...typography.bodySRegular,
+	},
 	detailTitleWrapper: {
 		display: 'flex',
 		flexDirection: 'row',
 		alignItems: 'flex-start',
 		justifyContent: 'space-between',
-		marginBottom: 6,
+		marginBottom: vs(6),
 	},
 	detailTitle: {
-		fontSize: 16,
-		fontWeight: 'bold',
+		...typography.headerL,
 		color: '#494141',
 	},
+	detailRequestText: {
+		...typography.bodySRegular,
+		color: '#8F8686',
+		textDecorationLine: 'underline',
+	},
 	reviewCountWrapper: {
-		marginBottom: 16,
+		marginBottom: vs(16),
 	},
 	reviewCount: {
-		fontSize: 12,
+		...typography.bodySRegular,
+		color: '#8F8686',
+	},
+	detailMetaText: {
+		...typography.bodySRegular,
 		color: '#8F8686',
 	},
 	update: {},
 	htmlContainer: {
 		position: 'relative',
-		marginTop: 12,
-		padding: 12,
-		borderRadius: 2,
+		marginTop: vs(12),
+		padding: ms(12),
+		borderRadius: ms(2),
 		borderWidth: 1,
 		borderColor: '#e5e5e5',
 	},
 	reviewResultContainer: {
 		display: 'flex',
 		flexDirection: 'column',
-		gap: 4,
+		gap: ms(4),
 	},
 	reviewResult: {
 		display: 'flex',
 		flexDirection: 'row',
 		alignItems: 'center',
-		padding: 12,
-		paddingHorizontal: 16,
-		borderRadius: 8,
+		padding: ms(12),
+		paddingHorizontal: s(16),
+		borderRadius: ms(8),
 		backgroundColor: '#f5f5f5',
+	},
+	reviewResultIcon: {
+		...typography.bodyMRegular,
+		marginRight: s(4),
+	},
+	reviewResultTitle: {
+		...typography.bodyMSemibold,
+		color: '#1e1e1e',
+	},
+	reviewResultCount: {
+		...typography.bodyMSemibold,
+		marginLeft: 'auto',
 	},
 	reviewPortion: {
 		position: 'absolute',
 		top: 0,
 		left: 0,
-		borderRadius: 8,
+		borderRadius: ms(8),
 		width: '100%',
 		height: '100%',
+	},
+	emptyArticleWrapper: {
+		height: vs(200),
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	emptyReviewWrapper: {
+		height: vs(150),
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	emptyText: {
+		...typography.bodySRegular,
+		color: '#8F8686',
+	},
+	emptyReviewDescription: {
+		...typography.bodySRegular,
+		color: '#8F8686',
+		marginTop: vs(4),
+	},
+	emptyReviewLink: {
+		...typography.bodySRegular,
+		color: '#8F8686',
+		marginTop: vs(16),
+		textDecorationLine: 'underline',
+	},
+	scrollBottomSpacer: {
+		marginBottom: vs(32),
 	},
 })

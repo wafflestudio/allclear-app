@@ -5,8 +5,8 @@
 	"scripts": {
 		"clean": "rm -rf android/build && rm -rf android/app/build",
 		"re-install": "rm -rf node_modules && yarn install",
-		"reset": "cd ios && pod deintegrate && cd ../android && ./gradlew clean && cd .. && rm -rf node_modules && yarn install && cd ios && pod install && cd ..",
-		"android:clean": "cd android && ./gradlew clean && cd ..",
+		"reset": "cd ios && pod deintegrate && cd ../android && ENVFILE=.env.local ./gradlew clean && cd .. && rm -rf node_modules && yarn install && cd ios && pod install && cd ..",
+		"android:clean": "cd android && ENVFILE=.env.local ./gradlew clean && cd ..",
 		"android:debug": "ENVFILE=.env.local react-native run-android --mode=debug --appId=com.padocorp.clubhouse.applicationId.debug",
 		"android:release": "ENVFILE=.env.prod react-native run-android --mode=release --appId=com.padocorp.clubhouse.applicationId",
 		"ios": "react-native run-ios",
@@ -41,7 +41,6 @@
 		"postinstall-postinstall": "^2.1.0",
 		"react": "18.2.0",
 		"react-native": "0.77.3",
-		"react-native-blurhash": "^1.1.11",
 		"react-native-config": "^1.5.0",
 		"react-native-device-info": "14",
 		"react-native-dropdown-picker": "^5.4.6",
