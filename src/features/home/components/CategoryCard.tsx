@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Category } from '@/entities/category'
-import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import { Image, ImageSourcePropType, Pressable, StyleSheet, Text } from 'react-native'
 import { Colors } from '@/shared/constants/colors'

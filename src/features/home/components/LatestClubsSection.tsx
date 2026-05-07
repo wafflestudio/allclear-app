@@ -141,9 +141,11 @@ const useLatestClubs = () => {
 const styles = StyleSheet.create({
 	list: {
 		width: '100%',
+		overflow: 'visible',
 	},
 	listContentContainer: {
 		paddingHorizontal: s(20),
+		paddingBottom: s(2),
 	},
 	itemSeparator: {
 		width: 10,

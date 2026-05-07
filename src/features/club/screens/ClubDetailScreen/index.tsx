@@ -8,10 +8,10 @@ import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import dayjs from 'dayjs'
 import 'dayjs/locale/ko'
-import { CategoryMap } from '@/entities/category'
+import { CategoryMap } from '@/shared/constants/category'
 import { Club } from '@/entities/club'
 import { ReviewKeyword, ReviewKeywordCategory } from '@/entities/review'
-import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import React, { useContext } from 'react'
@@ -231,9 +231,7 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 							<View style={styles.detailTitleWrapper}>
 								<Text style={styles.detailTitle}>모집공고</Text>
 								<TouchableOpacity onPress={() => Linking.openURL('https://tally.so/r/EkQrQN')}>
-									<Text style={styles.detailRequestText}>
-										모집 공고 업데이트 요청하기
-									</Text>
+									<Text style={styles.detailRequestText}>모집 공고 업데이트 요청하기</Text>
 								</TouchableOpacity>
 							</View>
 							{club.articleUploadedAt && (
@@ -306,14 +304,9 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 										<View style={styles.relative}>
 											<View style={styles.reviewResult}>
 												<Text style={styles.reviewResultIcon}>{keyword.iconUri?.trim()}</Text>
-												<Text style={styles.reviewResultTitle}>
-													{`"${keyword.title}"`}
-												</Text>
+												<Text style={styles.reviewResultTitle}>{`"${keyword.title}"`}</Text>
 												<Text
-													style={[
-														styles.reviewResultCount,
-														{ color: categoryDetail.themeColor },
-													]}>
+													style={[styles.reviewResultCount, { color: categoryDetail.themeColor }]}>
 													{keyword.totalUpvotes}
 												</Text>
 											</View>
@@ -340,9 +333,7 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 										{`다음에 들어올 부원들을 위해 여러분의 경험을 공유해주세요!`}
 									</Text>
 									<TouchableOpacity onPress={() => handlePressSecondaryCTA(club)}>
-										<Text style={styles.emptyReviewLink}>
-											내 활동 경험 공유하기
-										</Text>
+										<Text style={styles.emptyReviewLink}>내 활동 경험 공유하기</Text>
 									</TouchableOpacity>
 								</View>
 							)}

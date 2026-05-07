@@ -2,7 +2,8 @@ import { Image, StyleSheet, Text, View } from 'react-native'
 
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
-import { Category, CategoryMap } from '@/entities/category'
+import { Category } from '@/entities/category'
+import { CategoryMap } from '@/shared/constants/category'
 import { Club } from '@/entities/club'
 import { ms, s, vs } from '@/shared/utils/scale'
 
@@ -23,7 +24,7 @@ const ClubCard = ({ club, category }: Props) => {
 			</View>
 
 			<View style={styles.contentWrapper}>
-				<View>
+				<View style={styles.textGroup}>
 					<Text style={styles.title}>{club.name}</Text>
 					<Text numberOfLines={2} style={styles.description}>
 						{club.description}
@@ -54,33 +55,34 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		width: '100%',
-		height: ms(90),
+		height: s(90),
 	},
 	imageWrapper: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: Colors.WHITE,
-		width: ms(90),
-		height: ms(90),
-		marginRight: s(16),
+		width: s(90),
+		height: s(90),
+		marginRight: s(15),
 		borderWidth: 0.5,
 		borderRadius: ms(8),
 	},
 	image: {
-		width: ms(70),
-		height: ms(70),
+		width: s(70),
+		height: s(70),
+		borderRadius: ms(8),
 	},
 	contentWrapper: {
 		flex: 1,
 		flexDirection: 'column',
-		justifyContent: 'space-between',
-		height: '100%',
-		paddingTop: vs(1),
-		paddingBottom: vs(3),
+	},
+	textGroup: {
+		flex: 1,
 	},
 	title: {
 		...typography.headerL,
-		marginBottom: vs(2),
+		color: Colors.BODYTEXT_MAIN,
+		marginBottom: vs(4),
 	},
 	description: {
 		...typography.bodyMRegular,
@@ -88,15 +90,13 @@ const styles = StyleSheet.create({
 	},
 	reviewView: {
 		flexDirection: 'row',
-		marginTop: 'auto',
+		height: vs(20),
 		gap: ms(4),
-		paddingTop: vs(6),
 	},
 	reviewKeyword: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		paddingVertical: vs(4),
-		paddingHorizontal: s(8),
+		paddingHorizontal: s(6),
 		borderRadius: ms(24),
 		borderWidth: 0.5,
 		flexShrink: 1,
@@ -106,7 +106,8 @@ const styles = StyleSheet.create({
 		marginRight: s(4),
 	},
 	reviewKeywordTitle: {
-		...typography.bodyXSSemibold,
+		...typography.bodyXSRegular,
+		color: Colors.BODYTEXT_SUB,
 		flexShrink: 1,
 	},
 })

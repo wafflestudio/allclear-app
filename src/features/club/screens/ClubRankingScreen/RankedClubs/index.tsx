@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Colors } from '@/shared/constants/colors'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { Club } from '@/entities/club'
-import { SCREEN_TYPE } from '@/entities/screen'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
 import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import React, { useContext } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native'
@@ -67,10 +67,7 @@ const RankedClubs = () => {
 					}>
 					<View style={styles.featuredCard}>
 						<View>
-							<Image
-								style={styles.trophyIcon}
-								source={require('@/assets/icons/trophy.png')}
-							/>
+							<Image style={styles.trophyIcon} source={require('@/assets/icons/trophy.png')} />
 						</View>
 
 						<View style={styles.featuredContent}>
@@ -81,9 +78,7 @@ const RankedClubs = () => {
 								<Text style={styles.featuredClubName}>{clubRankings?.[0].clubName}</Text>
 							</View>
 							<View>
-								<Text style={styles.featuredReviewCount}>
-									{clubRankings?.[0].totalReviews}건
-								</Text>
+								<Text style={styles.featuredReviewCount}>{clubRankings?.[0].totalReviews}건</Text>
 							</View>
 						</View>
 					</View>
@@ -102,13 +97,8 @@ const RankedClubs = () => {
 							<TouchableOpacity key={ranking.clubId}>
 								<View style={styles.relative}>
 									<View style={styles.rankingResult}>
-										<Image
-											source={getRankingIconSource(index)}
-											style={styles.rankingIcon}
-										/>
-										<Text style={styles.rankingName}>
-											{`---`}
-										</Text>
+										<Image source={getRankingIconSource(index)} style={styles.rankingIcon} />
+										<Text style={styles.rankingName}>{`---`}</Text>
 									</View>
 									<View
 										style={[
@@ -134,14 +124,9 @@ const RankedClubs = () => {
 							<View style={styles.relative}>
 								<View style={styles.rankingResult}>
 									{index < 3 && (
-										<Image
-											source={getRankingIconSource(index)}
-											style={styles.rankingIcon}
-										/>
+										<Image source={getRankingIconSource(index)} style={styles.rankingIcon} />
 									)}
-									<Text style={styles.rankingName}>
-										{`${ranking.clubName}`}
-									</Text>
+									<Text style={styles.rankingName}>{`${ranking.clubName}`}</Text>
 									<Text style={styles.rankingCount}>{ranking.totalReviews}</Text>
 								</View>
 								<View

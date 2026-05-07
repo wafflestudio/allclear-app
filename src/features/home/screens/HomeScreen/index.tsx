@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Colors } from '@/shared/constants/colors'
 import { Club } from '@/entities/club'
-import { SCREEN_TYPE, StackParamList } from '@/entities/screen'
+import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -51,7 +51,9 @@ const HomeScreen = ({ navigation }: Props) => {
 				</View>
 
 				<View style={styles.latestClubsContainer}>
-					<Text style={[styles.sectionTitle, styles.newClubsTitle]}>새로운 공고가 올라왔어요</Text>
+					<Text style={[styles.sectionTitle, styles.latestClubsTitle]}>
+						새로운 공고가 올라왔어요
+					</Text>
 					<LatestClubsSection openDetailPage={handleMoveToDetailPage} />
 				</View>
 			</SafeAreaView>
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
 	categoryContainer: {
 		width: s(353),
 		alignItems: 'flex-start',
-		marginBottom: vs(50),
+		marginBottom: vs(30),
 	},
 	sectionTitle: {
 		...typography.headerXLSemibold,
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
 	latestClubsContainer: {
 		width: '100%',
 	},
-	newClubsTitle: {
+	latestClubsTitle: {
 		marginLeft: s(20),
 	},
 })
