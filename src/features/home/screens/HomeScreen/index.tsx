@@ -51,7 +51,9 @@ const HomeScreen = ({ navigation }: Props) => {
 				</View>
 
 				<View style={styles.latestClubsContainer}>
-					<Text style={[styles.sectionTitle, styles.newClubsTitle]}>새로운 공고가 올라왔어요</Text>
+					<Text style={[styles.sectionTitle, styles.latestClubsTitle]}>
+						새로운 공고가 올라왔어요
+					</Text>
 					<LatestClubsSection openDetailPage={handleMoveToDetailPage} />
 				</View>
 			</SafeAreaView>
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
 	categoryContainer: {
 		width: s(353),
 		alignItems: 'flex-start',
-		marginBottom: vs(50),
+		marginBottom: vs(30),
 	},
 	sectionTitle: {
 		...typography.headerXLSemibold,
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
 	latestClubsContainer: {
 		width: '100%',
 	},
-	newClubsTitle: {
+	latestClubsTitle: {
 		marginLeft: s(20),
 	},
 })
