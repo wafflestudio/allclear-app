@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Colors } from '@/shared/constants/colors'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { Club } from '@/entities/club'
-import { SCREEN_TYPE } from '@/entities/screen'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import React, { useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -34,7 +34,11 @@ const SavedClubListScreen = () => {
 				edges={['top', 'left', 'right']}
 				style={{ flex: 1, backgroundColor: Colors.BACKGROUND_MAIN, overflow: 'scroll' }}>
 				<Header title="저장한 동아리" onBack={handleBack} />
-				<ClubList clubs={savedClubs} openDetailPage={openDetailPage} />
+				<ClubList
+					clubs={savedClubs}
+					openDetailPage={openDetailPage}
+					emptyPlaceholder="저장한 동아리가 없어요"
+				/>
 			</SafeAreaView>
 		</WithViewEventLog>
 	)

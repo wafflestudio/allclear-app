@@ -11,19 +11,18 @@ type Props = {
 	clubs: Club[] | undefined
 	category?: Category['name']
 	openDetailPage: (club: Club) => void
+	emptyPlaceholder: string
 }
 
-const ClubList = ({ clubs, category, openDetailPage }: Props) => {
+const ClubList = ({ clubs, category, openDetailPage, emptyPlaceholder }: Props) => {
 	const { width } = useWindowDimensions()
 
 	if (!clubs) return null
 	if (clubs.length === 0) {
 		return (
 			<View style={styles.emptyContainer}>
-				<Image source={require('@/assets/images/not-found.png')} />
-				<Text style={styles.emptyText}>
-					앗 검색 결과가 없어요!{'\n'} 다른 키워드로 검색해주세요
-				</Text>
+				<Image source={require('@/assets/images/not-found.png')} style={styles.emptyImage} />
+				<Text style={styles.emptyText}>{emptyPlaceholder}</Text>
 			</View>
 		)
 	}
@@ -60,11 +59,15 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
+	emptyImage: {
+		width: s(122),
+		height: s(99),
+	},
 	emptyText: {
 		...typography.bodySRegular,
 		textAlign: 'center',
 		marginTop: vs(20),
-		color: Colors.BODYTEXT_SUB,
+		color: Colors.BODYTEXT_MAIN,
 	},
 	list: {
 		flex: 1,
