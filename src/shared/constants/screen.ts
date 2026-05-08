@@ -14,6 +14,8 @@ export enum SCREEN_TYPE {
 	MYPAGE = 'MyPage',
 	EDIT_PROFILE = 'EditProfile',
 
+	ANNOUNCEMENT_REGISTRATION = 'AnnouncementRegistration',
+
 	WEBVIEW = 'WebView',
 }
 
@@ -42,6 +44,8 @@ export type StackParamList = {
 
 	[SCREEN_TYPE.EDIT_PROFILE]: undefined
 	[SCREEN_TYPE.MYPAGE]: undefined
+
+	[SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION]: undefined
 
 	[SCREEN_TYPE.WEBVIEW]: { uri: string; authorization?: string }
 }
