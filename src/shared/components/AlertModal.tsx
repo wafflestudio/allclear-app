@@ -1,4 +1,5 @@
 import { Modal, Pressable, View, StyleSheet, Text } from 'react-native'
+import { BlurView } from '@react-native-community/blur'
 import { Colors } from '@/shared/constants/colors'
 import Button, { type ButtonVariant } from '@/shared/components/Button'
 
@@ -30,6 +31,13 @@ const AlertModal = ({
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={dismissOnBackdropPress ? onClose : undefined}>
+        <BlurView
+          style={styles.blur}
+          blurType="light"
+          blurAmount={1}
+          overlayColor="transparent"
+          reducedTransparencyFallbackColor="transparent"
+        />
         <Pressable style={styles.container} onPress={e => e.stopPropagation()}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
@@ -46,10 +54,13 @@ const AlertModal = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: Colors.DIM_BLACK,
+    backgroundColor: Colors.BACKGROUND_DIM,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
+  },
+  blur: {
+    ...StyleSheet.absoluteFillObject,
   },
   container: {
     width: '100%',
@@ -60,13 +71,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: Colors.FYI_BLACK,
+    color: Colors.BLACK,
     textAlign: 'center',
   },
   description: {
     fontSize: 14,
     fontWeight: '400',
-    color: Colors.FYI_BLACK,
+    color: Colors.BLACK,
     textAlign: 'center',
     marginTop: 12,
   },
