@@ -2,8 +2,8 @@ import { useIsFocused } from '@react-navigation/native'
 import { useQuery } from '@tanstack/react-query'
 import { Announcement } from '@/entities/announcement'
 import { serviceContext } from '@/shared/contexts/serviceContext'
+import { AnnouncementService } from '@/usecases/announcement'
 import { useContext, useEffect, useState } from 'react'
-import { getAnnouncementsQueryOptions } from '@/features/home/utils/announcementQueries'
 
 type HomeAnnouncementModalItem = {
 	key: string
@@ -18,9 +18,8 @@ const useHomeAnnouncements = () => {
 	const { announcementService } = useContext(serviceContext)
 	const isFocused = useIsFocused()
 	const [modalQueue, setModalQueue] = useState<HomeAnnouncementModalItem[]>([])
-	const { data: announcements = [], isSuccess: hasLoadedAnnouncements } = useQuery(
-		getAnnouncementsQueryOptions(announcementService),
-	)
+	const { data: announcements = [], isSuccess: hasLoadedAnnouncements } =
+		useAnnouncements(announcementService)
 
 	useEffect(() => {
 		if (!isFocused) return
@@ -54,3 +53,12 @@ const createAnnouncementModalItem = (announcement: Announcement): HomeAnnounceme
 	title: announcement.title,
 	description: announcement.content,
 })
+
+const useAnnouncements = (announcementService: AnnouncementService) => {
+	return useQuery({
+		queryKey: ['announcements'],
+		queryFn: () => announcementService.listAnnouncements(),
+		select: data => data.data,
+		staleTime: 60 * 1000,
+	})
+}
