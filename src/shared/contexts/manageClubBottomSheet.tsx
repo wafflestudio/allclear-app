@@ -67,16 +67,20 @@ export const ManageClubBottomSheetProvider = ({ children }: Props) => {
 				closeBottomSheet,
 			}}>
 			{children}
-			<BottomSheetModal
-				ref={bottomSheetModalRef}
-				index={0}
-				snapPoints={[Platform.OS === 'ios' ? 420 : 400]}
-				onDismiss={() => {
-					isBottomSheetOpenRef.current = false
-				}}
-				backdropComponent={renderBackdrop}>
-				<ManageClubView closeBottomSheet={closeBottomSheet} />
-			</BottomSheetModal>
+				<BottomSheetModal
+					ref={bottomSheetModalRef}
+					index={0}
+					snapPoints={[370]}
+					onDismiss={() => {
+						isBottomSheetOpenRef.current = false
+					}}
+					backdropComponent={renderBackdrop}
+					// Remove the default handle visible on top of the sheet to match Figma
+					handleComponent={() => null}
+					enableHandlePanningGesture={false}
+					handleIndicatorStyle={{ height: 0 }}>
+					<ManageClubView closeBottomSheet={closeBottomSheet} />
+				</BottomSheetModal>
 		</ManageClubBottomSheetContext.Provider>
 	)
 }
