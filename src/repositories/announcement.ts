@@ -5,8 +5,13 @@ export type ListAnnouncementsResponse = {
 	data: Announcement[]
 }
 
+export type DismissAnnouncementsRequest = {
+	announcementUuids: Announcement['uuid'][]
+}
+
 export type AnnouncementRepository = {
 	listAnnouncements: () => Promise<ListAnnouncementsResponse>
+	dismissAnnouncements: (request: DismissAnnouncementsRequest) => Promise<void>
 }
 
 export const getAnnouncementRepository = (): AnnouncementRepository => ({
@@ -14,5 +19,8 @@ export const getAnnouncementRepository = (): AnnouncementRepository => ({
 		const response = await apiConnector.get<ListAnnouncementsResponse>('/v1/announcements')
 
 		return response
+	},
+	dismissAnnouncements: async request => {
+		await apiConnector.post('/v1/announcements/dismiss', request)
 	},
 })
