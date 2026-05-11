@@ -17,10 +17,7 @@ const HeaderProfile = () => {
 			) : (
 				<TouchableOpacity onPress={openBottomSheet}>
 					<View>
-						<Image
-							style={styles.defaultImage}
-							source={require('@/assets/images/default-me.png')}
-						/>
+						<Image style={styles.defaultImage} source={require('@/assets/images/default-me.png')} />
 					</View>
 				</TouchableOpacity>
 			)}
