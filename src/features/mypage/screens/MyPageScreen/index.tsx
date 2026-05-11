@@ -1,36 +1,30 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ENV } from '@/config/ENV'
-import { Colors } from '@/shared/constants/colors'
+import { Club } from '@/entities/club'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { useManageClubBottomSheet } from '@/shared/contexts/manageClubBottomSheet'
 import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { useUserVoiceBottomSheet } from '@/shared/contexts/userVoiceBottomSheetContext'
-import { CategoryMap } from '@/shared/constants/category'
-import { Club } from '@/entities/club'
-import { SCREEN_TYPE } from '@/shared/constants/screen'
+import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
+import { navigation } from '@/shared/utils/navigation'
 import React, { useContext } from 'react'
 import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 import Toast from 'react-native-toast-message'
 import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIcons'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
-import { navigation } from '@/shared/utils/navigation'
 
 const MyPageScreen = () => {
-	const { authService } = useContext(serviceContext)
+	const { authService, termService } = useContext(serviceContext)
 	const { openBottomSheet: openUserVoice } = useUserVoiceBottomSheet()
 	const { openBottomSheet: openManageClub } = useManageClubBottomSheet()
 	const queryClient = useQueryClient()
 
 	const { user, setUser } = useProfile()
 	const { data: manageClubs, isLoading: isLoadingManageClubs } = useManageClubs()
-	const { data: myClubs } = useMyClubs()
-
-	const extraClubsCount = myClubs && myClubs.length > 5 ? myClubs.length - 5 : 0
 
 	const handleLeave = () => {
 		Alert.alert(
@@ -53,7 +47,7 @@ const MyPageScreen = () => {
 
 		Toast.show({
 			type: 'info',
-			text1: `회원 탈퇴 되었어요!`,
+			text1: '회원 탈퇴 되었어요!',
 			position: 'top',
 			topOffset: 60,
 			visibilityTime: 2000,
@@ -101,7 +95,7 @@ const MyPageScreen = () => {
 		navigation.navigate(SCREEN_TYPE.HOME)
 		Toast.show({
 			type: 'info',
-			text1: `로그아웃 되었어요!`,
+			text1: '로그아웃 되었어요!',
 			position: 'bottom',
 			visibilityTime: 2000,
 		})
@@ -119,208 +113,65 @@ const MyPageScreen = () => {
 		navigation.navigate(SCREEN_TYPE.SAVED_CLUB_LIST)
 	}
 
+	const handleOpenTerm = async (type: 'service' | 'privacy') => {
+		try {
+			const response = await termService.listTerms()
+			const terms = response?.data ?? []
+
+			const matcher = type === 'service' ? /service|terms|서비스|이용/i : /privacy|개인정보/i
+			const target = terms.find(term => matcher.test(`${term.termsKey} ${term.title}`))
+
+			if (!target?.contentUrl) {
+				Toast.show({
+					type: 'info',
+					text1: '약관 정보를 불러오지 못했어요',
+					position: 'bottom',
+					visibilityTime: 2000,
+				})
+				return
+			}
+
+			navigation.navigate(SCREEN_TYPE.WEBVIEW, {
+				uri: target.contentUrl,
+			})
+		} catch {
+			Toast.show({
+				type: 'info',
+				text1: '약관 정보를 불러오지 못했어요',
+				position: 'bottom',
+				visibilityTime: 2000,
+			})
+		}
+	}
+
 	return (
-		<SafeAreaView
-			edges={['top', 'left', 'right']}
-			style={{
-				flex: 1,
-				backgroundColor: '#F5F4F0',
-			}}>
-			<ScrollView style={{ padding: 16 }}>
-				{user?.college && user?.major ? (
-					<LinearGradient
-						colors={['#3C367D', '#171437']}
-						style={{ flex: 1, borderRadius: 12 }}
-						start={{ x: 0.5, y: 0 }}
-						end={{ x: 0.5, y: 1 }}>
-						<LinearGradient
-							colors={[
-								'rgba(255, 255, 255, 0)',
-								'rgba(255, 255, 255, 0.136)',
-								'rgba(255, 255, 255, 0)',
-							]}
-							start={{ x: 0, y: 0 }}
-							end={{ x: 1, y: 1 }}
-							locations={[0.085, 0.5067, 0.7281]}
-							style={{ flex: 1 }}>
-							<View style={{ padding: 24 }}>
-								<TouchableOpacity
-									style={{ position: 'absolute', top: 24, right: 24 }}
-									onPress={handleMoveEditProfilePage}>
-									<Image
-										source={require('@/assets/icons/edit-pencil.png')}
-										style={{
-											width: 24,
-											height: 24,
-										}}
-									/>
-								</TouchableOpacity>
-								<Image
-									source={require('@/assets/images/mypage/snu-profile-icon.png')}
-									style={{
-										width: 80,
-										height: 80,
-									}}
-								/>
-								<View style={{ marginTop: 24 }}>
-									<Text
-										style={{
-											fontSize: 20,
-											fontWeight: 'bold',
-											color: Colors.TEXT_BUTTON_SELECTED,
-										}}>
-										{user?.nickname || '이름 정보가 없습니다'}
-									</Text>
-									<Text
-										style={{
-											fontSize: 14,
-											color: Colors.TEXT_BUTTON_SELECTED,
-											opacity: 0.5,
-											marginTop: 8,
-										}}>
-										{user?.college || '단과대 정보가 없습니다'}
-										{user?.major && ' ' + user.major}
-									</Text>
-									<Text
-										style={{
-											fontSize: 14,
-											color: Colors.TEXT_BUTTON_SELECTED,
-											opacity: 0.5,
-											marginTop: 6,
-										}}>
-										{user?.admissionClass ? `${user.admissionClass} 학번` : '학번 정보가 없습니다'}
-									</Text>
-								</View>
+		<SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+			<ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+				<View style={styles.profileCard}>
+					<TouchableOpacity style={styles.profileEditButton} onPress={handleMoveEditProfilePage}>
+						<Image source={require('@/assets/icons/edit-pencil.png')} style={styles.profileEditIcon} />
+					</TouchableOpacity>
 
-								<View style={{ marginTop: 24 }}>
-									<Text
-										style={{
-											fontSize: 14,
-											color: Colors.TEXT_BUTTON_SELECTED,
-											opacity: 0.5,
-											marginTop: 8,
-										}}>
-										{'활동한 동아리'}
-									</Text>
-									{myClubs && myClubs.length > 0 ? (
-										<View
-											style={{
-												flexDirection: 'row',
-												alignItems: 'center',
-												flexWrap: 'wrap',
-												gap: 8,
-												marginTop: 12,
-											}}>
-											{myClubs.slice(0, 5).map((club: Club, index) => (
-												<TouchableOpacity
-													key={index}
-													onPress={() => {
-														navigation.navigate(SCREEN_TYPE.CLUB_DETAIL, {
-															uuid: club.uuid,
-															category: club.category,
-														})
-													}}>
-													<View
-														style={{
-															display: 'flex',
-															flexDirection: 'row',
-															justifyContent: 'center',
-															alignItems: 'center',
-															paddingHorizontal: 8,
-															paddingVertical: 4,
-															borderRadius: 12,
-															backgroundColor: '#ffffff1a',
-														}}>
-														<Image
-															resizeMethod="resize"
-															style={{ width: 24, height: 24 }}
-															source={CategoryMap[club.category].icon}
-														/>
-														<Text
-															style={{
-																color: Colors.TEXT_BUTTON_SELECTED,
-																fontSize: 12,
-																fontWeight: '600',
-																marginLeft: 4,
-															}}>
-															{club.name}
-														</Text>
-													</View>
-												</TouchableOpacity>
-											))}
-											{extraClubsCount > 0 && (
-												<View style={{ marginLeft: 8 }}>
-													<Text style={{ color: Colors.TEXT_BUTTON_SELECTED, fontSize: 16 }}>
-														+{extraClubsCount}
-													</Text>
-												</View>
-											)}
-										</View>
-									) : (
-										<Text
-											style={{
-												fontSize: 14,
-												color: Colors.TEXT_BUTTON_SELECTED,
-												opacity: 1,
-												marginTop: 8,
-												fontWeight: '500',
-											}}>
-											{'활동한 동아리에 리뷰를 남겨주세요'}
-										</Text>
-									)}
-								</View>
-							</View>
-						</LinearGradient>
-					</LinearGradient>
-				) : (
-					<View style={styles.profileContainer}>
-						<TouchableOpacity
-							style={{ position: 'absolute', top: 24, right: 24 }}
-							onPress={handleMoveEditProfilePage}>
-							<Image
-								source={require('@/assets/icons/edit-pencil.png')}
-								style={{
-									width: 24,
-									height: 24,
-								}}
-							/>
-						</TouchableOpacity>
-
-						<Image
-							source={require('@/assets/images/mypage/snu-profile-icon.png')}
-							style={{
-								width: 40,
-								height: 40,
-							}}
-						/>
-						<View style={{ marginTop: 12 }}>
-							<Text style={{ fontSize: 20, fontWeight: 'bold', color: '#8F8686' }}>
-								{user?.nickname || '이름 정보가 없습니다'}
-							</Text>
-							<Text style={{ fontSize: 14, color: '#8F8686', marginTop: 8 }}>
-								{user?.college || '단과대 정보가 없습니다'}
-								{user?.major && ' ' + user.major}
-							</Text>
-							<Text style={{ fontSize: 14, color: '#8F8686', marginTop: 6 }}>
-								{user?.admissionClass ? `${user.admissionClass} 학번` : '학번 정보가 없습니다'}
-							</Text>
-						</View>
+						<Image source={require('@/assets/images/mypage/snu-profile-icon.png')} style={styles.profileIcon} />
+					<View style={styles.profileTextGroup}>
+						<Text style={styles.profileName}>{user?.nickname || '이름 정보가 없습니다'}</Text>
+						<Text style={styles.profileSubText}>
+							{user?.college || '단과대 정보가 없습니다'}
+							{user?.major && ` ${user.major}`}
+						</Text>
+						<Text style={styles.profileSubText}>
+							{user?.admissionClass ? `${user.admissionClass} 학번` : '학번 정보가 없습니다'}
+						</Text>
 					</View>
-				)}
+				</View>
 
 				{isLoadingManageClubs && (
-					<View
-						style={{
-							marginTop: 16,
-							padding: 24,
-							borderRadius: 12,
-							backgroundColor: 'white',
-						}}>
+					<View style={styles.loadingCard}>
 						<SkeletonPlaceholder borderRadius={4}>
 							<SkeletonPlaceholder.Item flexDirection="row" alignItems="center">
 								<SkeletonPlaceholder.Item>
-									<SkeletonPlaceholder.Item width={300} height={20} />
-									<SkeletonPlaceholder.Item marginTop={6} width={180} height={20} />
+									<SkeletonPlaceholder.Item width={220} height={16} />
+									<SkeletonPlaceholder.Item marginTop={8} width={180} height={12} />
 								</SkeletonPlaceholder.Item>
 							</SkeletonPlaceholder.Item>
 						</SkeletonPlaceholder>
@@ -328,111 +179,62 @@ const MyPageScreen = () => {
 				)}
 
 				{manageClubs && manageClubs.length > 0 && (
-					<View style={{ marginTop: 16 }}>
-						<View style={{ marginHorizontal: 8 }}>
-							<Text style={{ color: '#8F8686' }}>관리 중인 동아리</Text>
-						</View>
-						<View
-							style={{
-								position: 'relative',
-								padding: 24,
-								marginTop: 12,
-								borderRadius: 12,
-								backgroundColor: 'white',
-								display: 'flex',
-								gap: 16,
-							}}>
-							{manageClubs.map(club => (
-								<TouchableOpacity key={club.uuid} onPress={() => openManageClubDetailPage(club)}>
-									<View
-										style={{
-											display: 'flex',
-											flexDirection: 'row',
-											justifyContent: 'space-between',
-											paddingVertical: 4,
-										}}>
-										<Text style={{ color: '#3A3434' }}>{club.name}</Text>
-										<Icon color={'#3A3434'} name="arrow-forward-ios" size={12} />
-									</View>
-								</TouchableOpacity>
-							))}
-							<TouchableOpacity onPress={handleManageClub}>
-								<View
-									style={{
-										display: 'flex',
-										flexDirection: 'row',
-										justifyContent: 'space-between',
-										paddingVertical: 4,
-									}}>
-									<Text style={{ color: '#C5BBB8' }}>{'관리 중인 동아리 추가하기'}</Text>
-									<Icon color={'#C5BBB8'} name="add-circle-outline" size={16} />
+					<View style={styles.whiteCard}>
+						{manageClubs.map(club => (
+							<TouchableOpacity
+								key={club.uuid}
+								onPress={() => openManageClubDetailPage(club)}
+								style={styles.rowTouchable}>
+								<View style={styles.defaultRow}>
+									<Text style={styles.defaultRowText}>{club.name}</Text>
+									<Icon color="#8F8686" name="arrow-forward-ios" size={12} />
 								</View>
 							</TouchableOpacity>
-						</View>
-					</View>
-				)}
-
-				{manageClubs && manageClubs.length === 0 && (
-					<View style={styles.managerContainer}>
-						<Icon
-							style={{ position: 'absolute', top: 33, right: 24 }}
-							color={'#FFFFFF' /* #deprecated color */}
-							name="arrow-forward-ios"
-							size={16}
-						/>
-						<TouchableOpacity onPress={handleManageClub}>
-							<Text style={{ color: Colors.TEXT_BUTTON_SELECTED, fontSize: 14, marginBottom: 4 }}>
-								동아리 운영진이신가요?
-							</Text>
-							<Text style={{ color: Colors.TEXT_BUTTON_SELECTED, opacity: 0.4, fontSize: 12 }}>
-								관리자 계정 활성화 요청하기
-							</Text>
+						))}
+						<TouchableOpacity onPress={handleManageClub} style={styles.rowTouchable}>
+							<View style={styles.defaultRow}>
+								<Text style={styles.defaultRowMutedText}>관리 중인 동아리 추가하기</Text>
+								<Icon color="#8F8686" name="add-circle-outline" size={16} />
+							</View>
 						</TouchableOpacity>
 					</View>
 				)}
 
-				<View style={styles.optionContainer}>
-					<TouchableOpacity onPress={handleMoveSavedClubListPage}>
-						<View
-							style={{
-								display: 'flex',
-								flexDirection: 'row',
-								justifyContent: 'space-between',
-								paddingVertical: 4,
-								paddingHorizontal: 8,
-							}}>
-							<View
-								style={{
-									display: 'flex',
-									flexDirection: 'row',
-									alignItems: 'center',
-								}}>
-								<IconMaterialCommunity
-									color={'#8F8686' /* #deprecated color */}
-									name="heart"
-									size={16}
-									style={{ marginRight: 4 }}
-								/>
-								<Text style={{ color: '#8F8686' /* #deprecated color */ }}>저장한 동아리</Text>
-							</View>
-							<Icon color={'#3A3434'} name="arrow-forward-ios" size={12} />
-						</View>
+
+				<TouchableOpacity onPress={handleManageClub} style={styles.managerPromptCard}>
+					<View>
+						<Text style={styles.managerPromptTitle}>동아리 운영진이신가요?</Text>
+						<Text style={styles.managerPromptSubtitle}>동아리 등록하기</Text>
+					</View>
+					<Icon color="#874FFF" name="arrow-forward-ios" size={12} />
+				</TouchableOpacity>
+
+				<TouchableOpacity style={styles.savedClubCard} onPress={handleMoveSavedClubListPage}>
+					<View style={styles.savedLeftBox}>
+						<IconMaterialCommunity color="#874FFF" name="heart" size={16} style={styles.heartIcon} />
+						<Text style={styles.savedText}>저장한 동아리</Text>
+					</View>
+					<Icon color="#874FFF" name="arrow-forward-ios" size={12} />
+				</TouchableOpacity>
+
+				<View style={styles.whiteCardLarge}>
+					<TouchableOpacity onPress={handleUserVoice} style={styles.optionTouchable}>
+						<Text style={styles.optionText}>개발자에게 요청하기</Text>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={() => handleOpenTerm('service')} style={styles.optionTouchable}>
+						<Text style={styles.optionText}>서비스 약관</Text>
+					</TouchableOpacity>
+					<TouchableOpacity onPress={() => handleOpenTerm('privacy')} style={styles.optionTouchable}>
+						<Text style={styles.optionText}>개인정보 처리방침</Text>
 					</TouchableOpacity>
 				</View>
 
-				<View style={styles.optionContainer}>
-					<TouchableOpacity onPress={handleUserVoice}>
-						<Text style={styles.option}>개발자에게 요청하기</Text>
+				<View style={styles.whiteCardLarge}>
+					<TouchableOpacity onPress={handleLogout} style={styles.optionTouchable}>
+						<Text style={styles.optionText}>로그아웃</Text>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={handleLogout}>
-						<Text style={[styles.option, { color: '#E6E0DF' /* #deprecated color */ }]}>
-							로그아웃
-						</Text>
-					</TouchableOpacity>
-					<TouchableOpacity onPress={handleLeave}>
-						<Text style={[styles.option, { color: '#E6E0DF' /* #deprecated color */ }]}>
-							회원탈퇴
-						</Text>
+					<TouchableOpacity onPress={handleLeave} style={styles.optionTouchable}>
+						<Text style={styles.optionText}>회원탈퇴</Text>
 					</TouchableOpacity>
 				</View>
 			</ScrollView>
@@ -452,67 +254,149 @@ const useManageClubs = () => {
 	return query
 }
 
-const useMyClubs = () => {
-	const { clubService } = useContext(serviceContext)
-
-	const query = useQuery(['myClubs'], () => clubService.listMyClubs(), {
-		select: data => data.clubs,
-	})
-
-	return query
-}
-
 const styles = StyleSheet.create({
-	profileContainer: {
+	safeArea: {
+		flex: 1,
+		backgroundColor: '#F5F4F0',
+	},
+	scrollView: {
+		flex: 1,
+	},
+	scrollContent: {
+		paddingHorizontal: 20,
+		paddingTop: 16,
+		paddingBottom: 24,
+		gap: 15,
+	},
+	profileCard: {
 		position: 'relative',
 		padding: 24,
-		marginTop: 16,
 		borderRadius: 12,
-		backgroundColor: 'white',
+		backgroundColor: '#FFFFFF',
 	},
-	profileEditButton: {},
-	managerContainer: {
-		position: 'relative',
+	profileEditButton: {
+		position: 'absolute',
+		top: 24,
+		right: 20,
+		padding: 4,
+	},
+	profileEditIcon: {
+		width: 24,
+		height: 24,
+		opacity: 0.4,
+	},
+	profileIcon: {
+		width: 40,
+		height: 40,
+		opacity: 0.34,
+	},
+	profileTextGroup: {
+		marginTop: 12,
+		gap: 8,
+	},
+	profileName: {
+		fontSize: 20,
+		fontWeight: '700',
+		color: '#3A3434',
+		letterSpacing: -0.4,
+	},
+	profileSubText: {
+		fontSize: 14,
+		fontWeight: '500',
+		color: '#8F8686',
+		opacity: 0.6,
+		letterSpacing: -0.28,
+	},
+	loadingCard: {
 		padding: 24,
-		marginTop: 16,
 		borderRadius: 12,
-		backgroundColor: '#3a3434',
+		backgroundColor: '#FFFFFF',
 	},
-	managerEditButton: {},
-	optionContainer: {
-		padding: 16,
-		marginTop: 16,
-		borderRadius: 12,
-		backgroundColor: 'white',
-	},
-	option: {
-		paddingHorizontal: 8, // 16 + 8 = 24
+	whiteCard: {
 		paddingVertical: 12,
+		paddingHorizontal: 24,
+		borderRadius: 12,
+		backgroundColor: '#FFFFFF',
+		gap: 8,
+	},
+	whiteCardLarge: {
+		padding: 24,
+		borderRadius: 12,
+		backgroundColor: '#FFFFFF',
+		gap: 24,
+	},
+	rowTouchable: {
+		paddingVertical: 4,
+	},
+	defaultRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	defaultRowText: {
+		fontSize: 12,
+		fontWeight: '500',
 		color: '#8F8686',
 	},
-
-	border: {
-		borderBottomWidth: 1,
-		borderColor: '#E6E0DF',
-		width: 60,
-		paddingBottom: 16,
-		marginBottom: 16,
-	},
-	popupNickname: {
-		fontSize: 16,
-		fontWeight: '600',
-		color: 'black',
-	},
-	manageClubs: {
+	defaultRowMutedText: {
 		fontSize: 12,
-		color: '#494141',
+		fontWeight: '500',
+		color: '#8F8686',
+		opacity: 0.7,
 	},
-	popupLogout: {
-		fontSize: 12,
-		color: '#494141',
+	managerPromptCard: {
+		paddingVertical: 20,
+		paddingLeft: 24,
+		paddingRight: 20,
+		borderRadius: 12,
+		backgroundColor: '#FAFAFA',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
 	},
-	popupLeave: {
+	managerPromptTitle: {
+		fontSize: 14,
+		fontWeight: '500',
+		color: '#874FFF',
+		letterSpacing: -0.28,
+	},
+	managerPromptSubtitle: {
+		marginTop: 4,
 		fontSize: 12,
-		color: '#D84141',
+		fontWeight: '400',
+		color: '#874FFF',
+		opacity: 0.4,
+		letterSpacing: -0.24,
+	},
+	savedClubCard: {
+		height: 56,
+		paddingHorizontal: 20,
+		borderRadius: 12,
+		backgroundColor: '#FFFFFF',
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+	},
+	savedLeftBox: {
+		flexDirection: 'row',
+		alignItems: 'center',
+	},
+	heartIcon: {
+		marginRight: 4,
+	},
+	savedText: {
+		fontSize: 12,
+		fontWeight: '500',
+		color: '#874FFF',
+		letterSpacing: -0.24,
+	},
+	optionTouchable: {
+		paddingVertical: 2,
+	},
+	optionText: {
+		fontSize: 12,
+		fontWeight: '500',
+		color: '#8F8686',
+		letterSpacing: -0.24,
 	},
 })
