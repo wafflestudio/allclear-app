@@ -69,6 +69,8 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 7,
 		elevation: 2,
+		backgroundColor: Colors.WHITE, // android에서 shadow가 보이도록 배경색 설정 필수
+		borderRadius: ms(15),
 	},
 	cardWidth: {
 		width: s(110),
