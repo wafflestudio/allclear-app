@@ -1,16 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BlurView } from '@react-native-community/blur'
 import { Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Button from '@/shared/components/Button'
 import Checkbox from '@/shared/components/Checkbox'
 import { Colors } from '@/shared/constants/colors'
+import { useProfile } from '@/shared/contexts/profileContext'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type Props = {
 	visible: boolean
+	announcementUuid: string
 	title: string
 	description: string
 	onHide: () => void
@@ -19,19 +21,26 @@ type Props = {
 
 const AnnouncementModal = ({
 	visible,
+	announcementUuid,
 	title,
 	description,
 	onHide,
 	onClose,
 }: Props) => {
-	const [hideChecked, setHideChecked] = useState(false)
 	const { height: windowHeight } = useWindowDimensions()
 	const insets = useSafeAreaInsets()
+	const { user } = useProfile()
+	const showHideOption = !!user
+	const [hideChecked, setHideChecked] = useState(false)
 
 	const modalHeight = Math.min(vs(500), windowHeight - insets.top - insets.bottom - vs(40))
 
+	useEffect(() => {
+		setHideChecked(false)
+	}, [announcementUuid])
+
 	const handleDismiss = () => {
-		if (hideChecked) {
+		if (showHideOption && hideChecked) {
 			onHide()
 			return
 		}
@@ -40,7 +49,7 @@ const AnnouncementModal = ({
 	}
 
 	return (
-		<Modal visible={visible} transparent animationType="fade" onRequestClose={handleDismiss}>
+		<Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
 			<View style={styles.overlay}>
 				<Pressable style={styles.backdrop} onPress={handleDismiss}>
 					<BlurView
@@ -73,13 +82,15 @@ const AnnouncementModal = ({
 						</ScrollView>
 					</View>
 					<View style={styles.footer}>
-						<Checkbox
-							label="다시 보지 않기"
-							checked={hideChecked}
-							onPress={() => setHideChecked(prev => !prev)}
-							style={styles.checkbox}
-							textStyle={styles.checkboxLabel}
-						/>
+						{showHideOption && (
+							<Checkbox
+								label="다시 보지 않기"
+								checked={hideChecked}
+								onPress={() => setHideChecked(prev => !prev)}
+								style={styles.checkbox}
+								textStyle={styles.checkboxLabel}
+							/>
+						)}
 						<View style={styles.buttonWrapper}>
 							<Button label="확인" onPress={handleDismiss} width={s(188)} style={styles.button} />
 						</View>

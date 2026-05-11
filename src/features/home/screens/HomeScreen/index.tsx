@@ -63,6 +63,7 @@ const HomeScreen = ({ navigation }: Props) => {
 				{currentAnnouncement && (
 					<AnnouncementModal
 						visible
+						announcementUuid={currentAnnouncement.uuid}
 						title={currentAnnouncement.title}
 						description={currentAnnouncement.description}
 						onHide={handleHideAnnouncement}
