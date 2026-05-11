@@ -6,6 +6,7 @@ import { Colors } from '@/shared/constants/colors'
 import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
 import { useProfile } from '@/shared/contexts/profileContext'
 import { Image, Pressable, type ImageSourcePropType } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { HomeTab } from '@/tabs/HomeTab'
 import { MyPageTab } from '@/tabs/MyPageTab'
 import { s, vs } from '@/shared/utils/scale'
@@ -51,27 +52,34 @@ function createTabBarIcon(
 	}
 }
 
-const screenOptions: BottomTabNavigationOptions = {
-	headerShown: false,
-	tabBarActiveTintColor: Colors.BUTTON_SELECTED,
-	tabBarInactiveTintColor: Colors.BUTTON_UNSELECTED,
-	tabBarStyle: {
-		height: vs(80),
-		backgroundColor: Colors.BACKGROUND_SUB,
-		borderTopWidth: 0, // iOS 그림자 제거
-		elevation: 0, // Android 그림자 제거
-	},
-	tabBarLabelStyle: {
-		...typography.bodySMedium,
-	},
-	tabBarButton: props => (
-		<Pressable {...props} style={({ pressed }) => [props.style, { opacity: pressed ? 0.6 : 1 }]} />
-	),
-}
-
 export function TabNavigator() {
 	const { user } = useProfile()
 	const { openBottomSheet } = useLoginBottomSheet()
+	const insets = useSafeAreaInsets()
+	// 안드로이드 네비게이션바 있는 경우에만 inset 적용, 나머지는 전부 미적용
+	const bottomInset = insets.bottom >= 40 ? insets.bottom : 0
+
+	const screenOptions: BottomTabNavigationOptions = {
+		headerShown: false,
+		tabBarActiveTintColor: Colors.BUTTON_SELECTED,
+		tabBarInactiveTintColor: Colors.BUTTON_UNSELECTED,
+		tabBarStyle: {
+			height: vs(70) + bottomInset,
+			backgroundColor: Colors.BACKGROUND_SUB,
+			borderTopWidth: 0, // iOS 그림자 제거
+			elevation: 0, // Android 그림자 제거
+			paddingBottom: vs(10) + bottomInset,
+		},
+		tabBarLabelStyle: {
+			...typography.bodySMedium,
+		},
+		tabBarButton: props => (
+			<Pressable
+				{...props}
+				style={({ pressed }) => [props.style, { opacity: pressed ? 0.6 : 1 }]}
+			/>
+		),
+	}
 
 	return (
 		<Tab.Navigator screenOptions={screenOptions}>
