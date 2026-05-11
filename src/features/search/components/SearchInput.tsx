@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Image, StyleSheet, TextInput, View } from 'react-native'
+import { Image, StyleSheet, Text, TextInput, View } from 'react-native'
 
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
@@ -13,6 +13,7 @@ type Props = {
 }
 
 const DEFAULT_PLACEHOLDER = '동아리의 키워드 혹은 소속 학과로 검색해보세요'
+const MAX_LENGTH = 10
 
 const SearchInput = ({
 	value: controlledValue,
@@ -47,7 +48,14 @@ const SearchInput = ({
 				placeholderTextColor={Colors.BODYTEXT_DISABLED}
 				onSubmitEditing={handleSubmit}
 				returnKeyType="search"
+				maxLength={MAX_LENGTH}
 			/>
+			{value.length > 0 && (
+				<Text>
+					<Text style={styles.counterCurrent}>{value.length}</Text>
+					<Text style={styles.counterMax}>/{MAX_LENGTH}</Text>
+				</Text>
+			)}
 		</View>
 	)
 }
@@ -74,5 +82,13 @@ const styles = StyleSheet.create({
 		...typography.bodyMMedium,
 		color: Colors.BODYTEXT_MAIN,
 		padding: 0,
+	},
+	counterCurrent: {
+		...typography.bodyMMedium,
+		color: Colors.BODYTEXT_SUB,
+	},
+	counterMax: {
+		...typography.bodyMMedium,
+		color: Colors.BODYTEXT_DISABLED,
 	},
 })
