@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react'
 import { BlurView } from '@react-native-community/blur'
-import { Modal, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
+import {
+	Modal,
+	Pressable,
+	ScrollView,
+	StyleSheet,
+	Text,
+	useWindowDimensions,
+	View,
+} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Button from '@/shared/components/Button'
 import Checkbox from '@/shared/components/Checkbox'

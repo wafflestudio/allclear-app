@@ -64,7 +64,10 @@ const UserVoiceView = ({ closeBottomSheet }: Props) => {
 				<TouchableOpacity
 					disabled={!input}
 					onPress={handleSubmit}
-					style={[styles.button, { backgroundColor: '#3A3434' /* #deprecated color */, marginTop: 'auto' }]}>
+					style={[
+						styles.button,
+						{ backgroundColor: '#3A3434' /* #deprecated color */, marginTop: 'auto' },
+					]}>
 					<Text
 						style={{
 							color: '#FFFFFF', // #deprecated color
