@@ -68,7 +68,11 @@ const ManageClubView = ({ closeBottomSheet }: Props) => {
 					onPress={handleSubmit}
 					style={[
 						styles.button,
-						{ backgroundColor: input.trim() ? '#3A3434' /* #deprecated color */ : '#C5BBB8' /* #deprecated color */ },
+						{
+							backgroundColor: input.trim()
+								? '#3A3434' /* #deprecated color */
+								: '#C5BBB8' /* #deprecated color */,
+						},
 					]}>
 					<Text
 						style={{

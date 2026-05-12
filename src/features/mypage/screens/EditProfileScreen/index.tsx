@@ -282,9 +282,17 @@ const useCollegeMajors = () => {
 }
 
 function renderArrowDownIcon() {
-	return <Icon name="keyboard-arrow-down" size={24} style={{ color: '#C5BBB8' /* #deprecated color */ }} />
+	return (
+		<Icon
+			name="keyboard-arrow-down"
+			size={24}
+			style={{ color: '#C5BBB8' /* #deprecated color */ }}
+		/>
+	)
 }
 
 function renderArrowUpIcon() {
-	return <Icon name="keyboard-arrow-up" size={24} style={{ color: '#C5BBB8' /* #deprecated color */ }} />
+	return (
+		<Icon name="keyboard-arrow-up" size={24} style={{ color: '#C5BBB8' /* #deprecated color */ }} />
+	)
 }
