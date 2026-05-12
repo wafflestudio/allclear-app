@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Image, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
@@ -37,6 +37,11 @@ const SearchInput = ({
 		if (!isControlled) setInternalValue('') // initialize searchPage's searchBar
 	}
 
+	const handleClear = () => {
+		if (!isControlled) setInternalValue('')
+		onChangeText?.('')
+	}
+
 	return (
 		<View style={styles.container}>
 			<Image source={require('@/assets/icons/search-icon.png')} style={styles.icon} />
@@ -51,10 +56,15 @@ const SearchInput = ({
 				maxLength={MAX_LENGTH}
 			/>
 			{value.length > 0 && (
-				<Text>
-					<Text style={styles.counterCurrent}>{value.length}</Text>
-					<Text style={styles.counterMax}>/{MAX_LENGTH}</Text>
-				</Text>
+				<View style={styles.trailing}>
+					<Text>
+						<Text style={styles.counterCurrent}>{value.length}</Text>
+						<Text style={styles.counterMax}>/{MAX_LENGTH}</Text>
+					</Text>
+					<Pressable onPress={handleClear} hitSlop={s(8)}>
+						<Image source={require('@/assets/icons/search-reset.png')} style={styles.clearIcon} />
+					</Pressable>
+				</View>
 			)}
 		</View>
 	)
@@ -66,20 +76,31 @@ const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: s(15),
 		paddingVertical: vs(16),
-		paddingHorizontal: s(20),
+		paddingLeft: s(18),
+		paddingRight: s(15),
 		backgroundColor: Colors.BACKGROUND_SUB,
 		borderRadius: s(10),
+	},
+	trailing: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: s(7),
 	},
 	icon: {
 		width: s(15),
 		height: s(15),
 		resizeMode: 'contain',
 	},
+	clearIcon: {
+		width: s(14),
+		height: s(14),
+		resizeMode: 'contain',
+	},
 	input: {
 		flex: 1,
-		...typography.bodyMMedium,
+		marginLeft: s(10),
+		...typography.bodyMMedium13px,
 		color: Colors.BODYTEXT_MAIN,
 		padding: 0,
 	},
