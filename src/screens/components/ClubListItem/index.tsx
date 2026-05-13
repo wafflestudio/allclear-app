@@ -3,7 +3,7 @@ import { Category, CategoryMap } from 'entities/category'
 import { Club } from 'entities/club'
 import React, { useState } from 'react'
 import { Animated, Easing, Text, View } from 'react-native'
-import { Blurhash } from 'react-native-blurhash'
+import BlurhashPlaceholder from 'screens/components/BlurhashPlaceholder'
 
 const defaultBlurHash = 'UFE.X=9uRNtR~q9tD%bu-=D*Vss:I.Rit5sl'
 
@@ -39,7 +39,7 @@ const ClubListItem = ({ club, category }: Props) => {
 						left: 0,
 						top: 0,
 					}}>
-					<Blurhash
+					<BlurhashPlaceholder
 						blurhash={club.blurHash || defaultBlurHash}
 						decodeWidth={32}
 						decodeHeight={32}

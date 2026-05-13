@@ -6,7 +6,7 @@ import { SCREEN_TYPE, StackParamList } from 'entities/screen'
 import useClickEventLog from 'hooks/useClickEventLog'
 import React, { useState } from 'react'
 import { Animated, Easing, Image, Text, TouchableOpacity, View } from 'react-native'
-import { Blurhash } from 'react-native-blurhash'
+import BlurhashPlaceholder from 'screens/components/BlurhashPlaceholder'
 
 type NavigationProps = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.HOME>
 
@@ -63,7 +63,7 @@ const CategoryCard = ({ category }: Props) => {
 								left: 0,
 								top: 0,
 							}}>
-							<Blurhash
+							<BlurhashPlaceholder
 								blurhash={category.blurHash || 'UFE.X=9uRNtR~q9tD%bu-=D*Vss:I.Rit5sl'}
 								decodeWidth={32}
 								decodeHeight={32}

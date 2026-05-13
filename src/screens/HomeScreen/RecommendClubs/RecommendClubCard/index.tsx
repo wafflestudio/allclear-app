@@ -2,7 +2,7 @@ import { Colors } from 'constants/colors'
 import { Club } from 'entities/club'
 import React, { useState } from 'react'
 import { Animated, Easing, Text, View } from 'react-native'
-import { Blurhash } from 'react-native-blurhash'
+import BlurhashPlaceholder from 'screens/components/BlurhashPlaceholder'
 
 type Props = {
 	club: Club
@@ -44,7 +44,7 @@ const RecommandClubCard = ({ club }: Props) => {
 							position: 'absolute',
 							top: 0,
 						}}>
-						<Blurhash
+						<BlurhashPlaceholder
 							blurhash={club.blurHash || 'UFE.X=9uRNtR~q9tD%bu-=D*Vss:I.Rit5sl'}
 							decodeWidth={32}
 							decodeHeight={32}
