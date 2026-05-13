@@ -3,6 +3,8 @@ import { Club } from '@/entities/club'
 export enum SCREEN_TYPE {
 	HOME = 'Home',
 
+	SEARCH = 'Search',
+
 	CLUB_LIST = 'ClubList',
 	SEARCH_RESULT_CLUB_LIST = 'SearchResultClubList',
 	SAVED_CLUB_LIST = 'SavedClubList',
@@ -19,6 +21,8 @@ export enum SCREEN_TYPE {
 
 export type StackParamList = {
 	[SCREEN_TYPE.HOME]: undefined
+
+	[SCREEN_TYPE.SEARCH]: undefined
 
 	[SCREEN_TYPE.CLUB_LIST]: {
 		name?: Club['name']

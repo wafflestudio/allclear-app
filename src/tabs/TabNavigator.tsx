@@ -11,7 +11,7 @@ import { HomeTab } from '@/tabs/HomeTab'
 import { MyPageTab } from '@/tabs/MyPageTab'
 import { s, vs } from '@/shared/utils/scale'
 import { SavedTab } from './SaveTab'
-import { RankingTab } from './RankingTab'
+import { SearchTab } from './SearchTab'
 import { typography } from '@/shared/constants/typography'
 
 const Tab = createBottomTabNavigator()
@@ -87,7 +87,7 @@ export function TabNavigator() {
 			<Tab.Screen
 				options={{ tabBarIcon: renderExploreTabIcon }}
 				name="탐색"
-				component={RankingTab}
+				component={SearchTab}
 			/>
 			<Tab.Screen options={{ tabBarIcon: renderSavedTabIcon }} name="저장" component={SavedTab} />
 			<Tab.Screen
