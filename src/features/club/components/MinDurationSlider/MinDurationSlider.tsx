@@ -8,10 +8,11 @@ import {
 } from 'react-native'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
-import { ms, vs } from '@/shared/utils/scale'
+import { vs } from '@/shared/utils/scale'
 import { MinDurationSliderHeader } from './MinDurationSliderHeader'
 import { MinDurationSliderStepDot } from './MinDurationSliderStepDot'
 import {
+  SEMESTER_VALUES,
   THUMB_SIZE,
   useMinDurationSlider,
   type MinDurationValue,
@@ -24,7 +25,6 @@ export type MinDurationSliderProps = {
 }
 
 const TRACK_HEIGHT = vs(4)
-const THUMB_HIT_SIZE = ms(28)
 
 export const MinDurationSlider = ({
   style,
@@ -32,30 +32,21 @@ export const MinDurationSlider = ({
   onChange,
 }: MinDurationSliderProps) => {
   const {
-    semesterValues,
     labelCenters,
-    isUnlimited,
-    selectedStartIndex,
-    selectedEndIndex,
-    handleToggleUnlimited,
+    selectedValues,
+    handleToggleStep,
     handleLabelLayout,
     trackStart,
     trackWidth,
-    selectedStartX,
-    selectedEndX,
-    selectedTrackWidth,
-    leftThumbPanHandlers,
-    rightThumbPanHandlers,
   } = useMinDurationSlider({ value, onChange })
+
+  const selectedValueSet = new Set(selectedValues)
 
   return (
     <View style={[styles.container, style]}>
-      <MinDurationSliderHeader
-        checked={isUnlimited}
-        onToggle={handleToggleUnlimited}
-      />
+      <MinDurationSliderHeader />
 
-      <View pointerEvents={isUnlimited ? 'none' : 'auto'} style={styles.sliderArea}>
+      <View style={styles.sliderArea}>
         <View style={styles.trackArea}>
           <View
             style={[
@@ -67,48 +58,54 @@ export const MinDurationSlider = ({
             ]}
           />
 
-          <View
-            style={[
-              styles.selectedTrack,
-              isUnlimited && styles.selectedTrackDisabled,
-              {
-                left: selectedStartX,
-                width: selectedTrackWidth,
-              },
-            ]}
-          />
+          {SEMESTER_VALUES.slice(0, -1).map((semesterValue, index) => {
+            const nextSemesterValue = SEMESTER_VALUES[index + 1]
+            const startCenterX = labelCenters[index]
+            const endCenterX = labelCenters[index + 1]
 
-          {labelCenters.map((centerX, index) => (
-            <MinDurationSliderStepDot
-              key={semesterValues[index]}
-              centerX={centerX}
-              selected={!isUnlimited && index >= selectedStartIndex && index <= selectedEndIndex}
-            />
-          ))}
+            if (
+              !selectedValueSet.has(semesterValue) ||
+              !selectedValueSet.has(nextSemesterValue) ||
+              startCenterX === undefined ||
+              endCenterX === undefined
+            ) {
+              return null
+            }
 
-          <View
-            {...leftThumbPanHandlers}
-            style={[
-              styles.thumbHitbox,
-              {
-                left: selectedStartX - THUMB_HIT_SIZE / 2,
-              },
-            ]}
-          />
+            return (
+              <View
+                key={`${semesterValue}-${nextSemesterValue}`}
+                style={[
+                  styles.connectedTrack,
+                  {
+                    left: startCenterX,
+                    width: endCenterX - startCenterX,
+                  },
+                ]}
+              />
+            )
+          })}
 
-          <View
-            {...rightThumbPanHandlers}
-            style={[
-              styles.thumbHitbox,
-              {
-                left: selectedEndX - THUMB_HIT_SIZE / 2,
-              },
-            ]}
-          />
+          {labelCenters.map((centerX, index) => {
+            const semesterValue = SEMESTER_VALUES[index]
+
+            if (semesterValue === undefined) {
+              return null
+            }
+
+            return (
+              <MinDurationSliderStepDot
+                key={semesterValue}
+                centerX={centerX}
+                onPress={() => handleToggleStep(semesterValue)}
+                selected={selectedValueSet.has(semesterValue)}
+              />
+            )
+          })}
         </View>
 
         <View style={styles.labelsRow}>
-          {semesterValues.map((semesterValue, index) => (
+          {SEMESTER_VALUES.map((semesterValue, index) => (
             <View
               key={semesterValue}
               onLayout={event => handleLabelLayout(index, event)}
@@ -142,22 +139,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: (THUMB_SIZE - TRACK_HEIGHT) / 2,
   },
-  selectedTrack: {
+  connectedTrack: {
     backgroundColor: Colors.POINTCOLOR,
     borderRadius: TRACK_HEIGHT / 2,
     height: TRACK_HEIGHT,
     position: 'absolute',
     top: (THUMB_SIZE - TRACK_HEIGHT) / 2,
-  },
-  selectedTrackDisabled: {
-    backgroundColor: Colors.GRAY,
-  },
-  thumbHitbox: {
-    height: THUMB_HIT_SIZE,
-    position: 'absolute',
-    top: (THUMB_SIZE - THUMB_HIT_SIZE) / 2,
-    width: THUMB_HIT_SIZE,
-    zIndex: 1,
   },
   labelsRow: {
     flexDirection: 'row',

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import { Colors } from '@/shared/constants/colors'
 import { ms } from '@/shared/utils/scale'
 import { THUMB_SIZE } from './useMinDurationSlider'
@@ -7,19 +7,22 @@ import { THUMB_SIZE } from './useMinDurationSlider'
 type MinDurationSliderStepDotProps = {
   centerX: number
   selected: boolean
+  onPress?: () => void
 }
 
 const STEP_DOT_SIZE = ms(12)
-const STEP_DOT_SELECTED_SIZE = ms(14)
+const STEP_DOT_SELECTED_SIZE = ms(16)
 const STEP_DOT_BORDER_WIDTH = 2
 const STEP_DOT_INNER_SIZE = ms(8)
 
 export const MinDurationSliderStepDot = ({
   centerX,
   selected,
+  onPress,
 }: MinDurationSliderStepDotProps) => (
-  <View
-    pointerEvents="none"
+  <Pressable
+    hitSlop={8}
+    onPress={onPress}
     style={[
       styles.stepDot,
       selected && styles.stepDotSelected,
@@ -29,21 +32,22 @@ export const MinDurationSliderStepDot = ({
     ]}
   >
     {selected ? <View style={styles.stepDotInner} /> : null}
-  </View>
+  </Pressable>
 )
 
 const styles = StyleSheet.create({
   stepDot: {
+    alignItems: 'center',
     backgroundColor: Colors.WHITE,
     borderColor: Colors.GRAY,
-    justifyContent: 'center',
-    alignItems: 'center',
     borderRadius: STEP_DOT_SIZE / 2,
     borderWidth: STEP_DOT_BORDER_WIDTH,
     height: STEP_DOT_SIZE,
+    justifyContent: 'center',
     position: 'absolute',
     top: (THUMB_SIZE - STEP_DOT_SIZE) / 2,
     width: STEP_DOT_SIZE,
+    zIndex: 1,
   },
   stepDotSelected: {
     borderColor: Colors.POINTCOLOR,
