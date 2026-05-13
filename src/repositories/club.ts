@@ -8,6 +8,9 @@ export type SearchClubsRequest = {
 export type SearchClubsResponse = {
 	clubs: Club[]
 	totalSize: number
+	query?: string
+	correctedQuery?: string
+	isTypoCorrected?: boolean
 }
 
 export type ListPopularClubsResponse = {
