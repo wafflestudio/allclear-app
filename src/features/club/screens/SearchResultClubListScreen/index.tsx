@@ -34,8 +34,8 @@ const SearchResultClubListScreen = ({ route, navigation }: Props) => {
 		})
 	}
 
-	const handleMoveToHomePage = () => {
-		navigation.navigate(SCREEN_TYPE.HOME)
+	const handleGoBack = () => {
+		navigation.goBack()
 	}
 
 	return (
@@ -47,7 +47,7 @@ const SearchResultClubListScreen = ({ route, navigation }: Props) => {
 			<SafeAreaView
 				edges={['top', 'left', 'right']}
 				style={{ flex: 1, backgroundColor: Colors.WHITE, overflow: 'scroll' }}>
-				<Header title="검색 결과" onBack={handleMoveToHomePage} />
+				<Header title="검색 결과" onBack={handleGoBack} />
 				<ClubList
 					clubs={clubs}
 					openDetailPage={openDetailPage}
