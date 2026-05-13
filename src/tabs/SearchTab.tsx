@@ -1,20 +1,30 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
+import SearchScreen from '@/features/search/screens/SearchScreen'
+import SearchResultClubListScreen from '@/features/club/screens/SearchResultClubListScreen'
 import ClubDetailScreen from '@/features/club/screens/ClubDetailScreen'
-import ClubListScreen from '@/features/club/screens/ClubListScreen'
 import ClubReviewScreen from '@/features/club/screens/ClubReviewScreen'
-import HomeScreen from '@/features/home/screens/HomeScreen'
+import ClubRankingScreen from '@/features/club/screens/ClubRankingScreen'
 
 const Stack = createNativeStackNavigator<StackParamList>()
 
-export function HomeTab() {
+export function SearchTab() {
 	return (
 		<Stack.Navigator screenOptions={{ headerBackTitleVisible: false, headerShown: false }}>
-			<Stack.Screen key={SCREEN_TYPE.HOME} name={SCREEN_TYPE.HOME} component={HomeScreen} />
 			<Stack.Screen
-				key={SCREEN_TYPE.CLUB_LIST}
-				name={SCREEN_TYPE.CLUB_LIST}
-				component={ClubListScreen}
+				key={SCREEN_TYPE.SEARCH}
+				name={SCREEN_TYPE.SEARCH}
+				component={SearchScreen}
+			/>
+			<Stack.Screen
+				key={SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST}
+				name={SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST}
+				component={SearchResultClubListScreen}
+			/>
+			<Stack.Screen
+				key={SCREEN_TYPE.CLUB_RANKING}
+				name={SCREEN_TYPE.CLUB_RANKING}
+				component={ClubRankingScreen}
 			/>
 			<Stack.Screen
 				key={SCREEN_TYPE.CLUB_DETAIL}

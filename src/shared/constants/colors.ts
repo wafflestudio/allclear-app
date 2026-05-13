@@ -7,6 +7,7 @@ export const Colors = {
 	// Background
 	BACKGROUND_MAIN: '#FAFAFA',
 	BACKGROUND_SUB: '#F3F0F5',
+	BACKGROUND_DIM: 'rgba(0, 0, 0, 0.20)',
 
 	// Body Text
 	BODYTEXT_MAIN: '#202020',
@@ -28,6 +29,7 @@ export const Colors = {
 
 	// Point Color
 	POINTCOLOR: '#874FFF',
+	POINTCOLOR_10: 'rgba(135, 79, 255, 0.1)',
 	POINTCOLOR_SUB: '#FFFFFF',
 
 	// Icon

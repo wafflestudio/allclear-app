@@ -39,4 +39,5 @@ export const typography = {
 	bodyMRegular: base(14, '400'),
 	bodyMSemibold: base(14, '600'),
 	bodyMMedium: base(14, '500'),
+	bodyMMedium13px: base(13, '500'),
 }
