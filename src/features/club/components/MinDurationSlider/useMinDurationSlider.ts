@@ -253,7 +253,10 @@ export const useMinDurationSlider = ({ value, onChange }: UseMinDurationSliderOp
 
   return {
     semesterValues: SEMESTER_VALUES,
+    labelCenters,
     isUnlimited,
+    selectedStartIndex,
+    selectedEndIndex,
     handleToggleUnlimited,
     handleLabelLayout,
     trackStart,

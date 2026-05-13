@@ -10,6 +10,7 @@ import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, vs } from '@/shared/utils/scale'
 import { MinDurationSliderHeader } from './MinDurationSliderHeader'
+import { MinDurationSliderStepDot } from './MinDurationSliderStepDot'
 import {
   THUMB_SIZE,
   useMinDurationSlider,
@@ -32,7 +33,10 @@ export const MinDurationSlider = ({
 }: MinDurationSliderProps) => {
   const {
     semesterValues,
+    labelCenters,
     isUnlimited,
+    selectedStartIndex,
+    selectedEndIndex,
     handleToggleUnlimited,
     handleLabelLayout,
     trackStart,
@@ -74,6 +78,14 @@ export const MinDurationSlider = ({
             ]}
           />
 
+          {labelCenters.map((centerX, index) => (
+            <MinDurationSliderStepDot
+              key={semesterValues[index]}
+              centerX={centerX}
+              selected={!isUnlimited && index >= selectedStartIndex && index <= selectedEndIndex}
+            />
+          ))}
+
           <View
             {...leftThumbPanHandlers}
             style={[
@@ -82,9 +94,7 @@ export const MinDurationSlider = ({
                 left: selectedStartX - THUMB_HIT_SIZE / 2,
               },
             ]}
-          >
-            <View style={[styles.thumb, isUnlimited && styles.thumbDisabled]} />
-          </View>
+          />
 
           <View
             {...rightThumbPanHandlers}
@@ -94,9 +104,7 @@ export const MinDurationSlider = ({
                 left: selectedEndX - THUMB_HIT_SIZE / 2,
               },
             ]}
-          >
-            <View style={[styles.thumb, isUnlimited && styles.thumbDisabled]} />
-          </View>
+          />
         </View>
 
         <View style={styles.labelsRow}>
@@ -145,24 +153,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.GRAY,
   },
   thumbHitbox: {
-    alignItems: 'center',
     height: THUMB_HIT_SIZE,
-    justifyContent: 'center',
     position: 'absolute',
     top: (THUMB_SIZE - THUMB_HIT_SIZE) / 2,
     width: THUMB_HIT_SIZE,
     zIndex: 1,
-  },
-  thumb: {
-    backgroundColor: Colors.BACKGROUND_SUB,
-    borderColor: Colors.POINTCOLOR,
-    borderRadius: THUMB_SIZE / 2,
-    borderWidth: 2,
-    height: THUMB_SIZE,
-    width: THUMB_SIZE,
-  },
-  thumbDisabled: {
-    borderColor: Colors.GRAY,
   },
   labelsRow: {
     flexDirection: 'row',
