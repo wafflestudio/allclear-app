@@ -32,9 +32,11 @@ export const MinDurationSlider = ({
   onChange,
 }: MinDurationSliderProps) => {
   const {
-    labelCenters,
+    labelWidths,
+    stepCenters,
     selectedValues,
     handleToggleStep,
+    handleLabelsContainerLayout,
     handleLabelLayout,
     trackStart,
     trackWidth,
@@ -60,8 +62,8 @@ export const MinDurationSlider = ({
 
           {MIN_DURATION_OPTIONS.slice(0, -1).map((option, index) => {
             const nextOption = MIN_DURATION_OPTIONS[index + 1]
-            const startCenterX = labelCenters[index]
-            const endCenterX = labelCenters[index + 1]
+            const startCenterX = stepCenters[index]
+            const endCenterX = stepCenters[index + 1]
 
             if (
               nextOption === undefined ||
@@ -87,7 +89,7 @@ export const MinDurationSlider = ({
             )
           })}
 
-          {labelCenters.map((centerX, index) => {
+          {stepCenters.map((centerX, index) => {
             const option = MIN_DURATION_OPTIONS[index]
 
             if (option === undefined) {
@@ -105,12 +107,22 @@ export const MinDurationSlider = ({
           })}
         </View>
 
-        <View style={styles.labelsRow}>
+        <View onLayout={handleLabelsContainerLayout} style={styles.labelsRow}>
           {MIN_DURATION_OPTIONS.map((option, index) => (
             <View
               key={option.value}
               onLayout={event => handleLabelLayout(index, event)}
-              style={styles.labelSlot}
+              style={[
+                styles.labelSlot,
+                index === 0
+                  ? styles.firstLabelSlot
+                  : index === MIN_DURATION_OPTIONS.length - 1
+                    ? styles.lastLabelSlot
+                    : {
+                        left:
+                          (stepCenters[index] ?? 0) - ((labelWidths[index] ?? 0) / 2),
+                      },
+              ]}
             >
               <Text style={styles.labelText}>{option.label}</Text>
             </View>
@@ -127,11 +139,13 @@ const styles = StyleSheet.create({
   },
   sliderArea: {
     gap: vs(10),
+    width: '100%',
   },
   trackArea: {
     height: THUMB_SIZE,
     justifyContent: 'center',
     position: 'relative',
+    width: '100%',
   },
   track: {
     backgroundColor: Colors.GRAY,
@@ -148,11 +162,19 @@ const styles = StyleSheet.create({
     top: (THUMB_SIZE - TRACK_HEIGHT) / 2,
   },
   labelsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    position: 'relative',
+    width: '100%',
   },
   labelSlot: {
     alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+  },
+  firstLabelSlot: {
+    left: 0,
+  },
+  lastLabelSlot: {
+    right: 0,
   },
   labelText: {
     ...typography.bodySRegular,
