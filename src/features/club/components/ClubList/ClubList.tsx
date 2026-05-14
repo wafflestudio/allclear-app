@@ -13,13 +13,13 @@ type Props = {
 	category?: Category['name']
 	openDetailPage: (club: Club) => void
 	emptyPlaceholder: string
-	isFetching?: boolean
+	isLoading?: boolean
 }
 
-const ClubList = ({ clubs, category, openDetailPage, emptyPlaceholder, isFetching }: Props) => {
+const ClubList = ({ clubs, category, openDetailPage, emptyPlaceholder, isLoading }: Props) => {
 	const { width } = useWindowDimensions()
 
-	if (isFetching) return <ClubListSkeleton />
+	if (isLoading) return <ClubListSkeleton />
 	if (!clubs) return null
 	if (clubs.length === 0) {
 		return (

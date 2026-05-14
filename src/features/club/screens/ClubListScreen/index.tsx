@@ -23,7 +23,7 @@ type Props = {
 
 const ClubListScreen = ({ route, navigation }: Props) => {
 	const { name, category } = route.params
-	const { data: clubs, isFetching } = useCategoryClubs({ name, category })
+	const { data: clubs, isLoading } = useCategoryClubs({ name, category })
 
 	if (!category) return null
 	const categoryDetail = CategoryMap[category]
@@ -56,7 +56,7 @@ const ClubListScreen = ({ route, navigation }: Props) => {
 					category={category}
 					openDetailPage={openDetailPage}
 					emptyPlaceholder="조건에 맞는 동아리가 없어요"
-					isFetching={isFetching}
+					isLoading={isLoading}
 				/>
 			</SafeAreaView>
 		</WithViewEventLog>
@@ -78,6 +78,8 @@ const useCategoryClubs = ({ name, category }: UseCategoryClubsProps) => {
 		() => clubService.listClubs({ name, category }),
 		{
 			select: data => data.clubs,
+			staleTime: Infinity,
+			refetchOnMount: false,
 		},
 	)
 }

@@ -11,7 +11,7 @@ import ClubList from '@/features/club/components/ClubList/ClubList'
 import Header from '@/features/club/components/ClubList/Header'
 
 const SavedClubListScreen = () => {
-	const { data: savedClubs, isFetching } = useSavedClubs()
+	const { data: savedClubs, isLoading } = useSavedClubs()
 
 	const openDetailPage = (club: Club) => {
 		navigation.navigate(SCREEN_TYPE.CLUB_DETAIL, {
@@ -38,7 +38,7 @@ const SavedClubListScreen = () => {
 					clubs={savedClubs}
 					openDetailPage={openDetailPage}
 					emptyPlaceholder="저장한 동아리가 없어요"
-					isFetching={isFetching}
+					isLoading={isLoading}
 				/>
 			</SafeAreaView>
 		</WithViewEventLog>
