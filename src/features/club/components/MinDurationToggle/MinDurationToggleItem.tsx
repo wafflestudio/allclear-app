@@ -2,9 +2,9 @@ import React from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { Colors } from '@/shared/constants/colors'
 import { ms } from '@/shared/utils/scale'
-import { THUMB_SIZE } from './useMinDurationSlider'
+import { THUMB_SIZE } from './useMinDurationToggle'
 
-type MinDurationSliderStepDotProps = {
+type MinDurationToggleItemProps = {
   centerX: number
   selected: boolean
   onPress?: () => void
@@ -15,11 +15,11 @@ const STEP_DOT_SELECTED_SIZE = ms(16)
 const STEP_DOT_BORDER_WIDTH = 2
 const STEP_DOT_INNER_SIZE = ms(8)
 
-export const MinDurationSliderStepDot = ({
+export const MinDurationToggleItem = ({
   centerX,
   selected,
   onPress,
-}: MinDurationSliderStepDotProps) => (
+}: MinDurationToggleItemProps) => (
   <Pressable
     hitSlop={8}
     onPress={onPress}

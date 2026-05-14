@@ -9,16 +9,15 @@ import {
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { vs } from '@/shared/utils/scale'
-import { MinDurationSliderHeader } from './MinDurationSliderHeader'
-import { MinDurationSliderStepDot } from './MinDurationSliderStepDot'
+import { MinDurationToggleItem } from './MinDurationToggleItem'
 import {
   MIN_DURATION_OPTIONS,
   THUMB_SIZE,
-  useMinDurationSlider,
+  useMinDurationToggle,
   type MinDurationValue,
-} from './useMinDurationSlider'
+} from './useMinDurationToggle'
 
-export type MinDurationSliderProps = {
+export type MinDurationToggleProps = {
   style?: StyleProp<ViewStyle>
   value: MinDurationValue
   onChange: (value: MinDurationValue) => void
@@ -26,11 +25,17 @@ export type MinDurationSliderProps = {
 
 const TRACK_HEIGHT = vs(4)
 
-export const MinDurationSlider = ({
+const MinDurationToggleHeader = () => (
+  <View style={styles.header}>
+    <Text style={styles.title}>최소활동기간</Text>
+  </View>
+)
+
+export const MinDurationToggle = ({
   style,
   value,
   onChange,
-}: MinDurationSliderProps) => {
+}: MinDurationToggleProps) => {
   const {
     labelWidths,
     stepCenters,
@@ -40,15 +45,15 @@ export const MinDurationSlider = ({
     handleLabelLayout,
     trackStart,
     trackWidth,
-  } = useMinDurationSlider({ value, onChange })
+  } = useMinDurationToggle({ value, onChange })
 
   const selectedValueSet = new Set(selectedValues)
 
   return (
     <View style={[styles.container, style]}>
-      <MinDurationSliderHeader />
+      <MinDurationToggleHeader />
 
-      <View style={styles.sliderArea}>
+      <View style={styles.toggleArea}>
         <View style={styles.trackArea}>
           <View
             style={[
@@ -97,7 +102,7 @@ export const MinDurationSlider = ({
             }
 
             return (
-              <MinDurationSliderStepDot
+              <MinDurationToggleItem
                 key={option.value}
                 centerX={centerX}
                 onPress={() => handleToggleStep(option.value)}
@@ -127,6 +132,8 @@ export const MinDurationSlider = ({
             </View>
           ))}
         </View>
+
+        <Text style={styles.description}>원하는 기간을 모두 선택해보세요.</Text>
       </View>
     </View>
   )
@@ -134,10 +141,13 @@ export const MinDurationSlider = ({
 
 const styles = StyleSheet.create({
   container: {
-    gap: vs(10),
+    gap: vs(12),
   },
-  sliderArea: {
-    gap: vs(10),
+  header: {
+    alignItems: 'flex-start',
+  },
+  toggleArea: {
+    gap: vs(8),
     width: '100%',
   },
   trackArea: {
@@ -163,6 +173,7 @@ const styles = StyleSheet.create({
   labelsRow: {
     position: 'relative',
     width: '100%',
+    height: vs(18),
   },
   labelSlot: {
     alignItems: 'center',
@@ -176,6 +187,16 @@ const styles = StyleSheet.create({
     right: 0,
   },
   labelText: {
+    ...typography.bodySRegular,
+    color: Colors.BODYTEXT_SUB,
+    textAlign: 'center',
+  },
+  title: {
+    ...typography.bodySMedium,
+    color: Colors.BODYTEXT_SUB,
+    height: vs(18),
+  },
+  description: {
     ...typography.bodySRegular,
     color: Colors.BODYTEXT_SUB,
     textAlign: 'center',

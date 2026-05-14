@@ -13,15 +13,14 @@ export const MIN_DURATION_OPTIONS = [
 export type MinDurationStepValue = (typeof MIN_DURATION_OPTIONS)[number]['value']
 export type MinDurationValue = MinDurationStepValue[]
 
-type UseMinDurationSliderOptions = {
-	value: MinDurationValue
-	onChange: (value: MinDurationValue) => void
-}
-
 const MIN_DURATION_ORDER = MIN_DURATION_OPTIONS.map(option => option.value)
 const MIN_DURATION_OPTION_COUNT = MIN_DURATION_OPTIONS.length
 
 type LabelWidths = Partial<Record<MinDurationStepValue, number>>
+type UseMinDurationToggleOptions = {
+	value: MinDurationValue
+	onChange: (value: MinDurationValue) => void
+}
 
 const getValidSelectedValues = (value: MinDurationValue) => {
 	if (value.length === 0) {
@@ -41,7 +40,7 @@ const getValidSelectedValues = (value: MinDurationValue) => {
 	)
 }
 
-export const useMinDurationSlider = ({ value, onChange }: UseMinDurationSliderOptions) => {
+export const useMinDurationToggle = ({ value, onChange }: UseMinDurationToggleOptions) => {
 	const selectedValues = getValidSelectedValues(value)
 
 	const [labelsContainerWidth, setLabelsContainerWidth] = useState(0)
