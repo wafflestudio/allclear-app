@@ -12,7 +12,7 @@ import { vs } from '@/shared/utils/scale'
 import { MinDurationSliderHeader } from './MinDurationSliderHeader'
 import { MinDurationSliderStepDot } from './MinDurationSliderStepDot'
 import {
-  SEMESTER_VALUES,
+  MIN_DURATION_OPTIONS,
   THUMB_SIZE,
   useMinDurationSlider,
   type MinDurationValue,
@@ -58,14 +58,15 @@ export const MinDurationSlider = ({
             ]}
           />
 
-          {SEMESTER_VALUES.slice(0, -1).map((semesterValue, index) => {
-            const nextSemesterValue = SEMESTER_VALUES[index + 1]
+          {MIN_DURATION_OPTIONS.slice(0, -1).map((option, index) => {
+            const nextOption = MIN_DURATION_OPTIONS[index + 1]
             const startCenterX = labelCenters[index]
             const endCenterX = labelCenters[index + 1]
 
             if (
-              !selectedValueSet.has(semesterValue) ||
-              !selectedValueSet.has(nextSemesterValue) ||
+              nextOption === undefined ||
+              !selectedValueSet.has(option.value) ||
+              !selectedValueSet.has(nextOption.value) ||
               startCenterX === undefined ||
               endCenterX === undefined
             ) {
@@ -74,7 +75,7 @@ export const MinDurationSlider = ({
 
             return (
               <View
-                key={`${semesterValue}-${nextSemesterValue}`}
+                key={`${option.value}-${nextOption.value}`}
                 style={[
                   styles.connectedTrack,
                   {
@@ -87,31 +88,31 @@ export const MinDurationSlider = ({
           })}
 
           {labelCenters.map((centerX, index) => {
-            const semesterValue = SEMESTER_VALUES[index]
+            const option = MIN_DURATION_OPTIONS[index]
 
-            if (semesterValue === undefined) {
+            if (option === undefined) {
               return null
             }
 
             return (
               <MinDurationSliderStepDot
-                key={semesterValue}
+                key={option.value}
                 centerX={centerX}
-                onPress={() => handleToggleStep(semesterValue)}
-                selected={selectedValueSet.has(semesterValue)}
+                onPress={() => handleToggleStep(option.value)}
+                selected={selectedValueSet.has(option.value)}
               />
             )
           })}
         </View>
 
         <View style={styles.labelsRow}>
-          {SEMESTER_VALUES.map((semesterValue, index) => (
+          {MIN_DURATION_OPTIONS.map((option, index) => (
             <View
-              key={semesterValue}
+              key={option.value}
               onLayout={event => handleLabelLayout(index, event)}
               style={styles.labelSlot}
             >
-              <Text style={styles.labelText}>{`${semesterValue}학기`}</Text>
+              <Text style={styles.labelText}>{option.label}</Text>
             </View>
           ))}
         </View>
