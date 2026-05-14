@@ -119,8 +119,7 @@ export const MinDurationSlider = ({
                   : index === MIN_DURATION_OPTIONS.length - 1
                     ? styles.lastLabelSlot
                     : {
-                        left:
-                          (stepCenters[index] ?? 0) - ((labelWidths[index] ?? 0) / 2),
+                        left: (stepCenters[index] ?? 0) - ((labelWidths[option.value] ?? 0) / 2),
                       },
               ]}
             >

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { LayoutChangeEvent } from 'react-native'
 import { ms } from '@/shared/utils/scale'
 
@@ -19,6 +19,9 @@ type UseMinDurationSliderOptions = {
 }
 
 const MIN_DURATION_ORDER = MIN_DURATION_OPTIONS.map(option => option.value)
+const MIN_DURATION_OPTION_COUNT = MIN_DURATION_OPTIONS.length
+
+type LabelWidths = Partial<Record<MinDurationStepValue, number>>
 
 const getValidSelectedValues = (value: MinDurationValue) => {
 	if (value.length === 0) {
@@ -41,11 +44,8 @@ const getValidSelectedValues = (value: MinDurationValue) => {
 export const useMinDurationSlider = ({ value, onChange }: UseMinDurationSliderOptions) => {
 	const selectedValues = getValidSelectedValues(value)
 
-	const onChangeRef = useRef(onChange)
-	onChangeRef.current = onChange
-
 	const [labelsContainerWidth, setLabelsContainerWidth] = useState(0)
-	const [labelWidths, setLabelWidths] = useState<number[]>([])
+	const [labelWidths, setLabelWidths] = useState<LabelWidths>({})
 
 	const handleToggleStep = useCallback(
 		(durationValue: MinDurationStepValue) => {
@@ -57,9 +57,9 @@ export const useMinDurationSlider = ({ value, onChange }: UseMinDurationSliderOp
 							MIN_DURATION_ORDER.indexOf(right as MinDurationStepValue),
 					)
 
-			onChangeRef.current(nextSelectedValues)
+			onChange(nextSelectedValues)
 		},
-		[selectedValues],
+		[onChange, selectedValues],
 	)
 
 	const handleLabelsContainerLayout = useCallback((event: LayoutChangeEvent) => {
@@ -69,25 +69,35 @@ export const useMinDurationSlider = ({ value, onChange }: UseMinDurationSliderOp
 
 	const handleLabelLayout = useCallback((index: number, event: LayoutChangeEvent) => {
 		const { width } = event.nativeEvent.layout
+		const option = MIN_DURATION_OPTIONS[index]
+
+		if (option === undefined) {
+			return
+		}
 
 		setLabelWidths(prev => {
-			if (prev[index] === width) {
+			if (prev[option.value] === width) {
 				return prev
 			}
 
-			const next = [...prev]
-			next[index] = width
-			return next
+			return {
+				...prev,
+				[option.value]: width,
+			}
 		})
 	}, [])
 
-	const firstLabelWidth = labelWidths[0] ?? 0
-	const lastLabelWidth = labelWidths[MIN_DURATION_OPTIONS.length - 1] ?? 0
+	const firstLabelWidth = labelWidths[MIN_DURATION_OPTIONS[0].value] ?? 0
+	const lastLabelWidth = labelWidths[MIN_DURATION_OPTIONS[MIN_DURATION_OPTION_COUNT - 1].value] ?? 0
 	const trackStart = firstLabelWidth / 2
 	const trackEnd = Math.max(labelsContainerWidth - lastLabelWidth / 2, trackStart)
 	const trackWidth = Math.max(trackEnd - trackStart, 0)
-	const stepCenters = MIN_DURATION_OPTIONS.map(
-		(_, index) => trackStart + (trackWidth * index) / (MIN_DURATION_OPTIONS.length - 1),
+	const stepCenters = useMemo(
+		() =>
+			MIN_DURATION_OPTIONS.map(
+				(_, index) => trackStart + (trackWidth * index) / (MIN_DURATION_OPTION_COUNT - 1),
+			),
+		[trackStart, trackWidth],
 	)
 
 	return {
