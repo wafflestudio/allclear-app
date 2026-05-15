@@ -42,9 +42,9 @@ const styles = StyleSheet.create({
 	},
 	iconContainer: {
 		alignItems: 'center',
-		height: 12,
+		height: 14,
 		justifyContent: 'center',
-		width: 12,
+		width: 14,
 	},
 	label: {
 		color: Colors.POINTCOLOR,
