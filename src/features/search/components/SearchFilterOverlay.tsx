@@ -158,6 +158,14 @@ const styles = StyleSheet.create({
 		paddingBottom: s(31),
 		paddingLeft: s(34),
 		gap: s(18),
+		shadowColor: '#000000',
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 4,
+		elevation: 4,
 		zIndex: 1,
 	},
 	header: {
