@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import Checkbox from '@/shared/components/Checkbox'
@@ -15,7 +15,11 @@ const CLUB_TYPE_OPTIONS = [
 	{ label: '학과/단과대동아리', value: 'department' },
 ] as const
 
-const SearchFilterBar = () => {
+type Props = {
+	onPressFilter: () => void
+}
+
+const SearchFilterBar = ({ onPressFilter }: Props) => {
 	const [clubTypeSelection, setClubTypeSelection] = useState<SearchFilterToggleGroupSelection>({
 		kind: 'all',
 	})
@@ -23,9 +27,12 @@ const SearchFilterBar = () => {
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.filterIconContainer}>
+			<Pressable
+				hitSlop={8}
+				onPress={onPressFilter}
+				style={({ pressed }) => [styles.filterIconContainer, pressed && styles.pressed]}>
 				<Icon color={Colors.POINTCOLOR} name="tune" size={s(15)} />
-			</View>
+			</Pressable>
 			<View>
 				<SearchFilterToggleGroup
 					options={[...CLUB_TYPE_OPTIONS]}
@@ -60,6 +67,9 @@ const styles = StyleSheet.create({
 	filterIconContainer: {
 		alignItems: 'center',
 		justifyContent: 'center',
+	},
+	pressed: {
+		opacity: 0.65,
 	},
 	toggleGroup: {
 		flexWrap: 'nowrap',
