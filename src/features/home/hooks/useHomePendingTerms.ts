@@ -6,16 +6,26 @@ import { TermService } from '@/usecases/term'
 
 const useHomePendingTerms = () => {
 	const { termService } = useContext(serviceContext)
-	const { user } = useProfile()
+	const { user, isLoading: isProfileLoading } = useProfile()
 	const queryClient = useQueryClient()
-	const { data: pendingTerms = [] } = usePendingTerms(termService, !!user)
+	const {
+		data: pendingTerms = [],
+		isFetched: hasFetchedPendingTerms,
+		isError: hasPendingTermsError,
+	} = usePendingTerms(termService, !isProfileLoading && !!user)
 	const agreeTermsMutation = useAgreeTerms(termService, queryClient)
-	const shouldShowModal = !!user && pendingTerms.length > 0
+	const shouldShowTermsModal = isProfileLoading
+		? null
+		: !user
+			? false
+			: hasFetchedPendingTerms || hasPendingTermsError
+				? pendingTerms.length > 0
+				: null
 
 	return {
 		pendingTerms,
 		isSubmitting: agreeTermsMutation.isPending,
-		shouldShowModal,
+		shouldShowTermsModal,
 		handleAgreeTerms: agreeTermsMutation.mutate,
 	}
 }
