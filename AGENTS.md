@@ -98,6 +98,18 @@ Path alias: `@/` → `src/`
 - Typography is in `src/shared/constants/typography.ts`
 - Use `src/shared/utils/scale.ts` for responsive sizing
 
+## Before Editing
+
+- Check local changes (`git status`, `git diff`) first; don't overwrite user work.
+- Confirm the correct layer (`entities` → `repositories` → `usecases` → `features` / `shared`).
+- Prefer `rg` / `rg --files` for fast lookup when searching the codebase.
+- Follow existing patterns; don't introduce a new structure without reason.
+
+## After Editing
+
+- Run `yarn tsc --noEmit` and `yarn lint`; fix all errors.
+- Remove `console.log`, unused imports, and dead code.
+
 ## Do Not
 
 - Do not commit `.env.local` or `.env.prod`
