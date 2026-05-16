@@ -34,7 +34,6 @@ const SearchInput = ({
 		const trimmed = value.trim()
 		if (trimmed.length === 0) return
 		onSubmit?.(trimmed)
-		if (!isControlled) setInternalValue('') // initialize searchPage's searchBar
 	}
 
 	const handleClear = () => {
@@ -54,6 +53,8 @@ const SearchInput = ({
 				onSubmitEditing={handleSubmit}
 				returnKeyType="search"
 				maxLength={MAX_LENGTH}
+				autoCapitalize="none"
+				autoCorrect={false}
 			/>
 			{value.length > 0 && (
 				<View style={styles.trailing}>

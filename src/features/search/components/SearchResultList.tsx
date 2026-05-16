@@ -13,7 +13,6 @@ type Props = {
 	savedClubIds: Set<Club['uuid']>
 	onPressClub: (club: Club) => void
 	onToggleSaved: (club: Club) => void
-	onDisplayedCountChange: (count: number) => void
 	emptyPlaceholder: string
 }
 
@@ -22,7 +21,6 @@ const SearchResultList = ({
 	savedClubIds,
 	onPressClub,
 	onToggleSaved,
-	onDisplayedCountChange,
 	emptyPlaceholder,
 }: Props) => {
 	const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
@@ -34,10 +32,6 @@ const SearchResultList = ({
 	const visibleClubs = useMemo(() => {
 		return clubs?.slice(0, visibleCount) ?? []
 	}, [clubs, visibleCount])
-
-	useEffect(() => {
-		onDisplayedCountChange(visibleClubs.length)
-	}, [onDisplayedCountChange, visibleClubs.length])
 
 	if (!clubs) return null
 

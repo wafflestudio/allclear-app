@@ -58,7 +58,7 @@ const ClubListItem = ({ club, isSaved, onToggleSaved }: Props) => {
 						))
 					) : (
 						<View style={styles.noReviewBadge}>
-							<Text style={styles.noReviewText}>아직 리뷰가 없어요</Text>
+							<Text style={styles.noReviewText}>🥲 아직 활동 후기가 없어요</Text>
 						</View>
 					)}
 				</View>
