@@ -85,8 +85,7 @@ const styles = StyleSheet.create({
 		marginLeft: s(8),
 		marginBottom: vs(8),
 		paddingHorizontal: s(10),
-		paddingTop: vs(3),
-		paddingBottom: vs(5),
+		paddingVertical: vs(6),
 		borderRadius: ms(20),
 		borderWidth: 0.3,
 		borderColor: Colors.POINTCOLOR,
@@ -94,6 +93,7 @@ const styles = StyleSheet.create({
 	},
 	chipText: {
 		...typography.bodySRegular,
+		lineHeight: vs(12),
 		color: Colors.BODYTEXT_SUB,
 	},
 })

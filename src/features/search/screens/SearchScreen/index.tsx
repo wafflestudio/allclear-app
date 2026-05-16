@@ -41,7 +41,15 @@ const SearchScreen = ({ navigation }: Props) => {
 	const [isTypoNoticeVisible, setIsTypoNoticeVisible] = useState(true)
 	const [affiliationFilter, setAffiliationFilter] = useState<AffiliationFilter>('central')
 	const [isRecruitingOnly, setIsRecruitingOnly] = useState(false)
-	const [recentSearches, setRecentSearches] = useState<string[]>([])
+	// const [recentSearches, setRecentSearches] = useState<string[]>([])
+	const [recentSearches, setRecentSearches] = useState<string[]>([
+		'자동차',
+		'클라이밍',
+		'취미동아리',
+		'토론',
+		'연극동아리',
+		'전략컨설팅',
+	])
 
 	const { data: searchResult } = useSearchClubs({ query: submittedQuery })
 	const { data: savedClubs } = useSavedClubs()
