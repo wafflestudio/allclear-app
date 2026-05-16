@@ -3,6 +3,7 @@ import { Club } from '@/entities/club'
 import { Image, StyleSheet, View, Text, useWindowDimensions } from 'react-native'
 import { FlatList, Pressable } from 'react-native-gesture-handler'
 import ClubCard from './ClubCard'
+import ClubListSkeleton from './ClubListSkeleton'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { s, vs } from '@/shared/utils/scale'
@@ -12,11 +13,13 @@ type Props = {
 	category?: Category['name']
 	openDetailPage: (club: Club) => void
 	emptyPlaceholder: string
+	isLoading?: boolean
 }
 
-const ClubList = ({ clubs, category, openDetailPage, emptyPlaceholder }: Props) => {
+const ClubList = ({ clubs, category, openDetailPage, emptyPlaceholder, isLoading }: Props) => {
 	const { width } = useWindowDimensions()
 
+	if (isLoading) return <ClubListSkeleton />
 	if (!clubs) return null
 	if (clubs.length === 0) {
 		return (
