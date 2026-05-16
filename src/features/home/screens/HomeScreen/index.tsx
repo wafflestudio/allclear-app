@@ -13,7 +13,7 @@ import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CategorySection from '@/features/home/components/CategorySection'
 import LatestClubsSection from '@/features/home/components/LatestClubsSection'
-import { View, Text, Image, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet, Linking } from 'react-native'
 import { s, vs } from '@/shared/utils/scale'
 import { typography } from '@/shared/constants/typography'
 
@@ -30,7 +30,8 @@ const HomeScreen = ({ navigation }: Props) => {
 	const { logClickEvent } = useClickEventLog()
 	const { currentAnnouncement, handleCloseAnnouncement, handleHideAnnouncement } =
 		useHomeAnnouncements()
-	const { pendingTerms, isSubmitting, shouldShowModal, handleAgreeTerms } = useHomePendingTerms()
+	const { pendingTerms, isSubmitting, shouldShowTermsModal, handleAgreeTerms } =
+		useHomePendingTerms()
 
 	const handleMoveToDetailPage = (club: Club) => {
 		logClickEvent({
@@ -47,9 +48,7 @@ const HomeScreen = ({ navigation }: Props) => {
 	}
 
 	const handlePressViewTerm = (term: Term) => {
-		navigation.navigate(SCREEN_TYPE.WEBVIEW, {
-			uri: term.contentUrl,
-		})
+		void Linking.openURL(term.contentUrl)
 	}
 
 	return (
@@ -71,7 +70,7 @@ const HomeScreen = ({ navigation }: Props) => {
 					</Text>
 					<LatestClubsSection openDetailPage={handleMoveToDetailPage} />
 				</View>
-				{isFocused && shouldShowModal && (
+				{isFocused && shouldShowTermsModal === true && (
 					<TermsAgreementModal
 						visible
 						terms={pendingTerms}
@@ -80,7 +79,7 @@ const HomeScreen = ({ navigation }: Props) => {
 						onAgree={termUuids => handleAgreeTerms({ termUuids })}
 					/>
 				)}
-				{isFocused && !shouldShowModal && currentAnnouncement && (
+				{isFocused && shouldShowTermsModal === false && currentAnnouncement && (
 					<AnnouncementModal
 						visible
 						announcementUuid={currentAnnouncement.uuid}
