@@ -99,7 +99,7 @@ const TermsAgreementModal = ({ visible, terms, isSubmitting, onPressView, onAgre
 											<Checkbox
 												label={`${term.isMandatory ? '[필수]' : '[선택]'} ${term.title}`}
 												checked={isChecked}
-												onPress={() => handleToggleTerm(term.uuid)}
+												onPressIn={() => handleToggleTerm(term.uuid)}
 												style={styles.termCheckbox}
 												textStyle={[
 													styles.termCheckboxLabel,
@@ -121,7 +121,7 @@ const TermsAgreementModal = ({ visible, terms, isSubmitting, onPressView, onAgre
 							<Checkbox
 								label="전체 동의"
 								checked={isAllChecked}
-								onPress={handleToggleAll}
+								onPressIn={handleToggleAll}
 								textStyle={styles.allCheckboxLabel}
 							/>
 

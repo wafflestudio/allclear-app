@@ -94,7 +94,7 @@ const AnnouncementModal = ({
 							<Checkbox
 								label="다시 보지 않기"
 								checked={hideChecked}
-								onPress={() => setHideChecked(prev => !prev)}
+								onPressIn={() => setHideChecked(prev => !prev)}
 								style={styles.checkbox}
 								textStyle={styles.checkboxLabel}
 							/>
