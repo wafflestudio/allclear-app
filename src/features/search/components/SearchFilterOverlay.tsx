@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BlurView } from '@react-native-community/blur'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -8,40 +7,73 @@ import {
 	type SearchFilterToggleGroupSelection,
 } from '@/features/club/components/SearchFilterToggleGroup'
 import { MinDurationToggle } from '@/features/club/components/MinDurationToggle/MinDurationToggle'
-import type { MinDurationValue } from '@/features/club/components/MinDurationToggle/useMinDurationToggle'
+import type { ClubSearchFilters } from '@/features/search/types/clubSearchForm'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { s } from '@/shared/utils/scale'
 
 type Props = {
+	value: ClubSearchFilters
+	onChange: (value: ClubSearchFilters) => void
+	onReset: () => void
 	onClose: () => void
 }
 
 const RECRUITMENT_OPTIONS = [
-	{ label: '정기모집', value: 'regular' },
-	{ label: '상시모집', value: 'always' },
-] as const
-
-const FEE_OPTIONS = [
-	{ label: '회비있음', value: 'hasFee' },
-	{ label: '회비없음', value: 'noFee' },
+	{ label: '정기모집', value: '정기' },
+	{ label: '상시모집', value: '상시' },
 ] as const
 
 const ROOM_OPTIONS = [
-	{ label: '동방보유', value: 'hasRoom' },
-	{ label: '동방없음', value: 'noRoom' },
+	{ label: '동방보유', value: 'true' },
+	{ label: '동방없음', value: 'false' },
 ] as const
 
-const SearchFilterOverlay = ({ onClose }: Props) => {
-	const [recruitmentSelection, setRecruitmentSelection] =
-		useState<SearchFilterToggleGroupSelection>({ kind: 'none' })
-	const [feeSelection, setFeeSelection] = useState<SearchFilterToggleGroupSelection>({
-		kind: 'none',
-	})
-	const [roomSelection, setRoomSelection] = useState<SearchFilterToggleGroupSelection>({
-		kind: 'none',
-	})
-	const [minDuration, setMinDuration] = useState<MinDurationValue>([])
+const FEE_OPTIONS = [
+	{ label: '회비있음', value: 'true' },
+	{ label: '회비없음', value: 'false' },
+] as const
+
+const toSingleSelection = (value?: string): SearchFilterToggleGroupSelection =>
+	value ? { kind: 'values', values: [value] } : { kind: 'none' }
+
+const getSingleSelectionValue = (
+	selection: SearchFilterToggleGroupSelection,
+): string | undefined => {
+	if (selection.kind !== 'values') {
+		return undefined
+	}
+
+	return selection.values[0]
+}
+
+const SearchFilterOverlay = ({ value, onChange, onReset, onClose }: Props) => {
+	const recruitmentSelection = toSingleSelection(value.recruit_type)
+	const feeSelection = toSingleSelection(value.has_membership_fee)
+	const roomSelection = toSingleSelection(value.has_dongbang)
+
+	const handleChangeRecruitType = (selection: SearchFilterToggleGroupSelection) => {
+		onChange({
+			...value,
+			recruit_type: getSingleSelectionValue(selection) as ClubSearchFilters['recruit_type'],
+		})
+	}
+
+	const handleChangeMembershipFee = (selection: SearchFilterToggleGroupSelection) => {
+		onChange({
+			...value,
+			has_membership_fee: getSingleSelectionValue(
+				selection,
+			) as ClubSearchFilters['has_membership_fee'],
+		})
+	}
+
+	const handleChangeDongbang = (selection: SearchFilterToggleGroupSelection) => {
+		onChange({
+			...value,
+			has_dongbang: getSingleSelectionValue(selection) as ClubSearchFilters['has_dongbang'],
+		})
+	}
 
 	return (
 		<View style={styles.wrapper}>
@@ -59,7 +91,7 @@ const SearchFilterOverlay = ({ onClose }: Props) => {
 					<Text style={styles.text}>더 자세한 검색을 위해 상세필터를 설정해보세요!</Text>
 					<Pressable
 						hitSlop={8}
-						onPress={() => {}}
+						onPress={onReset}
 						style={({ pressed }) => [styles.resetButton, pressed && styles.pressed]}>
 						<Icon color={Colors.POINTCOLOR} name="reload" size={s(15)} />
 					</Pressable>
@@ -71,23 +103,31 @@ const SearchFilterOverlay = ({ onClose }: Props) => {
 								options={[...RECRUITMENT_OPTIONS]}
 								selectionMode="single"
 								value={recruitmentSelection}
-								onChange={setRecruitmentSelection}
+								onChange={handleChangeRecruitType}
 							/>
 							<SearchFilterToggleGroup
 								options={[...FEE_OPTIONS]}
 								selectionMode="single"
 								value={feeSelection}
-								onChange={setFeeSelection}
+								onChange={handleChangeMembershipFee}
 							/>
 						</View>
 						<SearchFilterToggleGroup
 							options={[...ROOM_OPTIONS]}
 							selectionMode="single"
 							value={roomSelection}
-							onChange={setRoomSelection}
+							onChange={handleChangeDongbang}
 						/>
 					</View>
-					<MinDurationToggle value={minDuration} onChange={setMinDuration} />
+					<MinDurationToggle
+						value={value.min_activity_period}
+						onChange={min_activity_period =>
+							onChange({
+								...value,
+								min_activity_period,
+							})
+						}
+					/>
 				</View>
 			</View>
 		</View>
