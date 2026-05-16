@@ -10,8 +10,8 @@ import { typography } from '@/shared/constants/typography'
 import { s, vs } from '@/shared/utils/scale'
 
 import SearchInput from '@/features/search/components/SearchInput'
+import SearchFilterBar from '@/features/search/components/SearchFilterBar'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
-import useClickEventLog from '@/shared/hooks/useClickEventLog'
 
 type SearchScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.SEARCH>
 type SearchScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.SEARCH>
@@ -32,6 +32,7 @@ const SearchScreen = ({ navigation }: Props) => {
 				<View style={styles.headerContainer}>
 					<Text style={styles.headerText}>어떤 동아리를 찾아볼까요?</Text>
 					<SearchInput onSubmit={handleSubmitQuery} />
+					<SearchFilterBar />
 				</View>
 				{/* TODO: 최근검색어 섹션 */}
 				{/* TODO: 인기동아리 섹션 */}
@@ -62,14 +63,5 @@ const styles = StyleSheet.create({
 		paddingRight: s(12),
 		paddingBottom: vs(10),
 		paddingLeft: s(5),
-	},
-	placeholder: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-	placeholderText: {
-		...typography.bodySMedium,
-		color: Colors.BODYTEXT_SUB,
 	},
 })
