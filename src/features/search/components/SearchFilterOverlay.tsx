@@ -7,7 +7,10 @@ import {
 	type SearchFilterToggleGroupSelection,
 } from '@/features/club/components/SearchFilterToggleGroup'
 import { MinDurationToggle } from '@/features/club/components/MinDurationToggle/MinDurationToggle'
-import type { ClubSearchFilters } from '@/features/search/types/clubSearchForm'
+import {
+	normalizeClubSearchFilters,
+	type ClubSearchFilters,
+} from '@/features/search/types/clubSearchForm'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { s } from '@/shared/utils/scale'
@@ -48,20 +51,21 @@ const getSingleSelectionValue = (
 }
 
 const SearchFilterOverlay = ({ value, onChange, onReset, onClose }: Props) => {
-	const recruitmentSelection = toSingleSelection(value.recruit_type)
-	const feeSelection = toSingleSelection(value.has_membership_fee)
-	const roomSelection = toSingleSelection(value.has_dongbang)
+	const normalizedValue = normalizeClubSearchFilters(value)
+	const recruitmentSelection = toSingleSelection(normalizedValue.recruit_type)
+	const feeSelection = toSingleSelection(normalizedValue.has_membership_fee)
+	const roomSelection = toSingleSelection(normalizedValue.has_dongbang)
 
 	const handleChangeRecruitType = (selection: SearchFilterToggleGroupSelection) => {
 		onChange({
-			...value,
+			...normalizedValue,
 			recruit_type: getSingleSelectionValue(selection) as ClubSearchFilters['recruit_type'],
 		})
 	}
 
 	const handleChangeMembershipFee = (selection: SearchFilterToggleGroupSelection) => {
 		onChange({
-			...value,
+			...normalizedValue,
 			has_membership_fee: getSingleSelectionValue(
 				selection,
 			) as ClubSearchFilters['has_membership_fee'],
@@ -70,7 +74,7 @@ const SearchFilterOverlay = ({ value, onChange, onReset, onClose }: Props) => {
 
 	const handleChangeDongbang = (selection: SearchFilterToggleGroupSelection) => {
 		onChange({
-			...value,
+			...normalizedValue,
 			has_dongbang: getSingleSelectionValue(selection) as ClubSearchFilters['has_dongbang'],
 		})
 	}
@@ -120,10 +124,10 @@ const SearchFilterOverlay = ({ value, onChange, onReset, onClose }: Props) => {
 						/>
 					</View>
 					<MinDurationToggle
-						value={value.min_activity_period}
+						value={normalizedValue.min_activity_period}
 						onChange={min_activity_period =>
 							onChange({
-								...value,
+								...normalizedValue,
 								min_activity_period,
 							})
 						}

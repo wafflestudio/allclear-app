@@ -1,7 +1,10 @@
 import { Pressable, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import type { ClubSearchFilters } from '@/features/search/types/clubSearchForm'
+import {
+	normalizeClubSearchFilters,
+	type ClubSearchFilters,
+} from '@/features/search/types/clubSearchForm'
 import Checkbox from '@/shared/components/Checkbox'
 import { Colors } from '@/shared/constants/colors'
 import { s } from '@/shared/utils/scale'
@@ -22,34 +25,31 @@ type Props = {
 }
 
 const SearchFilterBar = ({ filters, onChange, onPressFilter }: Props) => {
+	const normalizedFilters = normalizeClubSearchFilters(filters)
 	const clubTypeSelection =
-		filters.affiliation_type === '전체'
+		normalizedFilters.affiliation_types.length === 0
 			? { kind: 'all' as const }
-			: { kind: 'values' as const, values: [filters.affiliation_type] }
+			: { kind: 'values' as const, values: normalizedFilters.affiliation_types }
 
 	const handleChangeAffiliationType = (selection: SearchFilterToggleGroupSelection) => {
 		if (selection.kind !== 'values') {
 			onChange({
-				...filters,
-				affiliation_type: '전체',
+				...normalizedFilters,
+				affiliation_types: [],
 			})
 			return
 		}
 
-		const nextAffiliationType = selection.values[0] as
-			| ClubSearchFilters['affiliation_type']
-			| undefined
-
 		onChange({
-			...filters,
-			affiliation_type: nextAffiliationType ?? '전체',
+			...normalizedFilters,
+			affiliation_types: selection.values as ClubSearchFilters['affiliation_types'],
 		})
 	}
 
 	const handleToggleRecruiting = () => {
 		onChange({
-			...filters,
-			is_recruiting: filters.is_recruiting === 'true' ? undefined : 'true',
+			...normalizedFilters,
+			is_recruiting: normalizedFilters.is_recruiting === 'true' ? undefined : 'true',
 		})
 	}
 
@@ -65,7 +65,7 @@ const SearchFilterBar = ({ filters, onChange, onPressFilter }: Props) => {
 				<SearchFilterToggleGroup
 					options={[...CLUB_TYPE_OPTIONS]}
 					allItem={{ label: '전체' }}
-					selectionMode="single"
+					selectionMode="multiple"
 					value={clubTypeSelection}
 					onChange={handleChangeAffiliationType}
 					style={styles.toggleGroup}
@@ -75,7 +75,7 @@ const SearchFilterBar = ({ filters, onChange, onPressFilter }: Props) => {
 			<View>
 				<Checkbox
 					label="현재 모집중"
-					checked={filters.is_recruiting === 'true'}
+					checked={normalizedFilters.is_recruiting === 'true'}
 					onPressIn={handleToggleRecruiting}
 				/>
 			</View>
