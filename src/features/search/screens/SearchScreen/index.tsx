@@ -4,13 +4,16 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+import {
+	createSearchClubsRequest,
+	DEFAULT_CLUB_SEARCH_FILTERS,
+} from '@/features/search/types/clubSearchForm'
 import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import { typography } from '@/shared/constants/typography'
 import { s, vs } from '@/shared/utils/scale'
 
 import SearchInput from '@/features/search/components/SearchInput'
-import SearchFilterBar from '@/features/search/components/SearchFilterBar'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 
 type SearchScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.SEARCH>
@@ -23,7 +26,12 @@ type Props = {
 
 const SearchScreen = ({ navigation }: Props) => {
 	const handleSubmitQuery = (query: string) => {
-		navigation.navigate(SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST, { query })
+		navigation.navigate(SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST, {
+			request: createSearchClubsRequest({
+				query,
+				filters: DEFAULT_CLUB_SEARCH_FILTERS,
+			}),
+		})
 	}
 
 	return (
@@ -32,7 +40,6 @@ const SearchScreen = ({ navigation }: Props) => {
 				<View style={styles.headerContainer}>
 					<Text style={styles.headerText}>어떤 동아리를 찾아볼까요?</Text>
 					<SearchInput onSubmit={handleSubmitQuery} />
-					<SearchFilterBar />
 				</View>
 				{/* TODO: 최근검색어 섹션 */}
 				{/* TODO: 인기동아리 섹션 */}

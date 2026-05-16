@@ -1,4 +1,5 @@
 import { Club } from '@/entities/club'
+import type { SearchClubsRequest } from '@/repositories/club'
 
 export enum SCREEN_TYPE {
 	HOME = 'Home',
@@ -29,7 +30,7 @@ export type StackParamList = {
 		category?: Club['category']
 	}
 	[SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST]: {
-		query: string
+		request: SearchClubsRequest
 	}
 	[SCREEN_TYPE.SAVED_CLUB_LIST]: undefined
 
