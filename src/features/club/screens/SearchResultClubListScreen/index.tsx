@@ -1,6 +1,7 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
+import type { SearchClubsRequest } from '@/repositories/club'
 import { Colors } from '@/shared/constants/colors'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { Club } from '@/entities/club'
@@ -23,8 +24,8 @@ type Props = {
 }
 
 const SearchResultClubListScreen = ({ route, navigation }: Props) => {
-	const { query } = route.params
-	const { data: clubs } = useCategoryClubs({ query })
+	const { request } = route.params
+	const { data: clubs } = useSearchClubs({ request })
 
 	const openDetailPage = (club: Club) => {
 		navigation.navigate(SCREEN_TYPE.CLUB_DETAIL, {
@@ -42,7 +43,7 @@ const SearchResultClubListScreen = ({ route, navigation }: Props) => {
 		<WithViewEventLog
 			params={{
 				screen_name: 'search_result_screen',
-				search_query: query,
+				search_query: request.query,
 			}}>
 			<SafeAreaView
 				edges={['top', 'left', 'right']}
@@ -61,13 +62,13 @@ const SearchResultClubListScreen = ({ route, navigation }: Props) => {
 export default SearchResultClubListScreen
 
 type UseCategoryClubsProps = {
-	query: string
+	request: SearchClubsRequest
 }
 
-const useCategoryClubs = ({ query }: UseCategoryClubsProps) => {
+const useSearchClubs = ({ request }: UseCategoryClubsProps) => {
 	const { clubService } = useContext(serviceContext)
 
-	return useQuery(['clubs', query], () => clubService.searchClubs({ query }), {
+	return useQuery(['clubs', 'search', request], () => clubService.searchClubs(request), {
 		keepPreviousData: true,
 		select: data => data.clubs,
 	})
