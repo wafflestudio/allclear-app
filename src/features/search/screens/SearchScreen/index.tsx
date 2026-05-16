@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Toast from 'react-native-toast-message'
 
 import { Club } from '@/entities/club'
+import RecentSearches from '@/features/search/components/RecentSearches'
 import SearchFilterBar, {
 	AffiliationFilter,
 } from '@/features/search/components/SearchFilterBar'
@@ -40,6 +41,14 @@ const SearchScreen = ({ navigation }: Props) => {
 	const [isTypoNoticeVisible, setIsTypoNoticeVisible] = useState(true)
 	const [affiliationFilter, setAffiliationFilter] = useState<AffiliationFilter>('central')
 	const [isRecruitingOnly, setIsRecruitingOnly] = useState(false)
+	const [recentSearches, setRecentSearches] = useState<string[]>([
+		'자동차',
+		'클라이밍',
+		'취미동아리',
+		'토론',
+		'연극동아리',
+		'전략컨설팅',
+	])
 
 	const { data: searchResult } = useSearchClubs({ query: submittedQuery })
 	const { data: savedClubs } = useSavedClubs()
@@ -96,6 +105,15 @@ const SearchScreen = ({ navigation }: Props) => {
 	const handleSubmitQuery = (nextQuery: string) => {
 		setSubmittedQuery(nextQuery)
 		setIsTypoNoticeVisible(true)
+	}
+
+	const handleSelectRecentSearch = (query: string) => {
+		setInputValue(query)
+		handleSubmitQuery(query)
+	}
+
+	const handleClearRecentSearches = () => {
+		setRecentSearches([])
 	}
 
 	const openDetailPage = (club: Club) => {
@@ -194,10 +212,14 @@ const SearchScreen = ({ navigation }: Props) => {
 						/>
 					</>
 				) : (
-					<>
-						{/* TODO: 최근검색어 섹션 */}
+					<View style={styles.placeholderContainer}>
+						<RecentSearches
+							searches={recentSearches}
+							onPressItem={handleSelectRecentSearch}
+							onClearAll={handleClearRecentSearches}
+						/>
 						{/* TODO: 인기동아리 섹션 */}
-					</>
+					</View>
 				)}
 			</SafeAreaView>
 		</WithViewEventLog>
@@ -258,5 +280,10 @@ const styles = StyleSheet.create({
 		paddingTop: vs(14),
 		paddingBottom: vs(10),
 		backgroundColor: Colors.BACKGROUND_MAIN,
+	},
+	placeholderContainer: {
+		paddingHorizontal: s(20),
+		paddingTop: vs(14),
+		gap: vs(20),
 	},
 })
