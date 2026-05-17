@@ -4,8 +4,8 @@ import { login as kakaoLogin } from '@react-native-seoul/kakao-login'
 import { useQueryClient } from '@tanstack/react-query'
 import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
-import React, { useContext } from 'react'
-import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { ActivityIndicator, Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { AuthProvider } from '@/usecases/auth'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
@@ -22,6 +22,7 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 	const queryClient = useQueryClient()
 	const { setUser } = useProfile()
 	const { authService, userService } = useContext(serviceContext)
+	const [isLoading, setIsLoading] = useState(false)
 
 	const handleLoginSuccess = async (token: string) => {
 		await AsyncStorage.setItem(LOGIN_TOKEN, token)
@@ -35,6 +36,7 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 
 	const onAppleButtonPress = async () => {
 		try {
+			setIsLoading(true)
 			const appleAuthRequestResponse = await appleAuth.performRequest({
 				requestedOperation: appleAuth.Operation.LOGIN,
 				requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
@@ -51,16 +53,21 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 			await handleLoginSuccess(token)
 		} catch {
 			Toast.show({ type: 'info', text1: '로그인에 실패했어요!', position: 'bottom' })
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
 	const onKakaoButtonPress = async () => {
 		try {
+			setIsLoading(true)
 			const result = await kakaoLogin()
 			const token = await authService.callback(AuthProvider.KAKAO, result.accessToken)
 			await handleLoginSuccess(token)
 		} catch {
 			Toast.show({ type: 'info', text1: '로그인에 실패했어요!', position: 'bottom' })
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
@@ -73,14 +80,32 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 				</View>
 			</View>
 			<View>
-				<Pressable style={[styles.button, styles.kakao]} onPress={onKakaoButtonPress}>
-					<Image source={require('@/assets/icons/kakao.png')} style={styles.icon} />
-					<Text style={styles.kakaoText}>카카오톡으로 계속하기</Text>
+				<Pressable
+					style={[styles.button, styles.kakao, isLoading && styles.buttonDisabled]}
+					onPress={onKakaoButtonPress}
+					disabled={isLoading}>
+					{isLoading ? (
+						<ActivityIndicator color={Colors.BLACK} />
+					) : (
+						<>
+							<Image source={require('@/assets/icons/kakao.png')} style={styles.icon} />
+							<Text style={styles.kakaoText}>카카오톡으로 계속하기</Text>
+						</>
+					)}
 				</Pressable>
 				{Platform.OS === 'ios' && (
-					<Pressable style={[styles.button, styles.apple]} onPress={onAppleButtonPress}>
-						<Image source={require('@/assets/icons/apple.png')} style={styles.icon} />
-						<Text style={styles.appleText}>Apple로 계속하기</Text>
+					<Pressable
+						style={[styles.button, styles.apple, isLoading && styles.buttonDisabled]}
+						onPress={onAppleButtonPress}
+						disabled={isLoading}>
+						{isLoading ? (
+							<ActivityIndicator color={Colors.WHITE} />
+						) : (
+							<>
+								<Image source={require('@/assets/icons/apple.png')} style={styles.icon} />
+								<Text style={styles.appleText}>Apple로 계속하기</Text>
+							</>
+						)}
 					</Pressable>
 				)}
 			</View>
@@ -124,6 +149,9 @@ const styles = StyleSheet.create({
 		borderRadius: ms(12),
 		position: 'relative',
 		marginBottom: vs(12),
+	},
+	buttonDisabled: {
+		opacity: 0.6,
 	},
 	icon: {
 		width: s(24),
