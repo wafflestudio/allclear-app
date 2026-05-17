@@ -190,10 +190,10 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: Colors.BACKGROUND_MAIN,
-		paddingTop: vs(32),
 	},
 	headerContainer: {
 		paddingHorizontal: s(20),
+		paddingVertical: vs(10),
 		gap: s(15),
 	},
 	headerText: {
