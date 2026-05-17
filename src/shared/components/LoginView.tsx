@@ -15,12 +15,23 @@ import { ms, s, vs } from '@/shared/utils/scale'
 
 type Props = {
 	closeBottomSheet: () => void
+	onSuccess?: () => void
 }
 
-const LoginView = ({ closeBottomSheet }: Props) => {
+const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 	const queryClient = useQueryClient()
 	const { setUser } = useProfile()
 	const { authService, userService } = useContext(serviceContext)
+
+	const handleLoginSuccess = async (token: string) => {
+		await AsyncStorage.setItem(LOGIN_TOKEN, token)
+		const user = await userService.getUser()
+		setUser(user)
+		closeBottomSheet()
+		onSuccess?.()
+		queryClient.invalidateQueries(['manageClubs'])
+		Toast.show({ type: 'info', text1: '로그인 되었어요!', position: 'bottom' })
+	}
 
 	const onAppleButtonPress = async () => {
 		try {
@@ -37,18 +48,9 @@ const LoginView = ({ closeBottomSheet }: Props) => {
 				AuthProvider.APPLE,
 				appleAuthRequestResponse.identityToken,
 			)
-			await AsyncStorage.setItem(LOGIN_TOKEN, token)
-			const user = await userService.getUser()
-			setUser(user)
-			closeBottomSheet()
-			queryClient.invalidateQueries(['manageClubs'])
-			Toast.show({ type: 'info', text1: '로그인 되었어요!', position: 'bottom' })
+			await handleLoginSuccess(token)
 		} catch {
-			Toast.show({
-				type: 'info',
-				text1: '로그인에 실패했어요!',
-				position: 'bottom',
-			})
+			Toast.show({ type: 'info', text1: '로그인에 실패했어요!', position: 'bottom' })
 		}
 	}
 
@@ -56,18 +58,9 @@ const LoginView = ({ closeBottomSheet }: Props) => {
 		try {
 			const result = await kakaoLogin()
 			const token = await authService.callback(AuthProvider.KAKAO, result.accessToken)
-			await AsyncStorage.setItem(LOGIN_TOKEN, token)
-			const user = await userService.getUser()
-			setUser(user)
-			closeBottomSheet()
-			queryClient.invalidateQueries(['manageClubs'])
-			Toast.show({ type: 'info', text1: '로그인 되었어요!', position: 'bottom' })
+			await handleLoginSuccess(token)
 		} catch {
-			Toast.show({
-				type: 'info',
-				text1: '로그인에 실패했어요!',
-				position: 'bottom',
-			})
+			Toast.show({ type: 'info', text1: '로그인에 실패했어요!', position: 'bottom' })
 		}
 	}
 

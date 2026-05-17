@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { HomeTab } from '@/tabs/HomeTab'
 import { MyPageTab } from '@/tabs/MyPageTab'
 import { s, vs } from '@/shared/utils/scale'
+import { navigation } from '@/shared/utils/navigation'
 import { SavedTab } from './SaveTab'
 import { SearchTab } from './SearchTab'
 import { typography } from '@/shared/constants/typography'
@@ -97,7 +98,7 @@ export function TabNavigator() {
 					tabPress: e => {
 						if (!user) {
 							e.preventDefault()
-							openBottomSheet()
+							openBottomSheet(() => navigation.navigate('저장'))
 						}
 					},
 				}}
@@ -110,7 +111,7 @@ export function TabNavigator() {
 					tabPress: e => {
 						if (!user) {
 							e.preventDefault()
-							openBottomSheet()
+							openBottomSheet(() => navigation.navigate('마이'))
 						}
 					},
 				}}

@@ -9,7 +9,7 @@ import { vs } from '@/shared/utils/scale'
 import LoginView from '@/shared/components/LoginView'
 
 const LoginBottomSheetContext = createContext<{
-	openBottomSheet: () => void
+	openBottomSheet: (onSuccess?: () => void) => void
 	closeBottomSheet: () => void
 } | null>(null)
 
@@ -26,6 +26,7 @@ type Props = {
 export const LoginBottomSheetProvider = ({ children }: Props) => {
 	const bottomSheetModalRef = useRef<BottomSheetModal>(null)
 	const isBottomSheetOpenRef = useRef(false)
+	const onSuccessRef = useRef<(() => void) | undefined>(undefined)
 
 	const renderBackdrop = useCallback(
 		(props: BottomSheetBackdropProps) => (
@@ -39,14 +40,20 @@ export const LoginBottomSheetProvider = ({ children }: Props) => {
 		[],
 	)
 
-	const openBottomSheet = useCallback(() => {
+	const openBottomSheet = useCallback((onSuccess?: () => void) => {
 		isBottomSheetOpenRef.current = true
+		onSuccessRef.current = onSuccess
 		bottomSheetModalRef.current?.present()
 	}, [])
 
 	const closeBottomSheet = useCallback(() => {
 		isBottomSheetOpenRef.current = false
 		bottomSheetModalRef.current?.close()
+	}, [])
+
+	const callOnSuccess = useCallback(() => {
+		onSuccessRef.current?.()
+		onSuccessRef.current = undefined
 	}, [])
 
 	useEffect(() => {
@@ -78,7 +85,7 @@ export const LoginBottomSheetProvider = ({ children }: Props) => {
 					isBottomSheetOpenRef.current = false
 				}}
 				backdropComponent={renderBackdrop}>
-				<LoginView closeBottomSheet={closeBottomSheet} />
+				<LoginView closeBottomSheet={closeBottomSheet} onSuccess={callOnSuccess} />
 			</BottomSheetModal>
 		</LoginBottomSheetContext.Provider>
 	)
