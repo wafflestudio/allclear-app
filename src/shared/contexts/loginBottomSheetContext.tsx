@@ -5,17 +5,19 @@ import {
 } from '@gorhom/bottom-sheet'
 import React, { createContext, useCallback, useContext, useEffect, useRef } from 'react'
 import { BackHandler, Platform } from 'react-native'
+import { vs } from '@/shared/utils/scale'
 import LoginView from '@/shared/components/LoginView'
 
 const LoginBottomSheetContext = createContext<{
 	openBottomSheet: () => void
 	closeBottomSheet: () => void
-}>({
-	openBottomSheet: () => {},
-	closeBottomSheet: () => {},
-})
+} | null>(null)
 
-export const useLoginBottomSheet = () => useContext(LoginBottomSheetContext)
+export const useLoginBottomSheet = () => {
+	const ctx = useContext(LoginBottomSheetContext)
+	if (!ctx) throw new Error('LoginBottomSheetProvider 안에서 사용해야 합니다')
+	return ctx
+}
 
 type Props = {
 	children: React.ReactNode
@@ -48,6 +50,7 @@ export const LoginBottomSheetProvider = ({ children }: Props) => {
 	}, [])
 
 	useEffect(() => {
+		if (Platform.OS !== 'android') return
 		const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
 			if (!isBottomSheetOpenRef.current) {
 				return false
@@ -70,7 +73,7 @@ export const LoginBottomSheetProvider = ({ children }: Props) => {
 			<BottomSheetModal
 				ref={bottomSheetModalRef}
 				index={0}
-				snapPoints={[Platform.OS === 'ios' ? 310 : 260]}
+				snapPoints={[Platform.OS === 'ios' ? vs(310) : vs(260)]}
 				onDismiss={() => {
 					isBottomSheetOpenRef.current = false
 				}}
