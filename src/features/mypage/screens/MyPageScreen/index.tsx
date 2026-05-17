@@ -19,6 +19,7 @@ import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIc
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 import { navigation } from '@/shared/utils/navigation'
+import { setToken } from '@/shared/utils/api'
 
 const MyPageScreen = () => {
 	const { authService } = useContext(serviceContext)
@@ -49,6 +50,7 @@ const MyPageScreen = () => {
 
 	const confirmLeave = async () => {
 		await authService.leave()
+		setToken(null)
 		setUser(null)
 
 		Toast.show({
@@ -96,6 +98,7 @@ const MyPageScreen = () => {
 
 	const confirmLogout = async () => {
 		await authService.logout()
+		setToken(null)
 		setUser(null)
 		queryClient.invalidateQueries(['manageClubs'])
 		navigation.navigate(SCREEN_TYPE.HOME)
@@ -470,7 +473,6 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		backgroundColor: 'white',
 	},
-	profileEditButton: {},
 	managerContainer: {
 		position: 'relative',
 		padding: 24,
@@ -478,7 +480,6 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		backgroundColor: '#3a3434',
 	},
-	managerEditButton: {},
 	optionContainer: {
 		padding: 16,
 		marginTop: 16,
@@ -489,30 +490,5 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 8, // 16 + 8 = 24
 		paddingVertical: 12,
 		color: '#8F8686',
-	},
-
-	border: {
-		borderBottomWidth: 1,
-		borderColor: '#E6E0DF',
-		width: 60,
-		paddingBottom: 16,
-		marginBottom: 16,
-	},
-	popupNickname: {
-		fontSize: 16,
-		fontWeight: '600',
-		color: 'black',
-	},
-	manageClubs: {
-		fontSize: 12,
-		color: '#494141',
-	},
-	popupLogout: {
-		fontSize: 12,
-		color: '#494141',
-	},
-	popupLeave: {
-		fontSize: 12,
-		color: '#D84141',
 	},
 })
