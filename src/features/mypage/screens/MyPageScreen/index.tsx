@@ -470,7 +470,6 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		backgroundColor: 'white',
 	},
-	profileEditButton: {},
 	managerContainer: {
 		position: 'relative',
 		padding: 24,
@@ -478,7 +477,6 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		backgroundColor: '#3a3434',
 	},
-	managerEditButton: {},
 	optionContainer: {
 		padding: 16,
 		marginTop: 16,
@@ -489,30 +487,5 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 8, // 16 + 8 = 24
 		paddingVertical: 12,
 		color: '#8F8686',
-	},
-
-	border: {
-		borderBottomWidth: 1,
-		borderColor: '#E6E0DF',
-		width: 60,
-		paddingBottom: 16,
-		marginBottom: 16,
-	},
-	popupNickname: {
-		fontSize: 16,
-		fontWeight: '600',
-		color: 'black',
-	},
-	manageClubs: {
-		fontSize: 12,
-		color: '#494141',
-	},
-	popupLogout: {
-		fontSize: 12,
-		color: '#494141',
-	},
-	popupLeave: {
-		fontSize: 12,
-		color: '#D84141',
 	},
 })
