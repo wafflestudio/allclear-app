@@ -43,6 +43,21 @@ export const normalizeClubSearchFilters = (
 		filters?.min_activity_period ?? DEFAULT_CLUB_SEARCH_FILTERS.min_activity_period,
 })
 
+export const resetClubSearchOverlayFilters = (
+	filters: Partial<ClubSearchFilters> | undefined,
+): ClubSearchFilters => {
+	const normalizedFilters = normalizeClubSearchFilters(filters)
+
+	return {
+		...normalizedFilters,
+		recruit_type: undefined,
+		has_membership_fee: undefined,
+		has_dongbang: undefined,
+		is_official_verified: undefined,
+		min_activity_period: DEFAULT_CLUB_SEARCH_FILTERS.min_activity_period,
+	}
+}
+
 export const createSearchClubsRequest = (form: ClubSearchForm): SearchClubsRequest => {
 	const query = form.query.trim()
 	const normalizedFilters = normalizeClubSearchFilters(form.filters)
