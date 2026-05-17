@@ -88,10 +88,9 @@ export type ClubRepository = {
 
 export const getClubRepository = (): ClubRepository => ({
 	searchClubs: async req => {
-		const searchParams = new URLSearchParams()
-		searchParams.append('query', req.query.toLowerCase().trim())
-
-		const response = await apiConnector.get<SearchClubsResponse>(`/v1/clubs/search`, searchParams)
+		const response = await apiConnector.get<SearchClubsResponse>('/v1/clubs/search', {
+			query: req.query.toLowerCase().trim(),
+		})
 
 		return response
 	},
@@ -106,11 +105,9 @@ export const getClubRepository = (): ClubRepository => ({
 		return response
 	},
 	listClubs: async req => {
-		const searchParams = new URLSearchParams()
-		if (req.category) {
-			searchParams.append('category', req.category)
-		}
-		const response = await apiConnector.get<ListClubsResponse>(`/v1/clubs`, searchParams)
+		const response = await apiConnector.get<ListClubsResponse>('/v1/clubs', {
+			...(req.category && { category: req.category }),
+		})
 
 		return response
 	},
