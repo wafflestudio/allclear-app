@@ -5,19 +5,13 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import React, { useContext } from 'react'
-import {
-	Image,
-	Platform,
-	StyleSheet,
-	Text,
-	TouchableHighlight,
-	TouchableOpacity,
-	View,
-} from 'react-native'
+import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { AuthProvider } from '@/usecases/auth'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 import { Colors } from '@/shared/constants/colors'
+import { typography } from '@/shared/constants/typography'
+import { ms, s, vs } from '@/shared/utils/scale'
 
 type Props = {
 	closeBottomSheet: () => void
@@ -29,24 +23,33 @@ const LoginView = ({ closeBottomSheet }: Props) => {
 	const { authService, userService } = useContext(serviceContext)
 
 	const onAppleButtonPress = async () => {
-		const appleAuthRequestResponse = await appleAuth.performRequest({
-			requestedOperation: appleAuth.Operation.LOGIN,
-			requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
-		})
+		try {
+			const appleAuthRequestResponse = await appleAuth.performRequest({
+				requestedOperation: appleAuth.Operation.LOGIN,
+				requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
+			})
 
-		if (!appleAuthRequestResponse.identityToken) {
-			return
+			if (!appleAuthRequestResponse.identityToken) {
+				return
+			}
+
+			const token = await authService.callback(
+				AuthProvider.APPLE,
+				appleAuthRequestResponse.identityToken,
+			)
+			await AsyncStorage.setItem(LOGIN_TOKEN, token)
+			const user = await userService.getUser()
+			setUser(user)
+			closeBottomSheet()
+			queryClient.invalidateQueries(['manageClubs'])
+			Toast.show({ type: 'info', text1: '로그인 되었어요!', position: 'bottom' })
+		} catch {
+			Toast.show({
+				type: 'info',
+				text1: '로그인에 실패했어요!',
+				position: 'bottom',
+			})
 		}
-
-		const token = await authService.callback(
-			AuthProvider.APPLE,
-			appleAuthRequestResponse.identityToken,
-		)
-		await AsyncStorage.setItem(LOGIN_TOKEN, token)
-		const user = await userService.getUser()
-		setUser(user)
-		closeBottomSheet()
-		queryClient.invalidateQueries(['manageClubs'])
 	}
 
 	const onKakaoButtonPress = async () => {
@@ -58,10 +61,11 @@ const LoginView = ({ closeBottomSheet }: Props) => {
 			setUser(user)
 			closeBottomSheet()
 			queryClient.invalidateQueries(['manageClubs'])
-		} catch (err) {
+			Toast.show({ type: 'info', text1: '로그인 되었어요!', position: 'bottom' })
+		} catch {
 			Toast.show({
 				type: 'info',
-				text1: `로그인에 실패했어요! 잠시 후 다시 시도해주세요`,
+				text1: '로그인에 실패했어요!',
 				position: 'bottom',
 			})
 		}
@@ -71,31 +75,29 @@ const LoginView = ({ closeBottomSheet }: Props) => {
 		<View style={styles.mainWrapper}>
 			<View style={styles.titleWrapper}>
 				<View style={styles.flexRow}>
-					<Text style={[styles.title, styles.bold]}>로그인</Text>
-					<Text style={styles.title}>이 필요해요</Text>
+					<Text style={styles.titleBold}>로그인</Text>
+					<Text style={styles.titleRegular}>이 필요해요</Text>
 				</View>
 			</View>
 			<View>
-				<TouchableOpacity
-					style={[styles.button, styles.kakao]}
-					onPress={() => onKakaoButtonPress()}>
+				<Pressable style={[styles.button, styles.kakao]} onPress={onKakaoButtonPress}>
 					<Image source={require('@/assets/icons/kakao.png')} style={styles.icon} />
 					<Text style={styles.kakaoText}>카카오톡으로 계속하기</Text>
-				</TouchableOpacity>
+				</Pressable>
 				{Platform.OS === 'ios' && (
-					<TouchableOpacity
-						style={[styles.button, styles.apple]}
-						onPress={() => onAppleButtonPress()}>
+					<Pressable style={[styles.button, styles.apple]} onPress={onAppleButtonPress}>
 						<Image source={require('@/assets/icons/apple.png')} style={styles.icon} />
 						<Text style={styles.appleText}>Apple로 계속하기</Text>
-					</TouchableOpacity>
+					</Pressable>
 				)}
 			</View>
-			<View style={{ marginTop: 'auto' }}>
-				<TouchableHighlight onPress={closeBottomSheet}>
-					<Text style={styles.link}>상세 화면 돌아가기</Text>
-				</TouchableHighlight>
-			</View>
+			<Pressable
+				onPress={closeBottomSheet}
+				style={({ pressed }) => [styles.bottomLink, { opacity: pressed ? 0.5 : 1 }]}>
+				<View style={styles.linkUnderline}>
+					<Text style={styles.link}>다음에 할게요</Text>
+				</View>
+			</Pressable>
 		</View>
 	)
 }
@@ -104,75 +106,68 @@ export default LoginView
 
 const styles = StyleSheet.create({
 	flexRow: {
-		display: 'flex',
 		flexDirection: 'row',
 	},
-
 	mainWrapper: {
 		flex: 1,
-		paddingVertical: 32,
-		paddingHorizontal: 24,
-		backgroundColor: 'white',
+		paddingVertical: vs(32),
+		paddingHorizontal: s(24),
+		backgroundColor: Colors.WHITE,
 	},
-
 	titleWrapper: {
-		display: 'flex',
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginBottom: 24,
+		marginBottom: vs(24),
 	},
-
-	title: {
-		fontSize: 16,
-		lineHeight: 24,
+	titleBold: {
+		...typography.headerL,
 	},
-
-	bold: {
-		fontWeight: 'bold',
+	titleRegular: {
+		...typography.headerL,
+		fontFamily: 'Pretendard-Regular',
 	},
-
 	button: {
-		padding: 16,
-		borderRadius: 12,
-		display: 'flex',
+		padding: ms(16),
+		borderRadius: ms(12),
 		position: 'relative',
-		marginBottom: 12,
+		marginBottom: vs(12),
 	},
-
 	icon: {
-		width: 24,
-		height: 24,
+		width: s(24),
+		height: vs(24),
 		position: 'absolute',
-		top: 13,
-		left: 16,
+		top: vs(13),
+		left: s(16),
 	},
-
 	apple: {
-		backgroundColor: '#000',
+		backgroundColor: Colors.BLACK,
 	},
-
 	appleText: {
+		...typography.bodyMMedium,
 		color: Colors.TEXT_BUTTON_SELECTED,
-		fontWeight: '500',
 		textAlign: 'center',
 	},
-
 	kakao: {
-		backgroundColor: '#FEE500',
+		backgroundColor: '#FEE500', // 카카오 컬러
 	},
-
 	kakaoText: {
-		color: '#000',
-		fontWeight: '500',
+		...typography.bodyMMedium,
+		color: Colors.BLACK,
 		textAlign: 'center',
 	},
-
+	bottomLink: {
+		marginTop: 'auto',
+		alignSelf: 'center',
+		marginBottom: vs(24),
+	},
+	linkUnderline: {
+		borderBottomWidth: 1,
+		borderBottomColor: Colors.BODYTEXT_SUB,
+		paddingBottom: vs(0.5),
+	},
 	link: {
-		marginTop: 12,
-		color: '#8F8686',
-		fontSize: 14,
-		lineHeight: 24,
-		textAlign: 'center',
-		textDecorationLine: 'underline',
+		...typography.bodyMRegular,
+		marginTop: vs(12),
+		color: Colors.BODYTEXT_SUB,
 	},
 })
