@@ -89,7 +89,19 @@ export function TabNavigator() {
 				name="탐색"
 				component={SearchTab}
 			/>
-			<Tab.Screen options={{ tabBarIcon: renderSavedTabIcon }} name="저장" component={SavedTab} />
+			<Tab.Screen
+				options={{ tabBarIcon: renderSavedTabIcon }}
+				name="저장"
+				component={SavedTab}
+				listeners={{
+					tabPress: e => {
+						if (!user) {
+							e.preventDefault()
+							openBottomSheet()
+						}
+					},
+				}}
+			/>
 			<Tab.Screen
 				options={{ tabBarIcon: renderMyPageTabIcon }}
 				name="마이"
