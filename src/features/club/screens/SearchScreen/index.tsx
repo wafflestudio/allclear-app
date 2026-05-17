@@ -148,7 +148,6 @@ const SearchScreen = ({ navigation }: Props) => {
 							clubs={filteredClubs}
 							openDetailPage={openDetailPage}
 							emptyPlaceholder={'앗 검색 결과가 없어요!\n다른 키워드로 검색해주세요'}
-							pageSize={5}
 							isLoading={isFetching}
 						/>
 					</>
