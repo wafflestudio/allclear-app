@@ -1,6 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
-import SearchScreen from '@/features/search/screens/SearchScreen'
+import SearchScreen from '@/features/club/screens/SearchScreen'
 import ClubDetailScreen from '@/features/club/screens/ClubDetailScreen'
 import ClubReviewScreen from '@/features/club/screens/ClubReviewScreen'
 import ClubRankingScreen from '@/features/club/screens/ClubRankingScreen'

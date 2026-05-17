@@ -14,8 +14,8 @@ type Props = {
 
 const ClubCard = ({ club, category }: Props) => {
 	const categoryDetail = category ? CategoryMap[category] : undefined
-	const borderColor = categoryDetail ? categoryDetail.themeColor : Colors.GRAY
-	const backgroundColor = categoryDetail ? categoryDetail.backgroundColor : Colors.WHITE
+	const borderColor = categoryDetail ? categoryDetail.themeColor : Colors.BUTTON_SELECTED
+	const backgroundColor = categoryDetail ? categoryDetail.backgroundColor : Colors.POINTCOLOR_10
 
 	return (
 		<View style={styles.container}>
@@ -31,19 +31,32 @@ const ClubCard = ({ club, category }: Props) => {
 					</Text>
 				</View>
 				<View style={styles.reviewView}>
-					{club.reviewKeywords?.slice(0, 2).map((keyword, index) => (
+					{club.reviewKeywords && club.reviewKeywords.length > 0 ? (
+						club.reviewKeywords.slice(0, 2).map((keyword, index) => (
+							<View
+								key={`${club.name}-${index}`}
+								style={[
+									styles.reviewKeyword,
+									{ borderColor: borderColor, backgroundColor: backgroundColor },
+								]}>
+								<Text style={styles.reviewKeywordIcon}>{keyword.iconUri?.trim()}</Text>
+								<Text style={styles.reviewKeywordTitle} numberOfLines={1}>
+									{keyword.title}
+								</Text>
+							</View>
+						))
+					) : (
 						<View
-							key={`${club.name}-${index}`}
 							style={[
 								styles.reviewKeyword,
-								{ borderColor: borderColor, backgroundColor: backgroundColor },
+								{ borderColor: '#CBCBCB', backgroundColor: 'rgba(193, 193, 193, 0.1)' },
 							]}>
-							<Text style={styles.reviewKeywordIcon}>{keyword.iconUri?.trim()}</Text>
+							<Text style={styles.reviewKeywordIcon}>🥲</Text>
 							<Text style={styles.reviewKeywordTitle} numberOfLines={1}>
-								{keyword.title}
+								아직 활동 후기가 없어요
 							</Text>
 						</View>
-					))}
+					)}
 				</View>
 			</View>
 		</View>
@@ -90,7 +103,7 @@ const styles = StyleSheet.create({
 	},
 	reviewView: {
 		flexDirection: 'row',
-		height: vs(20),
+		height: vs(21),
 		gap: ms(4),
 	},
 	reviewKeyword: {
