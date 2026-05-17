@@ -19,6 +19,7 @@ import IconMaterialCommunity from 'react-native-vector-icons/MaterialCommunityIc
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 import { navigation } from '@/shared/utils/navigation'
+import { setToken } from '@/shared/utils/api'
 
 const MyPageScreen = () => {
 	const { authService } = useContext(serviceContext)
@@ -49,6 +50,7 @@ const MyPageScreen = () => {
 
 	const confirmLeave = async () => {
 		await authService.leave()
+		setToken(null)
 		setUser(null)
 
 		Toast.show({
@@ -96,6 +98,7 @@ const MyPageScreen = () => {
 
 	const confirmLogout = async () => {
 		await authService.logout()
+		setToken(null)
 		setUser(null)
 		queryClient.invalidateQueries(['manageClubs'])
 		navigation.navigate(SCREEN_TYPE.HOME)

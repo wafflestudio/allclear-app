@@ -9,6 +9,7 @@ import { ActivityIndicator, Image, Platform, Pressable, StyleSheet, Text, View }
 import Toast from 'react-native-toast-message'
 import { AuthProvider } from '@/usecases/auth'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
+import { setToken } from '@/shared/utils/api'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
@@ -26,6 +27,7 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 
 	const handleLoginSuccess = async (token: string) => {
 		await AsyncStorage.setItem(LOGIN_TOKEN, token)
+		setToken(token)
 		const user = await userService.getUser()
 		setUser(user)
 		closeBottomSheet()

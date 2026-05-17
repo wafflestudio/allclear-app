@@ -29,6 +29,7 @@ import { getReviewService } from '@/usecases/review'
 import { getTermService } from '@/usecases/term'
 import { getUserService } from '@/usecases/user'
 import { _navigationRef, setIsNavigationReady } from '@/shared/utils/navigation'
+import { initToken } from '@/shared/utils/api'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
@@ -75,6 +76,7 @@ function App(): React.JSX.Element {
 
 	useEffect(() => {
 		setIsNavigationReady(true)
+		initToken()
 		setTimeout(() => SplashScreen.hide(), 1000)
 	}, [])
 
