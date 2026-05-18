@@ -140,7 +140,7 @@ const ConfirmModal = ({ visible, onCancel, onConfirm }: ConfirmModalProps) => (
 			<View style={styles.confirmBox}>
 				<Text style={[styles.confirmTitle, { marginBottom: 12 }]}>공고를 등록할까요?</Text>
 				<Text style={[styles.confirmDesc, { marginBottom: 20 }]}>
-					{'공고는 언제든 참여하여 한번 + 공고 신규 입력에\n수정하는 것도 가능해요'}
+					{'공고는 언제든 동아리 관리 → 공고 관리 탭에서\n수정/등록 가능해요'}
 				</Text>
 				<View style={styles.confirmButtons}>
 					<TouchableOpacity style={styles.confirmCancel} onPress={onCancel}>
