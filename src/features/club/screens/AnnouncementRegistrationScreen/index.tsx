@@ -154,9 +154,9 @@ const SuccessModal = ({ visible, onConfirm }: SuccessModalProps) => (
 	<Modal visible={visible} transparent animationType="fade">
 		<View style={styles.confirmOverlay}>
 			<View style={styles.confirmBox}>
-				<Text style={styles.confirmTitle}>{'공고 등록이 정상적으로\n진행되었습니다!'}</Text>
-				<TouchableOpacity style={[styles.confirmSubmit, { width: '100%' }]} onPress={onConfirm}>
-					<Text style={styles.confirmSubmitText}>완료</Text>
+				<Text style={[styles.confirmTitle, { marginBottom: 20 }]}>{'공고 등록이 정상적으로\n완료되었어요!'}</Text>
+				<TouchableOpacity style={[styles.confirmSubmit, { alignSelf: 'stretch', flex: 0 }]} onPress={onConfirm}>
+					<Text style={styles.confirmSubmitText}>확인</Text>
 				</TouchableOpacity>
 			</View>
 		</View>
@@ -988,7 +988,7 @@ const styles = StyleSheet.create({
 	confirmButtons: {
 		flexDirection: 'row',
 		gap: 7,
-		width: '100%',
+		alignSelf: 'stretch',
 	},
 	confirmCancel: {
 		flex: 1,
