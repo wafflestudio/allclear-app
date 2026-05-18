@@ -4,7 +4,6 @@ import React, { useRef, useState } from 'react'
 import {
 	Image,
 	Modal,
-	Pressable,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -24,20 +23,16 @@ const HELPER_COLOR = '#874fff'
 const PLACEHOLDER_COLOR = '#c1c1c1'
 const BG = '#ffffff'
 
-const YEARS = Array.from({ length: 8 }, (_, i) =>
-	String(new Date().getFullYear() + 2 - i),
-)
-const MONTHS = Array.from({ length: 12 }, (_, i) =>
-	String(i + 1).padStart(2, '0'),
-)
-const DAYS = Array.from({ length: 31 }, (_, i) =>
-	String(i + 1).padStart(2, '0'),
-)
+const YEARS = Array.from({ length: 8 }, (_, i) => String(new Date().getFullYear() + 2 - i))
+const MONTHS = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'))
+const DAYS = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'))
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
 const MINUTES = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, '0'))
 const DAYS_OF_WEEK = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
 const MEETING_TIMES = Array.from({ length: 48 }, (_, i) => {
-	const h = Math.floor(i / 2).toString().padStart(2, '0')
+	const h = Math.floor(i / 2)
+		.toString()
+		.padStart(2, '0')
 	const m = i % 2 === 0 ? '00' : '30'
 	return `${h}:${m}`
 })
@@ -83,32 +78,49 @@ const CustomDropdown = ({ value, options, onChange, width }: DropdownProps) => {
 
 	return (
 		<View style={{ width }} ref={btnRef}>
-			<TouchableOpacity
-				style={[styles.dropdown, open && styles.dropdownOpen]}
-				onPress={handleOpen}>
+			<TouchableOpacity style={[styles.dropdown, open && styles.dropdownOpen]} onPress={handleOpen}>
 				<Text style={[styles.dropdownText, open && { color: PRIMARY }]}>{value}</Text>
-				<Icon name={open ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={16} color={open ? PRIMARY : BORDER} />
+				<Icon
+					name={open ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+					size={16}
+					color={open ? PRIMARY : BORDER}
+				/>
 			</TouchableOpacity>
 
 			<Modal visible={open} transparent animationType="none">
-				<Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(false)}>
+				<View
+					style={StyleSheet.absoluteFill}
+					onStartShouldSetResponder={() => true}
+					onResponderGrant={() => setOpen(false)}>
 					<View
-						style={[styles.dropdownList, styles.dropdownListOpen, { position: 'absolute', top: pos.y, left: pos.x, width: pos.w }]}
-						onStartShouldSetResponder={() => true}>
+						style={[
+							styles.dropdownList,
+							styles.dropdownListOpen,
+							{ position: 'absolute', top: pos.y, left: pos.x, width: pos.w },
+						]}
+						onStartShouldSetResponder={() => true}
+						onResponderGrant={() => {}}>
 						<ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 220 }}>
 							{options.map(opt => (
 								<TouchableOpacity
 									key={opt}
 									style={[styles.dropdownItem, opt === value && styles.dropdownItemSelected]}
-									onPress={() => { onChange(opt); setOpen(false) }}>
-									<Text style={[styles.dropdownItemText, opt === value && styles.dropdownItemTextSelected]}>
+									onPress={() => {
+										onChange(opt)
+										setOpen(false)
+									}}>
+									<Text
+										style={[
+											styles.dropdownItemText,
+											opt === value && styles.dropdownItemTextSelected,
+										]}>
 										{opt}
 									</Text>
 								</TouchableOpacity>
 							))}
 						</ScrollView>
 					</View>
-				</Pressable>
+				</View>
 			</Modal>
 		</View>
 	)
@@ -154,8 +166,12 @@ const SuccessModal = ({ visible, onConfirm }: SuccessModalProps) => (
 	<Modal visible={visible} transparent animationType="fade">
 		<View style={styles.confirmOverlay}>
 			<View style={styles.confirmBox}>
-				<Text style={[styles.confirmTitle, { marginBottom: 20 }]}>{'공고 등록이 정상적으로\n완료되었어요!'}</Text>
-				<TouchableOpacity style={[styles.confirmSubmit, { alignSelf: 'stretch', flex: 0 }]} onPress={onConfirm}>
+				<Text style={[styles.confirmTitle, { marginBottom: 20 }]}>
+					{'공고 등록이 정상적으로\n완료되었어요!'}
+				</Text>
+				<TouchableOpacity
+					style={[styles.confirmSubmit, { alignSelf: 'stretch', flex: 0 }]}
+					onPress={onConfirm}>
 					<Text style={styles.confirmSubmitText}>확인</Text>
 				</TouchableOpacity>
 			</View>
@@ -171,9 +187,7 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 
 	// 모집 기간
 	const [year, setYear] = useState(String(new Date().getFullYear()))
-	const [month, setMonth] = useState(
-		String(new Date().getMonth() + 1).padStart(2, '0'),
-	)
+	const [month, setMonth] = useState(String(new Date().getMonth() + 1).padStart(2, '0'))
 	const [day, setDay] = useState(String(new Date().getDate()).padStart(2, '0'))
 	const [hour, setHour] = useState('23')
 	const [minute, setMinute] = useState('59')
@@ -188,9 +202,7 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 	])
 
 	// 활동 장소
-	const [activityLocation, setActivityLocation] = useState<
-		'동방' | '동방 외' | '미정' | null
-	>(null)
+	const [activityLocation, setActivityLocation] = useState<'동방' | '동방 외' | '미정' | null>(null)
 	const [locationText, setLocationText] = useState('')
 
 	// 지원 자격
@@ -244,9 +256,7 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 	}
 
 	const updateRegularMeeting = (id: number, field: keyof RegularMeeting, value: string) => {
-		setRegularMeetings(prev =>
-			prev.map(m => (m.id === id ? { ...m, [field]: value } : m)),
-		)
+		setRegularMeetings(prev => prev.map(m => (m.id === id ? { ...m, [field]: value } : m)))
 	}
 
 	const handleSubmit = () => {
@@ -269,7 +279,6 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 				style={styles.scrollView}
 				showsVerticalScrollIndicator={false}
 				keyboardShouldPersistTaps="handled">
-
 				{/* 헤더 */}
 				<Text style={styles.screenTitle}>모집 공고를 작성해주세요</Text>
 				<TouchableOpacity style={styles.loadPreviousButton}>
@@ -314,30 +323,18 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 					<Text style={styles.sectionLabel}>*필참 활동 여부</Text>
 					<View style={styles.toggleRow}>
 						<TouchableOpacity
-							style={[
-								styles.toggleButton,
-								hasRequiredActivity === true && styles.toggleButtonOn,
-							]}
+							style={[styles.toggleButton, hasRequiredActivity === true && styles.toggleButtonOn]}
 							onPress={() => setHasRequiredActivity(true)}>
 							<Text
-								style={[
-									styles.toggleText,
-									hasRequiredActivity === true && styles.toggleTextOn,
-								]}>
+								style={[styles.toggleText, hasRequiredActivity === true && styles.toggleTextOn]}>
 								있음
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[
-								styles.toggleButton,
-								hasRequiredActivity === false && styles.toggleButtonOn,
-							]}
+							style={[styles.toggleButton, hasRequiredActivity === false && styles.toggleButtonOn]}
 							onPress={() => setHasRequiredActivity(false)}>
 							<Text
-								style={[
-									styles.toggleText,
-									hasRequiredActivity === false && styles.toggleTextOn,
-								]}>
+								style={[styles.toggleText, hasRequiredActivity === false && styles.toggleTextOn]}>
 								없음
 							</Text>
 						</TouchableOpacity>
@@ -350,30 +347,16 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 					<Text style={styles.sectionLabel}>*정기 모임 일시</Text>
 					<View style={styles.toggleRow}>
 						<TouchableOpacity
-							style={[
-								styles.toggleButton,
-								hasRegularMeeting === true && styles.toggleButtonOn,
-							]}
+							style={[styles.toggleButton, hasRegularMeeting === true && styles.toggleButtonOn]}
 							onPress={() => setHasRegularMeeting(true)}>
-							<Text
-								style={[
-									styles.toggleText,
-									hasRegularMeeting === true && styles.toggleTextOn,
-								]}>
+							<Text style={[styles.toggleText, hasRegularMeeting === true && styles.toggleTextOn]}>
 								정기 모임 있음
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[
-								styles.toggleButton,
-								hasRegularMeeting === false && styles.toggleButtonOn,
-							]}
+							style={[styles.toggleButton, hasRegularMeeting === false && styles.toggleButtonOn]}
 							onPress={() => setHasRegularMeeting(false)}>
-							<Text
-								style={[
-									styles.toggleText,
-									hasRegularMeeting === false && styles.toggleTextOn,
-								]}>
+							<Text style={[styles.toggleText, hasRegularMeeting === false && styles.toggleTextOn]}>
 								정기 모임 없음
 							</Text>
 						</TouchableOpacity>
@@ -422,16 +405,10 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 						{(['동방', '동방 외', '미정'] as const).map(option => (
 							<TouchableOpacity
 								key={option}
-								style={[
-									styles.toggleButton,
-									activityLocation === option && styles.toggleButtonOn,
-								]}
+								style={[styles.toggleButton, activityLocation === option && styles.toggleButtonOn]}
 								onPress={() => setActivityLocation(option)}>
 								<Text
-									style={[
-										styles.toggleText,
-										activityLocation === option && styles.toggleTextOn,
-									]}>
+									style={[styles.toggleText, activityLocation === option && styles.toggleTextOn]}>
 									{option}
 								</Text>
 							</TouchableOpacity>
@@ -457,30 +434,18 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 					<Text style={styles.sectionLabel}>*지원 자격</Text>
 					<View style={styles.toggleRow}>
 						<TouchableOpacity
-							style={[
-								styles.toggleButton,
-								qualification === '제한 없음' && styles.toggleButtonOn,
-							]}
+							style={[styles.toggleButton, qualification === '제한 없음' && styles.toggleButtonOn]}
 							onPress={() => setQualification('제한 없음')}>
 							<Text
-								style={[
-									styles.toggleText,
-									qualification === '제한 없음' && styles.toggleTextOn,
-								]}>
+								style={[styles.toggleText, qualification === '제한 없음' && styles.toggleTextOn]}>
 								제한 없음
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[
-								styles.toggleButton,
-								qualification === '제한 있음' && styles.toggleButtonOn,
-							]}
+							style={[styles.toggleButton, qualification === '제한 있음' && styles.toggleButtonOn]}
 							onPress={() => setQualification('제한 있음')}>
 							<Text
-								style={[
-									styles.toggleText,
-									qualification === '제한 있음' && styles.toggleTextOn,
-								]}>
+								style={[styles.toggleText, qualification === '제한 있음' && styles.toggleTextOn]}>
 								제한 있음
 							</Text>
 						</TouchableOpacity>
@@ -503,30 +468,18 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 					<Text style={styles.sectionLabel}>*모집 인원</Text>
 					<View style={styles.toggleRow}>
 						<TouchableOpacity
-							style={[
-								styles.toggleButton,
-								recruitCount === '제한 없음' && styles.toggleButtonOn,
-							]}
+							style={[styles.toggleButton, recruitCount === '제한 없음' && styles.toggleButtonOn]}
 							onPress={() => setRecruitCount('제한 없음')}>
 							<Text
-								style={[
-									styles.toggleText,
-									recruitCount === '제한 없음' && styles.toggleTextOn,
-								]}>
+								style={[styles.toggleText, recruitCount === '제한 없음' && styles.toggleTextOn]}>
 								제한 없음
 							</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={[
-								styles.toggleButton,
-								recruitCount === '정원 있음' && styles.toggleButtonOn,
-							]}
+							style={[styles.toggleButton, recruitCount === '정원 있음' && styles.toggleButtonOn]}
 							onPress={() => setRecruitCount('정원 있음')}>
 							<Text
-								style={[
-									styles.toggleText,
-									recruitCount === '정원 있음' && styles.toggleTextOn,
-								]}>
+								style={[styles.toggleText, recruitCount === '정원 있음' && styles.toggleTextOn]}>
 								정원 있음
 							</Text>
 						</TouchableOpacity>
@@ -623,7 +576,9 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 						{images.map((uri, idx) => (
 							<View key={idx} style={styles.imageThumbnail}>
 								<Image source={{ uri }} style={styles.thumbnailImg} />
-								<TouchableOpacity style={styles.deleteImageBtn} onPress={() => handleRemoveImage(idx)}>
+								<TouchableOpacity
+									style={styles.deleteImageBtn}
+									onPress={() => handleRemoveImage(idx)}>
 									<Icon name="close" size={14} color="#fff" />
 								</TouchableOpacity>
 							</View>
@@ -676,7 +631,7 @@ const styles = StyleSheet.create({
 		fontWeight: '700',
 		color: '#111',
 		marginTop: 24,
-		marginBottom: 12,
+		marginBottom: 20,
 	},
 	loadPreviousButton: {
 		alignSelf: 'flex-start',
