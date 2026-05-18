@@ -1,9 +1,10 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import {
-	Alert,
+	Image,
 	Modal,
+	Pressable,
 	ScrollView,
 	StyleSheet,
 	Text,
@@ -12,15 +13,16 @@ import {
 	View,
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { launchImageLibrary } from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const PRIMARY = '#7B61FF'
-const BORDER = '#E0E0E0'
-const HELPER_COLOR = '#7B61FF'
-const PLACEHOLDER_COLOR = '#BDBDBD'
-const BG = '#F5F4F0'
+const PRIMARY = '#874fff'
+const BORDER = '#c1c1c1'
+const HELPER_COLOR = '#874fff'
+const PLACEHOLDER_COLOR = '#c1c1c1'
+const BG = '#ffffff'
 
 const YEARS = Array.from({ length: 8 }, (_, i) =>
 	String(new Date().getFullYear() + 2 - i),
@@ -69,44 +71,44 @@ type DropdownProps = {
 
 const CustomDropdown = ({ value, options, onChange, width }: DropdownProps) => {
 	const [open, setOpen] = useState(false)
+	const [pos, setPos] = useState({ x: 0, y: 0, w: 0 })
+	const btnRef = useRef<View>(null)
+
+	const handleOpen = () => {
+		btnRef.current?.measureInWindow((x, y, w, h) => {
+			setPos({ x, y: y + h, w: width ?? w })
+			setOpen(true)
+		})
+	}
 
 	return (
-		<View style={{ width }}>
-			<TouchableOpacity style={styles.dropdown} onPress={() => setOpen(true)}>
-				<Text style={styles.dropdownText}>{value}</Text>
-				<Icon name="keyboard-arrow-down" size={16} color="#666" />
+		<View style={{ width }} ref={btnRef}>
+			<TouchableOpacity
+				style={[styles.dropdown, open && styles.dropdownOpen]}
+				onPress={handleOpen}>
+				<Text style={[styles.dropdownText, open && { color: PRIMARY }]}>{value}</Text>
+				<Icon name={open ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={16} color={open ? PRIMARY : BORDER} />
 			</TouchableOpacity>
 
-			<Modal visible={open} transparent animationType="fade">
-				<TouchableOpacity
-					style={styles.modalOverlay}
-					onPress={() => setOpen(false)}
-					activeOpacity={1}>
-					<View style={styles.dropdownList}>
+			<Modal visible={open} transparent animationType="none">
+				<Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(false)}>
+					<View
+						style={[styles.dropdownList, styles.dropdownListOpen, { position: 'absolute', top: pos.y, left: pos.x, width: pos.w }]}
+						onStartShouldSetResponder={() => true}>
 						<ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 220 }}>
 							{options.map(opt => (
 								<TouchableOpacity
 									key={opt}
-									style={[
-										styles.dropdownItem,
-										opt === value && styles.dropdownItemSelected,
-									]}
-									onPress={() => {
-										onChange(opt)
-										setOpen(false)
-									}}>
-									<Text
-										style={[
-											styles.dropdownItemText,
-											opt === value && styles.dropdownItemTextSelected,
-										]}>
+									style={[styles.dropdownItem, opt === value && styles.dropdownItemSelected]}
+									onPress={() => { onChange(opt); setOpen(false) }}>
+									<Text style={[styles.dropdownItemText, opt === value && styles.dropdownItemTextSelected]}>
 										{opt}
 									</Text>
 								</TouchableOpacity>
 							))}
 						</ScrollView>
 					</View>
-				</TouchableOpacity>
+				</Pressable>
 			</Modal>
 		</View>
 	)
@@ -124,8 +126,8 @@ const ConfirmModal = ({ visible, onCancel, onConfirm }: ConfirmModalProps) => (
 	<Modal visible={visible} transparent animationType="fade">
 		<View style={styles.confirmOverlay}>
 			<View style={styles.confirmBox}>
-				<Text style={styles.confirmTitle}>공고를 등록할까요?</Text>
-				<Text style={styles.confirmDesc}>
+				<Text style={[styles.confirmTitle, { marginBottom: 12 }]}>공고를 등록할까요?</Text>
+				<Text style={[styles.confirmDesc, { marginBottom: 20 }]}>
 					{'공고는 언제든 참여하여 한번 + 공고 신규 입력에\n수정하는 것도 가능해요'}
 				</Text>
 				<View style={styles.confirmButtons}>
@@ -153,8 +155,8 @@ const SuccessModal = ({ visible, onConfirm }: SuccessModalProps) => (
 		<View style={styles.confirmOverlay}>
 			<View style={styles.confirmBox}>
 				<Text style={styles.confirmTitle}>{'공고 등록이 정상적으로\n진행되었습니다!'}</Text>
-				<TouchableOpacity style={[styles.confirmSubmit, { marginTop: 16 }]} onPress={onConfirm}>
-					<Text style={styles.confirmSubmitText}>확인</Text>
+				<TouchableOpacity style={[styles.confirmSubmit, { width: '100%' }]} onPress={onConfirm}>
+					<Text style={styles.confirmSubmitText}>완료</Text>
 				</TouchableOpacity>
 			</View>
 		</View>
@@ -209,6 +211,21 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 
 	// 기존 공고
 	const [existingAnnouncement, setExistingAnnouncement] = useState('')
+
+	// 공고 이미지
+	const [images, setImages] = useState<string[]>([])
+
+	const handleAddImage = () => {
+		launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 }, response => {
+			if (response.assets?.[0]?.uri) {
+				setImages(prev => [...prev, response.assets![0].uri!])
+			}
+		})
+	}
+
+	const handleRemoveImage = (index: number) => {
+		setImages(prev => prev.filter((_, i) => i !== index))
+	}
 
 	// 모달
 	const [showConfirm, setShowConfirm] = useState(false)
@@ -603,8 +620,16 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 				<View style={[styles.section, { marginBottom: 40 }]}>
 					<Text style={styles.sectionLabel}>공고 이미지</Text>
 					<View style={styles.imageRow}>
-						<TouchableOpacity style={styles.addImageButton}>
-							<Icon name="add" size={24} color="#999" />
+						{images.map((uri, idx) => (
+							<View key={idx} style={styles.imageThumbnail}>
+								<Image source={{ uri }} style={styles.thumbnailImg} />
+								<TouchableOpacity style={styles.deleteImageBtn} onPress={() => handleRemoveImage(idx)}>
+									<Icon name="close" size={14} color="#fff" />
+								</TouchableOpacity>
+							</View>
+						))}
+						<TouchableOpacity style={styles.addImageButton} onPress={handleAddImage}>
+							<Icon name="add" size={24} color={BORDER} />
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -647,59 +672,65 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 	},
 	screenTitle: {
-		fontSize: 22,
-		fontWeight: 'bold',
+		fontSize: 24,
+		fontWeight: '700',
 		color: '#111',
 		marginTop: 24,
-		marginBottom: 16,
+		marginBottom: 12,
 	},
 	loadPreviousButton: {
 		alignSelf: 'flex-start',
 		backgroundColor: PRIMARY,
-		paddingHorizontal: 16,
-		paddingVertical: 8,
-		borderRadius: 20,
-		marginBottom: 28,
+		padding: 10,
+		borderRadius: 8,
+		marginBottom: 20,
 	},
 	loadPreviousText: {
-		color: '#fff',
-		fontSize: 13,
-		fontWeight: '600',
+		color: '#fafafa',
+		fontSize: 12,
+		fontWeight: '700',
 	},
 	section: {
-		marginBottom: 28,
+		marginBottom: 20,
 	},
 	sectionLabel: {
-		fontSize: 15,
-		fontWeight: '700',
-		color: '#111',
-		marginBottom: 10,
+		fontSize: 20,
+		fontWeight: '600',
+		color: '#757474',
+		marginBottom: 5,
+		paddingTop: 10,
+		paddingBottom: 5,
 	},
 	textInput: {
 		backgroundColor: '#fff',
 		borderWidth: 1,
 		borderColor: BORDER,
 		borderRadius: 8,
-		paddingHorizontal: 14,
-		paddingVertical: 12,
-		fontSize: 14,
+		paddingHorizontal: 15,
+		paddingVertical: 18,
+		fontSize: 16,
+		fontWeight: '500',
 		color: '#333',
+		minHeight: 60,
 	},
 	helperText: {
-		fontSize: 12,
+		fontSize: 14,
+		fontWeight: '400',
 		color: HELPER_COLOR,
-		marginTop: 6,
+		marginTop: 5,
+		paddingLeft: 5,
 	},
 
 	// 날짜 행
 	dateRow: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: 6,
+		gap: 5,
 	},
 	dateUnitLabel: {
-		fontSize: 14,
-		color: '#333',
+		fontSize: 20,
+		fontWeight: '600',
+		color: '#757474',
 	},
 	deadlineLabel: {
 		fontSize: 14,
@@ -717,13 +748,29 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: BORDER,
 		borderRadius: 8,
-		paddingHorizontal: 10,
-		paddingVertical: 10,
+		paddingHorizontal: 13,
+		minHeight: 54,
+	},
+	dropdownOpen: {
+		borderColor: PRIMARY,
+		borderBottomLeftRadius: 0,
+		borderBottomRightRadius: 0,
+		borderBottomWidth: 0,
 	},
 	dropdownText: {
 		fontSize: 14,
-		color: '#333',
+		fontWeight: '600',
+		color: BORDER,
 		marginRight: 2,
+		letterSpacing: 0.4,
+	},
+	dropdownListOpen: {
+		borderWidth: 1,
+		borderColor: PRIMARY,
+		borderTopLeftRadius: 0,
+		borderTopRightRadius: 0,
+		shadowOpacity: 0,
+		elevation: 0,
 	},
 	modalOverlay: {
 		flex: 1,
@@ -751,7 +798,8 @@ const styles = StyleSheet.create({
 	},
 	dropdownItemText: {
 		fontSize: 14,
-		color: '#333',
+		fontWeight: '600',
+		color: '#757474',
 	},
 	dropdownItemTextSelected: {
 		color: PRIMARY,
@@ -761,48 +809,52 @@ const styles = StyleSheet.create({
 	// 토글 버튼
 	toggleRow: {
 		flexDirection: 'row',
-		gap: 8,
+		gap: 10,
 	},
 	toggleButton: {
 		flex: 1,
-		paddingVertical: 13,
+		height: 54,
 		borderRadius: 8,
 		borderWidth: 1,
 		borderColor: BORDER,
 		backgroundColor: '#fff',
 		alignItems: 'center',
+		justifyContent: 'center',
+		paddingHorizontal: 4,
 	},
 	toggleButtonOn: {
 		backgroundColor: PRIMARY,
 		borderColor: PRIMARY,
 	},
 	toggleText: {
-		fontSize: 14,
-		color: '#BDBDBD',
-		fontWeight: '500',
+		fontSize: 16,
+		color: BORDER,
+		fontWeight: '600',
+		textAlign: 'center',
 	},
 	toggleTextOn: {
 		color: '#fff',
-		fontWeight: '700',
+		fontWeight: '600',
+		textAlign: 'center',
 	},
 
 	// 정기 모임 행
 	meetingRow: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: 6,
+		gap: 5,
 		marginTop: 10,
 	},
 	tilde: {
 		fontSize: 14,
-		color: '#666',
+		color: '#757474',
 	},
 	addTimeButton: {
 		alignSelf: 'center',
 		marginTop: 12,
 	},
 	addTimeText: {
-		fontSize: 13,
+		fontSize: 14,
 		color: PRIMARY,
 		fontWeight: '600',
 	},
@@ -815,13 +867,15 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: BORDER,
 		borderRadius: 8,
-		paddingHorizontal: 12,
-		paddingVertical: 11,
+		paddingHorizontal: 15,
+		paddingVertical: 18,
+		minHeight: 60,
 		marginTop: 8,
 	},
 	iconInput: {
 		flex: 1,
-		fontSize: 14,
+		fontSize: 16,
+		fontWeight: '500',
 		color: '#333',
 	},
 
@@ -830,6 +884,29 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		gap: 8,
+	},
+	imageThumbnail: {
+		width: 72,
+		height: 72,
+		borderRadius: 8,
+		overflow: 'hidden',
+		position: 'relative',
+	},
+	thumbnailImg: {
+		width: '100%',
+		height: '100%',
+		resizeMode: 'cover',
+	},
+	deleteImageBtn: {
+		position: 'absolute',
+		top: 4,
+		right: 4,
+		backgroundColor: 'rgba(0,0,0,0.5)',
+		borderRadius: 10,
+		width: 20,
+		height: 20,
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 	addImageButton: {
 		width: 72,
@@ -847,95 +924,97 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		gap: 10,
 		paddingHorizontal: 20,
-		paddingVertical: 14,
+		paddingVertical: 12,
 		backgroundColor: BG,
 		borderTopWidth: 1,
 		borderTopColor: BORDER,
 	},
 	prevButton: {
 		flex: 1,
-		paddingVertical: 14,
+		height: 44,
 		borderRadius: 8,
 		borderWidth: 1,
 		borderColor: BORDER,
 		backgroundColor: '#fff',
 		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	prevButtonText: {
-		fontSize: 15,
-		color: '#666',
-		fontWeight: '600',
+		fontSize: 16,
+		color: BORDER,
+		fontWeight: '700',
 	},
 	submitButton: {
-		flex: 2,
-		paddingVertical: 14,
+		flex: 1,
+		height: 44,
 		borderRadius: 8,
 		backgroundColor: PRIMARY,
 		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	submitButtonText: {
-		fontSize: 15,
+		fontSize: 16,
 		color: '#fff',
-		fontWeight: '700',
+		fontWeight: '600',
 	},
 
 	// 확인 모달
 	confirmOverlay: {
 		flex: 1,
-		backgroundColor: 'rgba(0,0,0,0.4)',
+		backgroundColor: 'rgba(0,0,0,0.2)',
 		justifyContent: 'center',
 		alignItems: 'center',
-		paddingHorizontal: 40,
 	},
 	confirmBox: {
 		backgroundColor: '#fff',
-		borderRadius: 14,
+		borderRadius: 12,
 		padding: 24,
-		width: '100%',
+		width: 320,
 		alignItems: 'center',
 	},
 	confirmTitle: {
 		fontSize: 16,
 		fontWeight: '700',
-		color: '#111',
+		color: '#000000',
 		textAlign: 'center',
-		marginBottom: 10,
 	},
 	confirmDesc: {
-		fontSize: 13,
-		color: '#888',
+		fontSize: 14,
+		fontWeight: '500',
+		color: '#000000',
 		textAlign: 'center',
-		lineHeight: 20,
-		marginBottom: 20,
+		lineHeight: 24,
 	},
 	confirmButtons: {
 		flexDirection: 'row',
-		gap: 10,
+		gap: 7,
 		width: '100%',
 	},
 	confirmCancel: {
 		flex: 1,
-		paddingVertical: 12,
+		height: 44,
 		borderRadius: 8,
 		borderWidth: 1,
-		borderColor: BORDER,
+		borderColor: PRIMARY,
 		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	confirmCancelText: {
-		fontSize: 14,
-		color: '#666',
-		fontWeight: '600',
+		fontSize: 16,
+		color: PRIMARY,
+		fontWeight: '700',
 	},
 	confirmSubmit: {
 		flex: 1,
-		paddingVertical: 12,
+		height: 44,
 		borderRadius: 8,
 		backgroundColor: PRIMARY,
 		alignItems: 'center',
+		justifyContent: 'center',
 	},
 	confirmSubmitText: {
-		fontSize: 14,
+		fontSize: 16,
 		color: '#fff',
-		fontWeight: '700',
+		fontWeight: '600',
 	},
 })
