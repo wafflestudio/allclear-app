@@ -10,7 +10,6 @@ export enum SCREEN_TYPE {
 
 	CLUB_DETAIL = 'ClubDetail',
 	CLUB_REVIEW = 'ClubReview',
-	CLUB_RANKING = 'ClubRanking',
 
 	MYPAGE = 'MyPage',
 	EDIT_PROFILE = 'EditProfile',
@@ -32,13 +31,18 @@ export type StackParamList = {
 	[SCREEN_TYPE.CLUB_DETAIL]: {
 		uuid: Club['uuid']
 		category?: Club['category']
-		entry_point?: 'home' | 'search_result' | 'club_list' | 'club_detail' | 'club_review'
+		entry_point?:
+			| 'home'
+			| 'search_result'
+			| 'club_list'
+			| 'club_detail'
+			| 'club_review'
+			| 'popular_clubs'
 	}
 	[SCREEN_TYPE.CLUB_REVIEW]: {
 		uuid: Club['uuid']
 		category: Club['category']
 	}
-	[SCREEN_TYPE.CLUB_RANKING]: undefined
 
 	[SCREEN_TYPE.EDIT_PROFILE]: undefined
 	[SCREEN_TYPE.MYPAGE]: undefined
