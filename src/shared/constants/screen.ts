@@ -6,7 +6,6 @@ export enum SCREEN_TYPE {
 	SEARCH = 'Search',
 
 	CLUB_LIST = 'ClubList',
-	SEARCH_RESULT_CLUB_LIST = 'SearchResultClubList',
 	SAVED_CLUB_LIST = 'SavedClubList',
 
 	CLUB_DETAIL = 'ClubDetail',
@@ -27,9 +26,6 @@ export type StackParamList = {
 	[SCREEN_TYPE.CLUB_LIST]: {
 		name?: Club['name']
 		category?: Club['category']
-	}
-	[SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST]: {
-		query: string
 	}
 	[SCREEN_TYPE.SAVED_CLUB_LIST]: undefined
 
