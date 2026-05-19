@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { Club } from '@/entities/club'
 import ClubList from '@/features/club/components/ClubList/ClubList'
+import PopularClubs from '@/features/club/components/PopularClubs/PopularClubs'
 import RecentSearches from '@/features/club/components/RecentSearches/RecentSearches'
 import SearchBar from '@/features/club/components/SearchBar/SearchBar'
 import SearchFilterBar, {
@@ -158,7 +159,7 @@ const SearchScreen = ({ navigation }: Props) => {
 							onPressItem={handleSelectRecentSearch}
 							onClearAll={handleClearRecentSearches}
 						/>
-						{/* TODO: 인기동아리 섹션 */}
+						<PopularClubs />
 					</View>
 				)}
 			</SafeAreaView>
@@ -214,6 +215,6 @@ const styles = StyleSheet.create({
 	placeholderContainer: {
 		paddingHorizontal: s(20),
 		paddingTop: vs(14),
-		gap: vs(20),
+		gap: vs(30),
 	},
 })
