@@ -142,9 +142,8 @@ export default SearchFilterOverlay
 
 const styles = StyleSheet.create({
 	wrapper: {
-		flex: 1,
-		position: 'relative',
-		width: '100%',
+		...StyleSheet.absoluteFillObject,
+		zIndex: 10,
 	},
 	dim: {
 		...StyleSheet.absoluteFillObject,
