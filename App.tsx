@@ -15,6 +15,7 @@ import { getAnnouncementRepository } from '@/repositories/announcement'
 import { getAuthRepository } from '@/repositories/auth'
 import { getCategoryRepository } from '@/repositories/category'
 import { getClubRepository } from '@/repositories/club'
+import { getRecentSearchRepository } from '@/repositories/recentSearch'
 import { getReviewRepository } from '@/repositories/review'
 import { getTermRepository } from '@/repositories/term'
 import { getUserRepository } from '@/repositories/user'
@@ -24,6 +25,7 @@ import { getAuthService } from '@/usecases/auth'
 import { getCategoryService } from '@/usecases/category'
 import { getClubService } from '@/usecases/club'
 import { getEventLogService } from '@/usecases/eventLog'
+import { getRecentSearchService } from '@/usecases/recentSearch'
 import { getReviewService } from '@/usecases/review'
 import { getTermService } from '@/usecases/term'
 import { getUserService } from '@/usecases/user'
@@ -45,6 +47,7 @@ function App(): React.JSX.Element {
 	const authRepository = getAuthRepository()
 	const categoryRepository = getCategoryRepository()
 	const clubRepository = getClubRepository()
+	const recentSearchRepository = getRecentSearchRepository()
 	const reviewRepository = getReviewRepository()
 	const termRepository = getTermRepository()
 	const userRepository = getUserRepository()
@@ -54,6 +57,7 @@ function App(): React.JSX.Element {
 	const categoryService = getCategoryService({ repositories: [categoryRepository] })
 	const clubService = getClubService({ repositories: [clubRepository] })
 	const eventLogService = getEventLogService()
+	const recentSearchService = getRecentSearchService({ repositories: [recentSearchRepository] })
 	const reviewService = getReviewService({ repositories: [reviewRepository] })
 	const termService = getTermService({ repositories: [termRepository] })
 	const userService = getUserService({ repositories: [userRepository] })
@@ -64,6 +68,7 @@ function App(): React.JSX.Element {
 		categoryService,
 		clubService,
 		eventLogService,
+		recentSearchService,
 		reviewService,
 		termService,
 		userService,

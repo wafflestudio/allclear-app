@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -22,6 +22,8 @@ import { serviceContext } from '@/shared/contexts/serviceContext'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import { s, vs } from '@/shared/utils/scale'
 
+const RECENT_SEARCHES_QUERY_KEY = ['recentSearches'] as const
+
 type SearchScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.SEARCH>
 type SearchScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.SEARCH>
 
@@ -36,17 +38,10 @@ const SearchScreen = ({ navigation }: Props) => {
 	const [isTypoNoticeVisible, setIsTypoNoticeVisible] = useState(true)
 	const [affiliationFilter, setAffiliationFilter] = useState<AffiliationFilter>('central')
 	const [isRecruitingOnly, setIsRecruitingOnly] = useState(false)
-	const [recentSearches, setRecentSearches] = useState<string[]>([])
-	// const [recentSearches, setRecentSearches] = useState<string[]>([
-	// 	'자동차',
-	// 	'클라이밍',
-	// 	'취미동아리',
-	// 	'토론',
-	// 	'연극동아리',
-	// 	'전략컨설팅',
-	// ])
 
 	const { data: searchResult, isFetching } = useSearchClubs({ query: submittedQuery })
+	const { data: recentSearches } = useRecentSearches()
+	const { mutate: clearRecentSearches } = useClearRecentSearches()
 
 	const clubs = searchResult?.clubs
 	const filteredClubs = useMemo(() => {
@@ -105,7 +100,7 @@ const SearchScreen = ({ navigation }: Props) => {
 	}
 
 	const handleClearRecentSearches = () => {
-		setRecentSearches([])
+		clearRecentSearches()
 	}
 
 	const openDetailPage = (club: Club) => {
@@ -155,7 +150,7 @@ const SearchScreen = ({ navigation }: Props) => {
 				) : (
 					<View style={styles.placeholderContainer}>
 						<RecentSearches
-							searches={recentSearches}
+							searches={recentSearches ?? []}
 							onPressItem={handleSelectRecentSearch}
 							onClearAll={handleClearRecentSearches}
 						/>
@@ -175,6 +170,7 @@ type UseSearchClubsProps = {
 
 const useSearchClubs = ({ query }: UseSearchClubsProps) => {
 	const { clubService } = useContext(serviceContext)
+	const queryClient = useQueryClient()
 
 	return useQuery<SearchClubsResponse>(
 		['searchClubs', query],
@@ -182,8 +178,35 @@ const useSearchClubs = ({ query }: UseSearchClubsProps) => {
 		{
 			enabled: query.length > 0,
 			keepPreviousData: true,
+			onSuccess: () => {
+				queryClient.invalidateQueries(RECENT_SEARCHES_QUERY_KEY)
+			},
 		},
 	)
+}
+
+const useRecentSearches = () => {
+	const { recentSearchService } = useContext(serviceContext)
+
+	return useQuery(
+		RECENT_SEARCHES_QUERY_KEY,
+		() => recentSearchService.listRecentSearches(),
+		{
+			staleTime: 0,
+			select: data => data.recentSearches.map(it => it.query),
+		},
+	)
+}
+
+const useClearRecentSearches = () => {
+	const { recentSearchService } = useContext(serviceContext)
+	const queryClient = useQueryClient()
+
+	return useMutation(() => recentSearchService.deleteAllRecentSearches(), {
+		onSuccess: () => {
+			queryClient.invalidateQueries(RECENT_SEARCHES_QUERY_KEY)
+		},
+	})
 }
 
 const styles = StyleSheet.create({

@@ -94,7 +94,7 @@ export const getClubRepository = (): ClubRepository => ({
 		const searchParams = new URLSearchParams()
 		searchParams.append('query', req.query.toLowerCase().trim())
 
-		const response = await apiConnector.get<SearchClubsResponse>(`/v1/clubs/search`, searchParams)
+		const response = await apiConnector.get<SearchClubsResponse>(`/v2/clubs/search`, searchParams)
 
 		return response
 	},

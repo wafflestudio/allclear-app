@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { ENV } from '@/config/ENV'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
+import { getOrCreateGuestId } from '@/shared/utils/guestId'
 
 export interface APIMessage<T> {
 	status: number
@@ -20,78 +21,63 @@ export class APIConnector {
 		return { Accept: 'application/json' }
 	}
 
+	private async buildAuthHeaders(): Promise<Record<string, string>> {
+		const token = await AsyncStorage.getItem(LOGIN_TOKEN)
+		if (token) {
+			return {
+				'x-authorization': `Bearer ${token}`,
+				Authorization: `Bearer ${token}`,
+			}
+		}
+		const guestId = await getOrCreateGuestId()
+		return { 'x-guest-id': guestId }
+	}
+
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	async get<T>(path: string, params?: any): Promise<T> {
-		const token = await AsyncStorage.getItem(LOGIN_TOKEN)
-
-		const headers = token
-			? {
-					'x-authorization': `Bearer ${token}`,
-					Authorization: `Bearer ${token}`,
-				}
-			: {}
+		const authHeaders = await this.buildAuthHeaders()
 
 		return this.request(path, 'GET', {
 			params,
 			headers: {
 				...this.commonHeaders,
-				...headers,
+				...authHeaders,
 			},
 		})
 	}
 
 	async post<T>(path: string, body?: object, options?: AxiosRequestConfig): Promise<T> {
-		const token = await AsyncStorage.getItem(LOGIN_TOKEN)
-
-		const headers = token
-			? {
-					'x-authorization': `Bearer ${token}`,
-					Authorization: `Bearer ${token}`,
-				}
-			: {}
+		const authHeaders = await this.buildAuthHeaders()
 
 		return this.request(path, 'POST', {
 			data: body,
 			headers: {
 				...this.commonHeaders,
-				...headers,
+				...authHeaders,
 			},
 			...options,
 		})
 	}
 
 	async put<T>(path: string, body?: object): Promise<T> {
-		const token = await AsyncStorage.getItem(LOGIN_TOKEN)
-
-		const headers = token
-			? {
-					'x-authorization': `Bearer ${token}`,
-					Authorization: `Bearer ${token}`,
-				}
-			: {}
+		const authHeaders = await this.buildAuthHeaders()
 
 		return this.request(path, 'PUT', {
 			data: body,
 			headers: {
 				...this.commonHeaders,
-				...headers,
+				...authHeaders,
 			},
 		})
 	}
 
 	async delete<T>(path: string): Promise<T> {
-		const token = await AsyncStorage.getItem(LOGIN_TOKEN)
+		const authHeaders = await this.buildAuthHeaders()
 
-		const headers = token
-			? {
-					'x-authorization': `Bearer ${token}`,
-					Authorization: `Bearer ${token}`,
-				}
-			: {}
 		return this.request(path, 'DELETE', {
 			headers: {
 				...this.commonHeaders,
-				...headers,
+				...authHeaders,
 			},
 		})
 	}
