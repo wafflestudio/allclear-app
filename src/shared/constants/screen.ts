@@ -5,9 +5,9 @@ export enum SCREEN_TYPE {
 	HOME = 'Home',
 
 	SEARCH = 'Search',
+	SEARCH_RESULT_CLUB_LIST = 'SearchResultClubList',
 
 	CLUB_LIST = 'ClubList',
-	SEARCH_RESULT_CLUB_LIST = 'SearchResultClubList',
 	SAVED_CLUB_LIST = 'SavedClubList',
 
 	CLUB_DETAIL = 'ClubDetail',

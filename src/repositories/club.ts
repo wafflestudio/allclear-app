@@ -142,11 +142,9 @@ export const getClubRepository = (): ClubRepository => ({
 		return response
 	},
 	listClubs: async req => {
-		const searchParams = new URLSearchParams()
-		if (req.category) {
-			searchParams.append('category', req.category)
-		}
-		const response = await apiConnector.get<ListClubsResponse>(`/v1/clubs`, searchParams)
+		const response = await apiConnector.get<ListClubsResponse>('/v1/clubs', {
+			...(req.category && { category: req.category }),
+		})
 
 		return response
 	},
