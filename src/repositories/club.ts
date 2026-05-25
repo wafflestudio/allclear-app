@@ -86,6 +86,11 @@ export type ListMyClubsResponse = {
 	totalSize: number
 }
 
+export type ListRandomRecommendationsResponse = {
+	clubs: Club[]
+	totalSize: number
+}
+
 export type ClubRepository = {
 	searchClubs: (req: SearchClubsRequest) => Promise<SearchClubsResponse>
 	listPopularClubs: () => Promise<ListPopularClubsResponse>
@@ -99,6 +104,7 @@ export type ClubRepository = {
 	createSavedClub: (req: CreateSavedClubRequest) => Promise<void>
 	removeSavedClub: (req: RemoveSavedClubRequest) => Promise<void>
 	listMyClubs: () => Promise<ListMyClubsResponse>
+	listRandomRecommendations: () => Promise<ListRandomRecommendationsResponse>
 }
 
 export const getClubRepository = (): ClubRepository => ({
@@ -184,6 +190,13 @@ export const getClubRepository = (): ClubRepository => ({
 	},
 	listMyClubs: async () => {
 		const response = await apiConnector.get<ListMyClubsResponse>('/v1/users/me/clubs')
+
+		return response
+	},
+	listRandomRecommendations: async () => {
+		const response = await apiConnector.get<ListRandomRecommendationsResponse>(
+			'/v2/clubs/recommendations/random',
+		)
 
 		return response
 	},
