@@ -11,8 +11,10 @@ import { AuthProvider } from '@/usecases/auth'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 import { setToken } from '@/shared/utils/api'
 import { Colors } from '@/shared/constants/colors'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
+import { navigation } from '@/shared/utils/navigation'
 
 type Props = {
 	closeBottomSheet: () => void
@@ -33,7 +35,7 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 		closeBottomSheet()
 		onSuccess?.()
 		queryClient.invalidateQueries(['manageClubs'])
-		Toast.show({ type: 'info', text1: '로그인 되었어요!', position: 'bottom' })
+		Toast.show({ type: 'info', text1: '로그인 되었어요!' })
 	}
 
 	const onAppleButtonPress = async () => {
@@ -54,7 +56,7 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 			)
 			await handleLoginSuccess(token)
 		} catch {
-			Toast.show({ type: 'info', text1: '로그인에 실패했어요!', position: 'bottom' })
+			Toast.show({ type: 'info', text1: '로그인에 실패했어요!' })
 		} finally {
 			setIsLoading(false)
 		}
@@ -67,7 +69,7 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 			const token = await authService.callback(AuthProvider.KAKAO, result.accessToken)
 			await handleLoginSuccess(token)
 		} catch {
-			Toast.show({ type: 'info', text1: '로그인에 실패했어요!', position: 'bottom' })
+			Toast.show({ type: 'info', text1: '로그인에 실패했어요!' })
 		} finally {
 			setIsLoading(false)
 		}
@@ -111,13 +113,31 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 					</Pressable>
 				)}
 			</View>
-			<Pressable
-				onPress={closeBottomSheet}
-				style={({ pressed }) => [styles.bottomLink, { opacity: pressed ? 0.5 : 1 }]}>
-				<View style={styles.linkUnderline}>
-					<Text style={styles.link}>다음에 할게요</Text>
-				</View>
-			</Pressable>
+			<View style={styles.termsRow}>
+				<Pressable
+					onPress={() => {
+						closeBottomSheet()
+						navigation.navigate(SCREEN_TYPE.WEBVIEW, {
+							uri: 'https://www.all-clear.cc/terms/terms-of-service',
+							title: '서비스 약관',
+						})
+					}}
+					style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}>
+					<Text style={styles.termsLink}>서비스 약관</Text>
+				</Pressable>
+				<Text style={styles.termsDivider}>|</Text>
+				<Pressable
+					onPress={() => {
+						closeBottomSheet()
+						navigation.navigate(SCREEN_TYPE.WEBVIEW, {
+							uri: 'https://www.all-clear.cc/terms/privacy-policy',
+							title: '개인정보 처리방침',
+						})
+					}}
+					style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}>
+					<Text style={styles.termsLink}>개인정보 처리방침</Text>
+				</Pressable>
+			</View>
 		</View>
 	)
 }
@@ -178,19 +198,19 @@ const styles = StyleSheet.create({
 		color: Colors.BLACK,
 		textAlign: 'center',
 	},
-	bottomLink: {
-		marginTop: 'auto',
-		alignSelf: 'center',
-		marginBottom: vs(24),
+	termsRow: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		gap: s(8),
+		marginTop: vs(10),
 	},
-	linkUnderline: {
-		borderBottomWidth: 1,
-		borderBottomColor: Colors.BODYTEXT_SUB,
-		paddingBottom: vs(0.5),
+	termsDivider: {
+		...typography.bodySRegular,
+		color: Colors.BODYTEXT_DISABLED,
 	},
-	link: {
-		...typography.bodyMRegular,
-		marginTop: vs(12),
-		color: Colors.BODYTEXT_SUB,
+	termsLink: {
+		...typography.bodySRegular,
+		color: Colors.BODYTEXT_DISABLED,
 	},
 })
