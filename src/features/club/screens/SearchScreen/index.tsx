@@ -39,6 +39,8 @@ const SearchScreen = ({ navigation }: Props) => {
 	const [affiliationFilter, setAffiliationFilter] = useState<AffiliationFilter>('central')
 	const [isRecruitingOnly, setIsRecruitingOnly] = useState(false)
 
+	const queryClient = useQueryClient()
+
 	const { data: searchResult, isFetching } = useSearchClubs({ query: submittedQuery })
 	const { data: recentSearches } = useRecentSearches()
 	const { mutate: clearRecentSearches } = useClearRecentSearches()
@@ -92,6 +94,7 @@ const SearchScreen = ({ navigation }: Props) => {
 	const handleSubmitQuery = (nextQuery: string) => {
 		setSubmittedQuery(nextQuery)
 		setIsTypoNoticeVisible(true)
+		queryClient.invalidateQueries(['searchClubs', nextQuery])
 	}
 
 	const handleSelectRecentSearch = (query: string) => {
