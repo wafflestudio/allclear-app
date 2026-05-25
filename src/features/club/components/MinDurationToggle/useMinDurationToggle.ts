@@ -7,7 +7,7 @@ export const MIN_DURATION_OPTIONS = [
 	{ value: '0', label: '없음(0학기)' },
 	{ value: '1', label: '1학기' },
 	{ value: '2', label: '2학기' },
-	{ value: '2_plus', label: '2학기 이상' },
+	{ value: '3_plus', label: '3학기 이상' },
 ] as const
 
 export type MinDurationStepValue = (typeof MIN_DURATION_OPTIONS)[number]['value']

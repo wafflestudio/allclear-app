@@ -1,7 +1,7 @@
-import { RouteProp } from '@react-navigation/native'
+import { RouteProp, useFocusEffect } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -10,10 +10,15 @@ import ClubList from '@/features/club/components/ClubList/ClubList'
 import PopularClubs from '@/features/club/components/PopularClubs/PopularClubs'
 import RecentSearches from '@/features/club/components/RecentSearches/RecentSearches'
 import SearchBar from '@/features/club/components/SearchBar/SearchBar'
-import SearchFilterBar, {
-	AffiliationFilter,
-} from '@/features/club/components/SearchFilterBar/SearchFilterBar'
+import SearchFilterBar from '@/features/club/components/SearchBar/SearchFilterBar'
+import SearchFilterOverlay from '@/features/club/components/SearchBar/SearchFilterOverlay'
 import TypoCorrectionNotice from '@/features/club/components/TypoCorrectionNotice/TypoCorrectionNotice'
+import {
+	type ClubSearchFilters,
+	createSearchClubsRequest,
+	DEFAULT_CLUB_SEARCH_FILTERS,
+	resetClubSearchOverlayFilters,
+} from '@/features/search/types/clubSearchForm'
 import { SearchClubsResponse } from '@/repositories/club'
 import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
@@ -36,32 +41,16 @@ const SearchScreen = ({ navigation }: Props) => {
 	const [inputValue, setInputValue] = useState('')
 	const [submittedQuery, setSubmittedQuery] = useState('')
 	const [isTypoNoticeVisible, setIsTypoNoticeVisible] = useState(true)
-	const [affiliationFilter, setAffiliationFilter] = useState<AffiliationFilter>('central')
-	const [isRecruitingOnly, setIsRecruitingOnly] = useState(false)
+	const [filters, setFilters] = useState<ClubSearchFilters>(DEFAULT_CLUB_SEARCH_FILTERS)
+	const [isFilterOverlayVisible, setIsFilterOverlayVisible] = useState(false)
 
 	const queryClient = useQueryClient()
-
-	const { data: searchResult, isFetching } = useSearchClubs({ query: submittedQuery })
+	const request = createSearchClubsRequest({ query: submittedQuery, filters })
+	const { data: searchResult, isFetching } = useSearchClubs({ query: submittedQuery, request })
 	const { data: recentSearches } = useRecentSearches()
 	const { mutate: clearRecentSearches } = useClearRecentSearches()
 
 	const clubs = searchResult?.clubs
-	const filteredClubs = useMemo(() => {
-		if (!clubs) return undefined
-
-		return clubs.filter(club => {
-			const type = club.type?.toLowerCase() ?? ''
-			const matchesAffiliation =
-				affiliationFilter === 'all' ||
-				(affiliationFilter === 'central' && (type.includes('중앙') || type.includes('central'))) ||
-				(affiliationFilter === 'college' &&
-					(type.includes('학과') || type.includes('단과') || type.includes('college')))
-			const matchesRecruiting =
-				!isRecruitingOnly || club.articleUploadedAt !== null || !!club.article?.trim()
-
-			return matchesAffiliation && matchesRecruiting
-		})
-	}, [affiliationFilter, clubs, isRecruitingOnly])
 
 	const hasSubmittedQuery = submittedQuery.length > 0
 	const shouldShowTypoNotice =
@@ -71,8 +60,8 @@ const SearchScreen = ({ navigation }: Props) => {
 		setInputValue('')
 		setSubmittedQuery('')
 		setIsTypoNoticeVisible(true)
-		setAffiliationFilter('central')
-		setIsRecruitingOnly(false)
+		setFilters(DEFAULT_CLUB_SEARCH_FILTERS)
+		setIsFilterOverlayVisible(false)
 	}, [])
 
 	const resetToInitialState = useCallback(() => {
@@ -87,14 +76,25 @@ const SearchScreen = ({ navigation }: Props) => {
 		const parent = navigation.getParent()
 		if (!parent) return undefined
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const unsubscribe = (parent as any).addListener('tabPress', resetToInitialState)
+		const unsubscribe = (parent as any).addListener('tabPress', () => {
+			if (navigation.isFocused()) {
+				resetToInitialState()
+			}
+		})
 		return unsubscribe
 	}, [navigation, resetToInitialState])
+
+	useFocusEffect(
+		useCallback(() => {
+			return () => setIsFilterOverlayVisible(false)
+		}, []),
+	)
 
 	const handleSubmitQuery = (nextQuery: string) => {
 		setSubmittedQuery(nextQuery)
 		setIsTypoNoticeVisible(true)
-		queryClient.invalidateQueries(['searchClubs', nextQuery])
+		setIsFilterOverlayVisible(false)
+		queryClient.invalidateQueries(['searchClubs'])
 	}
 
 	const handleSelectRecentSearch = (query: string) => {
@@ -121,11 +121,7 @@ const SearchScreen = ({ navigation }: Props) => {
 					<Pressable onPress={resetToInitialState}>
 						<Text style={styles.headerText}>어떤 동아리를 찾아볼까요?</Text>
 					</Pressable>
-					<SearchBar
-						value={inputValue}
-						onChangeText={setInputValue}
-						onSubmit={handleSubmitQuery}
-					/>
+					<SearchBar value={inputValue} onChangeText={setInputValue} onSubmit={handleSubmitQuery} />
 				</View>
 				{hasSubmittedQuery ? (
 					<>
@@ -137,18 +133,27 @@ const SearchScreen = ({ navigation }: Props) => {
 								/>
 							) : null}
 							<SearchFilterBar
-								selectedFilter={affiliationFilter}
-								isRecruitingOnly={isRecruitingOnly}
-								onChangeFilter={setAffiliationFilter}
-								onToggleRecruitingOnly={() => setIsRecruitingOnly(prev => !prev)}
+								filters={filters}
+								onChange={setFilters}
+								onPressFilter={() => setIsFilterOverlayVisible(prev => !prev)}
 							/>
 						</View>
-						<ClubList
-							clubs={filteredClubs}
-							openDetailPage={openDetailPage}
-							emptyPlaceholder={'앗 검색 결과가 없어요!\n다른 키워드로 검색해주세요'}
-							isLoading={isFetching}
-						/>
+						<View style={styles.contentContainer}>
+							<ClubList
+								clubs={clubs}
+								openDetailPage={openDetailPage}
+								emptyPlaceholder={'앗 검색 결과가 없어요!\n다른 키워드로 검색해주세요'}
+								isLoading={isFetching}
+							/>
+							{isFilterOverlayVisible ? (
+								<SearchFilterOverlay
+									value={filters}
+									onChange={setFilters}
+									onReset={() => setFilters(resetClubSearchOverlayFilters(filters))}
+									onClose={() => setIsFilterOverlayVisible(false)}
+								/>
+							) : null}
+						</View>
 					</>
 				) : (
 					<View style={styles.placeholderContainer}>
@@ -169,15 +174,16 @@ export default SearchScreen
 
 type UseSearchClubsProps = {
 	query: string
+	request: ReturnType<typeof createSearchClubsRequest>
 }
 
-const useSearchClubs = ({ query }: UseSearchClubsProps) => {
+const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 	const { clubService } = useContext(serviceContext)
 	const queryClient = useQueryClient()
 
 	return useQuery<SearchClubsResponse>(
-		['searchClubs', query],
-		() => clubService.searchClubs({ query }),
+		['searchClubs', request],
+		() => clubService.searchClubs(request),
 		{
 			enabled: query.length > 0,
 			keepPreviousData: true,
@@ -237,6 +243,10 @@ const styles = StyleSheet.create({
 		paddingTop: vs(14),
 		paddingBottom: vs(10),
 		backgroundColor: Colors.BACKGROUND_MAIN,
+	},
+	contentContainer: {
+		flex: 1,
+		position: 'relative',
 	},
 	placeholderContainer: {
 		paddingHorizontal: s(20),
