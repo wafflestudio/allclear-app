@@ -5,7 +5,7 @@ import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { ms, s, vs } from '@/shared/utils/scale'
 import { navigation } from '@/shared/utils/navigation'
-import Header from '@/features/club/components/ClubList/Header'
+import Header from '@/shared/components/BackHeader'
 import React, { useContext, useState } from 'react'
 import {
 	ActivityIndicator,
