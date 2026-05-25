@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios, { AxiosRequestConfig } from 'axios'
 import { ENV } from '@/config/ENV'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
+import { getOrCreateGuestId } from '@/shared/utils/guestId'
 
 let _token: string | null = null
 
@@ -19,10 +20,12 @@ const _apiInstance = axios.create({
 	headers: { Accept: 'application/json' },
 })
 
-_apiInstance.interceptors.request.use(config => {
+_apiInstance.interceptors.request.use(async config => {
 	if (_token) {
 		config.headers['Authorization'] = `Bearer ${_token}`
 		config.headers['x-authorization'] = `Bearer ${_token}`
+	} else {
+		config.headers['x-guest-id'] = await getOrCreateGuestId()
 	}
 	return config
 })

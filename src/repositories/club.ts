@@ -91,7 +91,7 @@ export type ClubRepository = {
 
 export const getClubRepository = (): ClubRepository => ({
 	searchClubs: async req => {
-		const response = await apiConnector.get<SearchClubsResponse>('/v1/clubs/search', {
+		const response = await apiConnector.get<SearchClubsResponse>('/v2/clubs/search', {
 			query: req.query.toLowerCase().trim(),
 		})
 
