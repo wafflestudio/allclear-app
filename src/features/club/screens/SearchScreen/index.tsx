@@ -88,6 +88,7 @@ const SearchScreen = ({ navigation }: Props) => {
 	const handleSubmitQuery = (nextQuery: string) => {
 		setSubmittedQuery(nextQuery)
 		setIsTypoNoticeVisible(true)
+		setIsFilterOverlayVisible(false)
 	}
 
 	const handleSelectRecentSearch = (query: string) => {
