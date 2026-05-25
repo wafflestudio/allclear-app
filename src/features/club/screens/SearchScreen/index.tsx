@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/native'
+import { RouteProp, useFocusEffect } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useQuery } from '@tanstack/react-query'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
@@ -71,9 +71,19 @@ const SearchScreen = ({ navigation }: Props) => {
 		const parent = navigation.getParent()
 		if (!parent) return undefined
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const unsubscribe = (parent as any).addListener('tabPress', resetToInitialState)
+		const unsubscribe = (parent as any).addListener('tabPress', () => {
+			if (navigation.isFocused()) {
+				resetToInitialState()
+			}
+		})
 		return unsubscribe
 	}, [navigation, resetToInitialState])
+
+	useFocusEffect(
+		useCallback(() => {
+			return () => setIsFilterOverlayVisible(false)
+		}, []),
+	)
 
 	const handleSubmitQuery = (nextQuery: string) => {
 		setSubmittedQuery(nextQuery)
