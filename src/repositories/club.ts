@@ -1,16 +1,28 @@
 import { Club, ClubRanking } from '@/entities/club'
 import { apiConnector } from '@/shared/utils/api'
 
+export type ClubSearchAffiliationType = '전체' | '중앙동아리' | '학과/단과대동아리'
+export type ClubSearchRecruitType = '정기' | '상시'
+export type ClubSearchBooleanString = 'true' | 'false'
+export type ClubSearchMinActivityPeriod = '0' | '1' | '2' | '3_plus'
+
 export type SearchClubsRequest = {
 	query: string
+	affiliation_type?: ClubSearchAffiliationType
+	is_recruiting?: ClubSearchBooleanString
+	recruit_type?: ClubSearchRecruitType
+	has_membership_fee?: ClubSearchBooleanString
+	has_dongbang?: ClubSearchBooleanString
+	is_official_verified?: ClubSearchBooleanString
+	min_activity_period?: ClubSearchMinActivityPeriod[]
 }
 
 export type SearchClubsResponse = {
 	clubs: Club[]
 	totalSize: number
-	query?: string
-	correctedQuery?: string
-	isTypoCorrected?: boolean
+	query: string
+	correctedQuery: string | null
+	isTypoCorrected: boolean
 }
 
 export type ListPopularClubsResponse = {
@@ -91,9 +103,31 @@ export type ClubRepository = {
 
 export const getClubRepository = (): ClubRepository => ({
 	searchClubs: async req => {
-		const response = await apiConnector.get<SearchClubsResponse>('/v1/clubs/search', {
-			query: req.query.toLowerCase().trim(),
+		const searchParams = new URLSearchParams()
+		searchParams.append('query', req.query.toLowerCase().trim())
+		if (req.affiliation_type && req.affiliation_type !== '전체') {
+			searchParams.append('affiliation_type', req.affiliation_type)
+		}
+		if (req.is_recruiting) {
+			searchParams.append('is_recruiting', req.is_recruiting)
+		}
+		if (req.recruit_type) {
+			searchParams.append('recruit_type', req.recruit_type)
+		}
+		if (req.has_membership_fee) {
+			searchParams.append('has_membership_fee', req.has_membership_fee)
+		}
+		if (req.has_dongbang) {
+			searchParams.append('has_dongbang', req.has_dongbang)
+		}
+		if (req.is_official_verified) {
+			searchParams.append('is_official_verified', req.is_official_verified)
+		}
+		req.min_activity_period?.forEach(period => {
+			searchParams.append('min_activity_period', period)
 		})
+
+		const response = await apiConnector.get<SearchClubsResponse>(`/v2/clubs/search`, searchParams)
 
 		return response
 	},
