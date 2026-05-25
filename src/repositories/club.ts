@@ -4,7 +4,7 @@ import { apiConnector } from '@/shared/utils/api'
 export type ClubSearchAffiliationType = '전체' | '중앙동아리' | '학과/단과대동아리'
 export type ClubSearchRecruitType = '정기' | '상시'
 export type ClubSearchBooleanString = 'true' | 'false'
-export type ClubSearchMinActivityPeriod = '0' | '1' | '2' | '2_plus'
+export type ClubSearchMinActivityPeriod = '0' | '1' | '2' | '3_plus'
 
 export type SearchClubsRequest = {
 	query: string
