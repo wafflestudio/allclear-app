@@ -1,11 +1,9 @@
 import { Club } from '@/entities/club'
-import type { SearchClubsRequest } from '@/repositories/club'
 
 export enum SCREEN_TYPE {
 	HOME = 'Home',
 
 	SEARCH = 'Search',
-	SEARCH_RESULT_CLUB_LIST = 'SearchResultClubList',
 
 	CLUB_LIST = 'ClubList',
 	SAVED_CLUB_LIST = 'SavedClubList',
@@ -28,9 +26,6 @@ export type StackParamList = {
 	[SCREEN_TYPE.CLUB_LIST]: {
 		name?: Club['name']
 		category?: Club['category']
-	}
-	[SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST]: {
-		request: SearchClubsRequest
 	}
 	[SCREEN_TYPE.SAVED_CLUB_LIST]: undefined
 
