@@ -63,7 +63,7 @@ const MyPageScreen = () => {
 	const handleOpenTerms = () => {
 		navigation.navigate(SCREEN_TYPE.WEBVIEW, {
 			uri: 'https://www.all-clear.cc/terms/terms-of-service',
-			title: '서비스 약관',
+			title: '서비스 이용약관',
 		})
 	}
 
@@ -125,7 +125,7 @@ const MyPageScreen = () => {
 					<Pressable
 						style={({ pressed }) => [styles.menuItem, pressed && styles.pressed]}
 						onPress={handleOpenTerms}>
-						<Text style={styles.menuText}>서비스 약관</Text>
+						<Text style={styles.menuText}>서비스 이용약관</Text>
 					</Pressable>
 					<Pressable
 						style={({ pressed }) => [styles.menuItem, pressed && styles.pressed]}

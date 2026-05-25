@@ -119,11 +119,11 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 						closeBottomSheet()
 						navigation.navigate(SCREEN_TYPE.WEBVIEW, {
 							uri: 'https://www.all-clear.cc/terms/terms-of-service',
-							title: '서비스 약관',
+							title: '서비스 이용약관',
 						})
 					}}
 					style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}>
-					<Text style={styles.termsLink}>서비스 약관</Text>
+					<Text style={styles.termsLink}>서비스 이용약관</Text>
 				</Pressable>
 				<Text style={styles.termsDivider}>|</Text>
 				<Pressable
