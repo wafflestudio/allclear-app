@@ -18,6 +18,7 @@ type Props = {
 
 const ClubList = ({ clubs, category, openDetailPage, emptyPlaceholder, isLoading }: Props) => {
 	const { width } = useWindowDimensions()
+	const normalizedEmptyPlaceholder = emptyPlaceholder.replace(/\\n/g, '\n')
 
 	if (isLoading) return <ClubListSkeleton />
 	if (!clubs) return null
@@ -25,7 +26,7 @@ const ClubList = ({ clubs, category, openDetailPage, emptyPlaceholder, isLoading
 		return (
 			<View style={styles.emptyContainer}>
 				<Image source={require('@/assets/images/not-found.png')} style={styles.emptyImage} />
-				<Text style={styles.emptyText}>{emptyPlaceholder}</Text>
+				<Text style={styles.emptyText}>{normalizedEmptyPlaceholder}</Text>
 			</View>
 		)
 	}
