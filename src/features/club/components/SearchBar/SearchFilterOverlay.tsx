@@ -27,15 +27,9 @@ const RECRUITMENT_OPTIONS = [
 	{ label: '상시모집', value: '상시' },
 ] as const
 
-const ROOM_OPTIONS = [
-	{ label: '동방보유', value: 'true' },
-	{ label: '동방없음', value: 'false' },
-] as const
+const ROOM_OPTIONS = [{ label: '동방보유', value: 'true' }] as const
 
-const FEE_OPTIONS = [
-	{ label: '회비있음', value: 'true' },
-	{ label: '회비없음', value: 'false' },
-] as const
+const FEE_OPTIONS = [{ label: '회비없음', value: 'false' }] as const
 
 const toSingleSelection = (value?: string): SearchFilterToggleGroupSelection =>
 	value ? { kind: 'values', values: [value] } : { kind: 'none' }
@@ -101,26 +95,24 @@ const SearchFilterOverlay = ({ value, onChange, onReset, onClose }: Props) => {
 					</Pressable>
 				</View>
 				<View style={styles.filters}>
-					<View style={styles.toggleGroupContainer}>
-						<View style={styles.filterRow}>
-							<SearchFilterToggleGroup
-								options={[...RECRUITMENT_OPTIONS]}
-								selectionMode="single"
-								value={recruitmentSelection}
-								onChange={handleChangeRecruitType}
-							/>
-							<SearchFilterToggleGroup
-								options={[...FEE_OPTIONS]}
-								selectionMode="single"
-								value={feeSelection}
-								onChange={handleChangeMembershipFee}
-							/>
-						</View>
+					<View style={styles.filterRow}>
+						<SearchFilterToggleGroup
+							options={[...RECRUITMENT_OPTIONS]}
+							selectionMode="single"
+							value={recruitmentSelection}
+							onChange={handleChangeRecruitType}
+						/>
 						<SearchFilterToggleGroup
 							options={[...ROOM_OPTIONS]}
 							selectionMode="single"
 							value={roomSelection}
 							onChange={handleChangeDongbang}
+						/>
+						<SearchFilterToggleGroup
+							options={[...FEE_OPTIONS]}
+							selectionMode="single"
+							value={feeSelection}
+							onChange={handleChangeMembershipFee}
 						/>
 					</View>
 					<MinDurationToggle
@@ -178,9 +170,6 @@ const styles = StyleSheet.create({
 	},
 	filters: {
 		gap: s(20),
-	},
-	toggleGroupContainer: {
-		gap: s(10),
 	},
 	filterRow: {
 		flexDirection: 'row',
