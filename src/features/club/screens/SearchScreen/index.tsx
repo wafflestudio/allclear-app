@@ -118,7 +118,7 @@ const SearchScreen = ({ navigation }: Props) => {
 							<SearchFilterBar
 								filters={filters}
 								onChange={setFilters}
-								onPressFilter={() => setIsFilterOverlayVisible(true)}
+								onPressFilter={() => setIsFilterOverlayVisible(prev => !prev)}
 							/>
 						</View>
 						<View style={styles.contentContainer}>
