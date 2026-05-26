@@ -103,7 +103,7 @@ function App(): React.JSX.Element {
 					</SafeAreaProvider>
 				</ProfileProvider>
 			</QueryClientProvider>
-			<Toast config={toastConfig} visibilityTime={2000} />
+			<Toast config={toastConfig} visibilityTime={2000} position="bottom" />
 		</ServiceProvider>
 	)
 }
