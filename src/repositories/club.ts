@@ -49,8 +49,10 @@ export type ListClubRankingsResponse = {
 }
 
 export type RequestClubmanagerRequest = {
-	clubId?: Club['uuid']
-	clubName?: Club['name']
+	clubId: Club['uuid']
+	name: string
+	phone: string
+	studentId: string
 }
 
 export type ListSavedClubsResponse = {
@@ -91,7 +93,9 @@ export const getClubRepository = (): ClubRepository => ({
 		const searchParams = new URLSearchParams()
 		searchParams.append('query', req.query.toLowerCase().trim())
 
-		const response = await apiConnector.get<SearchClubsResponse>(`/v1/clubs/search`, searchParams)
+		console.log('[searchClubs] req:', req)
+		const response = await apiConnector.get<SearchClubsResponse>(`/v2/clubs/search`, searchParams)
+		console.log('[searchClubs] res: totalSize=%d, clubs=%o', response.totalSize, response.clubs.map(c => ({ uuid: c.uuid, name: c.name })))
 
 		return response
 	},
@@ -135,7 +139,9 @@ export const getClubRepository = (): ClubRepository => ({
 		return response
 	},
 	requestClubManager: async req => {
-		await apiConnector.post<void>('/v1/managers/me/clubs', req)
+		console.log('[requestClubManager] req:', req)
+		await apiConnector.post<void>('/v2/managers/me/clubs', req)
+		console.log('[requestClubManager] 204 success')
 	},
 	listSavedClubs: async () => {
 		const response = await apiConnector.get<ListSavedClubsResponse>('/v1/users/me/clubs/saved')
