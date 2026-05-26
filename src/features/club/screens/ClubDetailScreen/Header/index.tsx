@@ -11,6 +11,7 @@ import Toast from 'react-native-toast-message'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { REVIEW_LAST_ASKED_KEY } from '@/shared/constants/localStorage'
 import { ENV } from '@/config/ENV'
+import { ms } from '@/shared/utils/scale'
 
 const handleShare = async (club?: Club) => {
 	if (!club) return
@@ -26,7 +27,6 @@ const handleShare = async (club?: Club) => {
 		console.error('Error occurred while sharing.', error)
 	}
 }
-import { ms } from '@/shared/utils/scale'
 
 const getLastAskedDate = async (): Promise<dayjs.Dayjs | null> => {
 	try {
