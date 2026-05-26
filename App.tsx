@@ -29,25 +29,12 @@ import { getReviewService } from '@/usecases/review'
 import { getTermService } from '@/usecases/term'
 import { getUserService } from '@/usecases/user'
 import { _navigationRef, setIsNavigationReady } from '@/shared/utils/navigation'
-import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { ENV } from '@/config/ENV'
+import { linking } from '@/config/linking'
 import { initToken } from '@/shared/utils/api'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
-
-const linking = {
-	prefixes: ['allclear://', 'https://all-clear.cc', 'https://dev.all-clear.cc', ENV.WEB_URL],
-	config: {
-		screens: {
-			HomeTab: {
-				screens: {
-					[SCREEN_TYPE.CLUB_DETAIL]: 'club/:uuid',
-				},
-			},
-		},
-	},
-}
 
 const queryClient = new QueryClient({
 	defaultOptions: {
