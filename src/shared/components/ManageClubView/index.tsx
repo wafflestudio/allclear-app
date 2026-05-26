@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
+import { navigation } from '@/shared/utils/navigation'
+import { Colors } from '@/shared/constants/colors'
 
 type Props = {
 	closeBottomSheet: () => void
@@ -14,11 +17,20 @@ const ManageClubView = ({ closeBottomSheet }: Props) => {
 		{ id: 'existing', label: '이미 있는 동아리 운영진 등록' },
 	]
 
-	const isFormValid = selectedOption.length > 0
+	const isSelectionValid = selectedOption.length > 0
 
-	const handleNext = () => {
-		if (!isFormValid) return
-		// TODO: API call to register club
+	const handleSelectionNext = () => {
+		if (!isSelectionValid) return
+		if (selectedOption === 'existing') {
+			// close bottom sheet first, then navigate to full-screen flow
+			closeBottomSheet()
+			setTimeout(() => {
+				navigation.navigate(SCREEN_TYPE.MANAGE_CLUB_REGISTRATION)
+			}, 300)
+			return
+		}
+
+		// TODO: Handle other club types
 		closeBottomSheet()
 	}
 
@@ -45,10 +57,10 @@ const ManageClubView = ({ closeBottomSheet }: Props) => {
 			))}
 
 			<TouchableOpacity
-				style={[styles.button, !isFormValid && styles.buttonDisabled]}
-				onPress={handleNext}
-				disabled={!isFormValid}>
-				<Text style={[styles.buttonText, !isFormValid && styles.buttonTextDisabled]}>다음</Text>
+				style={[styles.button, !isSelectionValid && styles.buttonDisabled]}
+				onPress={handleSelectionNext}
+				disabled={!isSelectionValid}>
+				<Text style={[styles.buttonText, !isSelectionValid && styles.buttonTextDisabled]}>다음</Text>
 			</TouchableOpacity>
 		</View>
 	)
@@ -61,7 +73,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		paddingTop: 30,
 		paddingBottom: 50,
-		// Use explicit margins instead of `gap` for RN compatibility
+		backgroundColor: Colors.BACKGROUND_MAIN,
 	},
 	title: {
 		fontSize: 18,
@@ -102,21 +114,21 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 		minHeight: 48,
 		borderRadius: 8,
-		backgroundColor: '#874FFF',
+		backgroundColor: Colors.BUTTON_SELECTED,
 		alignItems: 'center',
 		justifyContent: 'center',
 		marginTop: 16,
 		width: '100%',
 	},
 	buttonDisabled: {
-		backgroundColor: '#EAEAEA',
+		backgroundColor: Colors.TEXTBOX_UNSELECTED,
 	},
 	buttonText: {
 		fontSize: 16,
 		fontWeight: '600',
-		color: '#FFFFFF',
+		color: Colors.TEXT_BUTTON_SELECTED,
 	},
 	buttonTextDisabled: {
-		color: '#C1C1C1',
+		color: Colors.TEXT_BUTTON_UNSELECTED,
 	},
 })
