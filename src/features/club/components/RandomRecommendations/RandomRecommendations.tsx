@@ -46,8 +46,6 @@ export default RandomRecommendations
 const styles = StyleSheet.create({
 	container: {
 		backgroundColor: Colors.BACKGROUND_SUB,
-		borderTopLeftRadius: s(20),
-		borderTopRightRadius: s(20),
 		paddingTop: vs(24),
 		paddingBottom: vs(30),
 		gap: vs(16),
@@ -58,7 +56,7 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		...typography.headerL,
-		color: Colors.BODYTEXT_MAIN,
+		color: Colors.BODYTEXT_SUB,
 	},
 	subtitle: {
 		...typography.bodySRegular,
