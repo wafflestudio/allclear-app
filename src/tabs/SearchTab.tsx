@@ -4,6 +4,7 @@ import SearchScreen from '@/features/club/screens/SearchScreen'
 import ClubDetailScreen from '@/features/club/screens/ClubDetailScreen'
 import ClubReviewScreen from '@/features/club/screens/ClubReviewScreen'
 import ClubRankingScreen from '@/features/club/screens/ClubRankingScreen'
+import WebViewScreen from '@/features/webview/screens/WebviewScreen'
 
 const Stack = createNativeStackNavigator<StackParamList>()
 
@@ -30,6 +31,11 @@ export function SearchTab() {
 				key={SCREEN_TYPE.CLUB_REVIEW}
 				name={SCREEN_TYPE.CLUB_REVIEW}
 				component={ClubReviewScreen}
+			/>
+			<Stack.Screen
+				key={SCREEN_TYPE.WEBVIEW}
+				name={SCREEN_TYPE.WEBVIEW}
+				component={WebViewScreen}
 			/>
 		</Stack.Navigator>
 	)

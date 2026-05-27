@@ -5,12 +5,28 @@ import { serviceContext } from '@/shared/contexts/serviceContext'
 import dayjs from 'dayjs'
 import { Club } from '@/entities/club'
 import React, { useContext, useEffect } from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Share, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { requestReview } from 'react-native-store-review'
 import Toast from 'react-native-toast-message'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { REVIEW_LAST_ASKED_KEY } from '@/shared/constants/localStorage'
+import { ENV } from '@/config/ENV'
 import { ms } from '@/shared/utils/scale'
+
+const handleShare = async (club?: Club) => {
+	if (!club) return
+
+	const shareUrl = `${ENV.WEB_URL}/club/${club.uuid}`
+
+	try {
+		await Share.share({
+			message: `${club.name}의 동아리 정보를 확인해보세요!\n${shareUrl}`,
+			url: shareUrl,
+		})
+	} catch (error) {
+		console.error('Error occurred while sharing.', error)
+	}
+}
 
 const getLastAskedDate = async (): Promise<dayjs.Dayjs | null> => {
 	try {
@@ -122,15 +138,20 @@ const Header = ({ club, onBack }: Props) => {
 			<TouchableOpacity onPress={handleBack}>
 				<Icon color={'#FFFFFF' /* #deprecated color */} name="chevron-left" size={ms(24)} />
 			</TouchableOpacity>
-			{isSaved ? (
-				<TouchableOpacity onPress={handleRemoveSavedClub}>
-					<Icon color={'#FFFFFF' /* #deprecated color */} name="heart" size={ms(24)} />
+			<View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+				<TouchableOpacity onPress={() => handleShare(club)}>
+					<Icon color={'#FFFFFF' /* #deprecated color */} name="share-variant" size={24} />
 				</TouchableOpacity>
-			) : (
-				<TouchableOpacity onPress={handleCreateSavedClub}>
-					<Icon color={'#FFFFFF' /* #deprecated color */} name="heart-outline" size={ms(24)} />
-				</TouchableOpacity>
-			)}
+				{isSaved ? (
+					<TouchableOpacity onPress={handleRemoveSavedClub}>
+						<Icon color={'#FFFFFF' /* #deprecated color */} name="heart" size={ms(24)} />
+					</TouchableOpacity>
+				) : (
+					<TouchableOpacity onPress={handleCreateSavedClub}>
+						<Icon color={'#FFFFFF' /* #deprecated color */} name="heart-outline" size={ms(24)} />
+					</TouchableOpacity>
+				)}
+			</View>
 		</View>
 	)
 }
