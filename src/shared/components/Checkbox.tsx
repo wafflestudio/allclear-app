@@ -49,8 +49,6 @@ const styles = StyleSheet.create({
 	label: {
 		...typography.bodySSemibold,
 		color: Colors.POINTCOLOR,
-		includeFontPadding: false,
-		marginTop: 2,
 	},
 	labelChecked: {
 		color: Colors.POINTCOLOR,

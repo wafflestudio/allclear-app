@@ -2,6 +2,7 @@ import {
 	createBottomTabNavigator,
 	type BottomTabNavigationOptions,
 } from '@react-navigation/bottom-tabs'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { Colors } from '@/shared/constants/colors'
 import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
 import { useProfile } from '@/shared/contexts/profileContext'
@@ -10,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { HomeTab } from '@/tabs/HomeTab'
 import { MyPageTab } from '@/tabs/MyPageTab'
 import { s, vs } from '@/shared/utils/scale'
+import { navigation } from '@/shared/utils/navigation'
 import { SavedTab } from './SaveTab'
 import { SearchTab } from './SearchTab'
 import { typography } from '@/shared/constants/typography'
@@ -89,19 +91,33 @@ export function TabNavigator() {
 				name="탐색"
 				component={SearchTab}
 			/>
-			<Tab.Screen options={{ tabBarIcon: renderSavedTabIcon }} name="저장" component={SavedTab} />
 			<Tab.Screen
-				options={{ tabBarIcon: renderMyPageTabIcon }}
-				name="마이"
-				component={MyPageTab}
+				options={{ tabBarIcon: renderSavedTabIcon }}
+				name="저장"
+				component={SavedTab}
 				listeners={{
 					tabPress: e => {
 						if (!user) {
 							e.preventDefault()
-							openBottomSheet()
+							openBottomSheet(() => navigation.navigate('저장'))
 						}
 					},
 				}}
+			/>
+			<Tab.Screen
+				options={{ tabBarIcon: renderMyPageTabIcon }}
+				name="마이"
+				component={MyPageTab}
+				listeners={({ navigation: tabNavigation }) => ({
+					tabPress: e => {
+						e.preventDefault()
+						if (!user) {
+							openBottomSheet(() => tabNavigation.navigate('마이'))
+						} else {
+							tabNavigation.navigate('마이', { screen: SCREEN_TYPE.MYPAGE })
+						}
+					},
+				})}
 			/>
 		</Tab.Navigator>
 	)

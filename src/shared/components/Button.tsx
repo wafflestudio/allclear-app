@@ -2,7 +2,7 @@ import React from 'react'
 import { Pressable, Text, StyleSheet, ViewStyle, TextStyle, StyleProp } from 'react-native'
 import { Colors } from '@/shared/constants/colors'
 
-export type ButtonVariant = 'primary' | 'outline'
+export type ButtonVariant = 'primary' | 'outline' | 'destructive'
 
 export type ButtonProps = {
 	label: string
@@ -46,7 +46,11 @@ export const Button = ({
 			style={({ pressed }) => [
 				containerStyle,
 				pressed &&
-					(variant === 'primary' ? { backgroundColor: Colors.BUTTON_PUSH } : { opacity: 0.7 }),
+					(variant === 'primary'
+						? { backgroundColor: Colors.BUTTON_PUSH }
+						: variant === 'destructive'
+							? { opacity: 0.8 }
+							: { opacity: 0.7 }),
 			]}
 			onPress={onPress}
 			disabled={disabled}>
@@ -58,6 +62,7 @@ export const Button = ({
 const disabledVariantMap: Record<ButtonVariant, keyof typeof variantStyles> = {
 	primary: 'primaryDisabled',
 	outline: 'outlineDisabled',
+	destructive: 'primaryDisabled',
 }
 
 const getVariantStyle = (
@@ -97,6 +102,10 @@ const variantStyles = {
 	outlineDisabled: {
 		container: { ...borderedContainer, borderColor: Colors.BODYTEXT_DISABLED } as ViewStyle,
 		text: { color: Colors.BODYTEXT_DISABLED } as TextStyle,
+	},
+	destructive: {
+		container: { backgroundColor: Colors.BUTTON_DESTRUCTIVE } as ViewStyle,
+		text: { color: Colors.WHITE } as TextStyle,
 	},
 }
 

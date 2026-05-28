@@ -15,7 +15,7 @@ type Props = {
 const DEFAULT_PLACEHOLDER = '동아리의 키워드 혹은 소속 학과로 검색해보세요'
 const MAX_LENGTH = 20
 
-const SearchInput = ({
+const SearchBar = ({
 	value: controlledValue,
 	onChangeText,
 	onSubmit,
@@ -34,7 +34,6 @@ const SearchInput = ({
 		const trimmed = value.trim()
 		if (trimmed.length === 0) return
 		onSubmit?.(trimmed)
-		if (!isControlled) setInternalValue('') // initialize searchPage's searchBar
 	}
 
 	const handleClear = () => {
@@ -54,6 +53,8 @@ const SearchInput = ({
 				onSubmitEditing={handleSubmit}
 				returnKeyType="search"
 				maxLength={MAX_LENGTH}
+				autoCapitalize="none"
+				autoCorrect={false}
 			/>
 			{value.length > 0 && (
 				<View style={styles.trailing}>
@@ -70,7 +71,7 @@ const SearchInput = ({
 	)
 }
 
-export default SearchInput
+export default SearchBar
 
 const styles = StyleSheet.create({
 	container: {

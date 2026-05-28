@@ -42,8 +42,20 @@ const AlertModal = ({
 					<Text style={styles.title}>{title}</Text>
 					<Text style={styles.description}>{description}</Text>
 					<View style={styles.buttonArea}>
-						{hasCancel && <Button label={cancelLabel} onPress={onClose} variant="outline" />}
-						<Button label={buttonLabel} onPress={onButtonPress} variant={buttonVariant} />
+						{hasCancel && (
+							<Button
+								label={cancelLabel}
+								onPress={onClose}
+								variant="outline"
+								style={styles.button}
+							/>
+						)}
+						<Button
+							label={buttonLabel}
+							onPress={onButtonPress}
+							variant={buttonVariant}
+							style={styles.button}
+						/>
 					</View>
 				</Pressable>
 			</Pressable>
@@ -85,6 +97,9 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		gap: 8,
 		marginTop: 24,
+	},
+	button: {
+		paddingHorizontal: 16,
 	},
 })
 

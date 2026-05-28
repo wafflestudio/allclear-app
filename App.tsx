@@ -7,10 +7,11 @@ import { ProfileProvider } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { UserVoiceBottomSheetProvider } from '@/shared/contexts/userVoiceBottomSheetContext'
 import React, { useEffect } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import SplashScreen from 'react-native-splash-screen'
-import Toast, { BaseToast, ToastConfig } from 'react-native-toast-message'
+import Toast, { ToastConfig } from 'react-native-toast-message'
 import { getAnnouncementRepository } from '@/repositories/announcement'
 import { getAuthRepository } from '@/repositories/auth'
 import { getCategoryRepository } from '@/repositories/category'
@@ -28,11 +29,17 @@ import { getReviewService } from '@/usecases/review'
 import { getTermService } from '@/usecases/term'
 import { getUserService } from '@/usecases/user'
 import { _navigationRef, setIsNavigationReady } from '@/shared/utils/navigation'
+import { linking } from '@/config/linking'
+import { initToken } from '@/shared/utils/api'
+import { Colors } from '@/shared/constants/colors'
+import { typography } from '@/shared/constants/typography'
+import { ms, s, vs } from '@/shared/utils/scale'
 
 const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
 			staleTime: 5 * 60 * 1000,
+			cacheTime: 10 * 60 * 1000,
 		},
 	},
 })
@@ -70,6 +77,7 @@ function App(): React.JSX.Element {
 
 	useEffect(() => {
 		setIsNavigationReady(true)
+		initToken()
 		setTimeout(() => SplashScreen.hide(), 1000)
 	}, [])
 
@@ -83,7 +91,7 @@ function App(): React.JSX.Element {
 								<LoginBottomSheetProvider>
 									<UserVoiceBottomSheetProvider>
 										<ManageClubBottomSheetProvider>
-											<NavigationContainer ref={_navigationRef}>
+											<NavigationContainer ref={_navigationRef} linking={linking}>
 												<TabNavigator />
 											</NavigationContainer>
 										</ManageClubBottomSheetProvider>
@@ -94,7 +102,7 @@ function App(): React.JSX.Element {
 					</SafeAreaProvider>
 				</ProfileProvider>
 			</QueryClientProvider>
-			<Toast config={toastConfig} />
+			<Toast config={toastConfig} visibilityTime={2000} position="bottom" />
 		</ServiceProvider>
 	)
 }
@@ -102,18 +110,31 @@ function App(): React.JSX.Element {
 export default App
 
 const toastConfig: ToastConfig = {
-	info: props => (
-		<BaseToast
-			{...props}
-			style={{
-				backgroundColor: 'rgba(32, 30, 30, 0.80)',
-				borderRadius: 12,
-				paddingHorizontal: 8,
-				paddingVertical: 8,
-				borderLeftWidth: 0,
-			}}
-			text1Style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}
-			text2Style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}
-		/>
+	info: ({ text1 }) => (
+		<View style={toastStyles.container}>
+			<Text style={toastStyles.text} numberOfLines={1}>
+				{text1}
+			</Text>
+		</View>
 	),
 }
+
+const toastStyles = StyleSheet.create({
+	container: {
+		backgroundColor: Colors.BODYTEXT_MAIN,
+		borderRadius: ms(100),
+		paddingHorizontal: s(24),
+		paddingVertical: vs(14),
+		marginHorizontal: s(16),
+		shadowColor: Colors.BLACK,
+		shadowOffset: { width: 0, height: vs(4) },
+		shadowOpacity: 0.12,
+		shadowRadius: ms(12),
+		elevation: 8,
+	},
+	text: {
+		...typography.bodyMSemibold,
+		color: Colors.WHITE,
+		textAlign: 'center',
+	},
+})

@@ -6,7 +6,6 @@ export enum SCREEN_TYPE {
 	SEARCH = 'Search',
 
 	CLUB_LIST = 'ClubList',
-	SEARCH_RESULT_CLUB_LIST = 'SearchResultClubList',
 	SAVED_CLUB_LIST = 'SavedClubList',
 
 	CLUB_DETAIL = 'ClubDetail',
@@ -28,9 +27,6 @@ export type StackParamList = {
 		name?: Club['name']
 		category?: Club['category']
 	}
-	[SCREEN_TYPE.SEARCH_RESULT_CLUB_LIST]: {
-		query: string
-	}
 	[SCREEN_TYPE.SAVED_CLUB_LIST]: undefined
 
 	[SCREEN_TYPE.CLUB_DETAIL]: {
@@ -47,5 +43,5 @@ export type StackParamList = {
 	[SCREEN_TYPE.EDIT_PROFILE]: undefined
 	[SCREEN_TYPE.MYPAGE]: undefined
 
-	[SCREEN_TYPE.WEBVIEW]: { uri: string; authorization?: string }
+	[SCREEN_TYPE.WEBVIEW]: { uri: string; title?: string; authorization?: string }
 }
