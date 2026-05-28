@@ -35,6 +35,7 @@ const LoginView = ({ closeBottomSheet, onSuccess }: Props) => {
 		closeBottomSheet()
 		onSuccess?.()
 		queryClient.invalidateQueries(['manageClubs'])
+		queryClient.invalidateQueries(['recentSearches'])
 		Toast.show({ type: 'info', text1: '로그인 되었어요!' })
 	}
 
