@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Club } from '@/entities/club'
 import ClubList from '@/features/club/components/ClubList/ClubList'
 import PopularClubs from '@/features/club/components/PopularClubs/PopularClubs'
+import RandomRecommendations from '@/features/club/components/RandomRecommendations/RandomRecommendations'
 import RecentSearches from '@/features/club/components/RecentSearches/RecentSearches'
 import SearchBar from '@/features/club/components/SearchBar/SearchBar'
 import SearchFilterBar from '@/features/club/components/SearchBar/SearchFilterBar'
@@ -19,7 +20,7 @@ import {
 	DEFAULT_CLUB_SEARCH_FILTERS,
 	resetClubSearchOverlayFilters,
 } from '@/features/search/types/clubSearchForm'
-import { SearchClubsResponse } from '@/repositories/club'
+import { ListRandomRecommendationsResponse, SearchClubsResponse } from '@/repositories/club'
 import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import { typography } from '@/shared/constants/typography'
@@ -49,6 +50,7 @@ const SearchScreen = ({ navigation }: Props) => {
 	const { data: searchResult, isFetching } = useSearchClubs({ query: submittedQuery, request })
 	const { data: recentSearches } = useRecentSearches()
 	const { mutate: clearRecentSearches } = useClearRecentSearches()
+	const { data: randomRecommendations } = useRandomRecommendations()
 
 	const clubs = searchResult?.clubs
 
@@ -145,6 +147,12 @@ const SearchScreen = ({ navigation }: Props) => {
 								emptyPlaceholder={'앗 검색 결과가 없어요!\n다른 키워드로 검색해주세요'}
 								isLoading={isFetching}
 							/>
+							{clubs?.length === 0 && !isFetching && randomRecommendations?.clubs ? (
+								<RandomRecommendations
+									clubs={randomRecommendations.clubs}
+									onPressClub={openDetailPage}
+								/>
+							) : null}
 							{isFilterOverlayVisible ? (
 								<SearchFilterOverlay
 									value={filters}
@@ -216,6 +224,14 @@ const useClearRecentSearches = () => {
 			queryClient.invalidateQueries(RECENT_SEARCHES_QUERY_KEY)
 		},
 	})
+}
+
+const useRandomRecommendations = () => {
+	const { clubService } = useContext(serviceContext)
+
+	return useQuery<ListRandomRecommendationsResponse>(['randomRecommendations'], () =>
+		clubService.listRandomRecommendations(),
+	)
 }
 
 const styles = StyleSheet.create({

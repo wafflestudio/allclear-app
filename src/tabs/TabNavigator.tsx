@@ -117,14 +117,16 @@ export function TabNavigator() {
 				options={{ tabBarIcon: renderMyPageTabIcon }}
 				name="마이"
 				component={MyPageTab}
-				listeners={{
+				listeners={({ navigation: tabNavigation }) => ({
 					tabPress: e => {
+						e.preventDefault()
 						if (!user) {
-							e.preventDefault()
-							openBottomSheet(() => navigation.navigate('마이'))
+							openBottomSheet(() => tabNavigation.navigate('마이'))
+						} else {
+							tabNavigation.navigate('마이', { screen: SCREEN_TYPE.MYPAGE })
 						}
 					},
-				}}
+				})}
 			/>
 		</Tab.Navigator>
 	)

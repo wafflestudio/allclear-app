@@ -31,6 +31,8 @@ import { getReviewService } from '@/usecases/review'
 import { getTermService } from '@/usecases/term'
 import { getUserService } from '@/usecases/user'
 import { _navigationRef, setIsNavigationReady } from '@/shared/utils/navigation'
+import { ENV } from '@/config/ENV'
+import { linking } from '@/config/linking'
 import { initToken } from '@/shared/utils/api'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
@@ -95,7 +97,7 @@ function App(): React.JSX.Element {
 								<LoginBottomSheetProvider>
 									<UserVoiceBottomSheetProvider>
 										<ManageClubBottomSheetProvider>
-											<NavigationContainer ref={_navigationRef}>
+											<NavigationContainer ref={_navigationRef} linking={linking}>
 												<TabNavigator />
 											</NavigationContainer>
 										</ManageClubBottomSheetProvider>
@@ -106,7 +108,7 @@ function App(): React.JSX.Element {
 					</SafeAreaProvider>
 				</ProfileProvider>
 			</QueryClientProvider>
-			<Toast config={toastConfig} visibilityTime={2000} />
+			<Toast config={toastConfig} visibilityTime={2000} position="bottom" />
 		</ServiceProvider>
 	)
 }

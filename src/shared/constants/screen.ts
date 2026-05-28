@@ -47,5 +47,5 @@ export type StackParamList = {
 	[SCREEN_TYPE.EDIT_PROFILE]: undefined
 	[SCREEN_TYPE.MYPAGE]: undefined
 
-	[SCREEN_TYPE.WEBVIEW]: { uri: string; authorization?: string }
+	[SCREEN_TYPE.WEBVIEW]: { uri: string; title?: string; authorization?: string }
 }

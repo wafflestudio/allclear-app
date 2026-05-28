@@ -25,6 +25,11 @@ export function SearchTab() {
 				name={SCREEN_TYPE.CLUB_REVIEW}
 				component={ClubReviewScreen}
 			/>
+			<Stack.Screen
+				key={SCREEN_TYPE.WEBVIEW}
+				name={SCREEN_TYPE.WEBVIEW}
+				component={WebViewScreen}
+			/>
 		</Stack.Navigator>
 	)
 }
