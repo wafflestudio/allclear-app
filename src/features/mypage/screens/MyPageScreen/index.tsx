@@ -72,6 +72,10 @@ const MyPageScreen = () => {
 		})
 	}
 
+	const handleRegisterAnnouncement = (club: Club) => {
+		navigation.navigate(SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION, { clubId: club.uuid })
+	}
+
 	const handleMoveEditProfilePage = () => {
 		navigation.navigate(SCREEN_TYPE.EDIT_PROFILE)
 	}
@@ -348,18 +352,32 @@ const MyPageScreen = () => {
 								gap: 16,
 							}}>
 							{manageClubs.map(club => (
-								<TouchableOpacity key={club.uuid} onPress={() => openManageClubDetailPage(club)}>
-									<View
-										style={{
-											display: 'flex',
-											flexDirection: 'row',
-											justifyContent: 'space-between',
-											paddingVertical: 4,
-										}}>
-										<Text style={{ color: '#3A3434' }}>{club.name}</Text>
-										<Icon color={'#3A3434'} name="arrow-forward-ios" size={12} />
-									</View>
-								</TouchableOpacity>
+								<View key={club.uuid}>
+									<TouchableOpacity onPress={() => openManageClubDetailPage(club)}>
+										<View
+											style={{
+												display: 'flex',
+												flexDirection: 'row',
+												justifyContent: 'space-between',
+												paddingVertical: 4,
+											}}>
+											<Text style={{ color: '#3A3434' }}>{club.name}</Text>
+											<Icon color={'#3A3434'} name="arrow-forward-ios" size={12} />
+										</View>
+									</TouchableOpacity>
+									<TouchableOpacity onPress={() => handleRegisterAnnouncement(club)}>
+										<View
+											style={{
+												display: 'flex',
+												flexDirection: 'row',
+												justifyContent: 'space-between',
+												paddingVertical: 4,
+												marginTop: 4,
+											}}>
+											<Text style={{ color: '#874fff', fontSize: 13 }}>{'+ 모집공고 등록'}</Text>
+										</View>
+									</TouchableOpacity>
+								</View>
 							))}
 							<TouchableOpacity onPress={handleManageClub}>
 								<View

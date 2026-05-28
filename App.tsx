@@ -14,6 +14,7 @@ import Toast, { BaseToast, ToastConfig } from 'react-native-toast-message'
 import { getAuthRepository } from '@/repositories/auth'
 import { getCategoryRepository } from '@/repositories/category'
 import { getClubRepository } from '@/repositories/club'
+import { getRecruitmentRepository } from '@/repositories/recruitment'
 import { getReviewRepository } from '@/repositories/review'
 import { getUserRepository } from '@/repositories/user'
 import { TabNavigator } from '@/tabs/TabNavigator'
@@ -21,6 +22,7 @@ import { getAuthService } from '@/usecases/auth'
 import { getCategoryService } from '@/usecases/category'
 import { getClubService } from '@/usecases/club'
 import { getEventLogService } from '@/usecases/eventLog'
+import { getRecruitmentService } from '@/usecases/recruitment'
 import { getReviewService } from '@/usecases/review'
 import { getUserService } from '@/usecases/user'
 import { _navigationRef, setIsNavigationReady } from '@/shared/utils/navigation'
@@ -39,6 +41,7 @@ function App(): React.JSX.Element {
 	const authRepository = getAuthRepository()
 	const categoryRepository = getCategoryRepository()
 	const clubRepository = getClubRepository()
+	const recruitmentRepository = getRecruitmentRepository()
 	const reviewRepository = getReviewRepository()
 	const userRepository = getUserRepository()
 
@@ -46,6 +49,7 @@ function App(): React.JSX.Element {
 	const categoryService = getCategoryService({ repositories: [categoryRepository] })
 	const clubService = getClubService({ repositories: [clubRepository] })
 	const eventLogService = getEventLogService()
+	const recruitmentService = getRecruitmentService({ repositories: [recruitmentRepository] })
 	const reviewService = getReviewService({ repositories: [reviewRepository] })
 	const userService = getUserService({ repositories: [userRepository] })
 
@@ -54,6 +58,7 @@ function App(): React.JSX.Element {
 		categoryService,
 		clubService,
 		eventLogService,
+		recruitmentService,
 		reviewService,
 		userService,
 	}

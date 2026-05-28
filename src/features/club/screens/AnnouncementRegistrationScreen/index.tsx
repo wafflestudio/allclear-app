@@ -1,7 +1,11 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { RouteProp, useRoute } from '@react-navigation/native'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
-import React, { useRef, useState } from 'react'
+import { serviceContext } from '@/shared/contexts/serviceContext'
+import React, { useContext, useRef, useState } from 'react'
 import {
+	ActivityIndicator,
+	Alert,
 	Image,
 	Modal,
 	ScrollView,
@@ -44,8 +48,16 @@ type NavigationProp = NativeStackNavigationProp<
 	SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION
 >
 
+type ScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION>
+
 type Props = {
 	navigation: NavigationProp
+}
+
+type ImageAsset = {
+	uri: string
+	type: string
+	name: string
 }
 
 type RegularMeeting = {
@@ -182,6 +194,10 @@ const SuccessModal = ({ visible, onConfirm }: SuccessModalProps) => (
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
 const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
+	const { recruitmentService } = useContext(serviceContext)
+	const route = useRoute<ScreenRouteProp>()
+	const { clubId } = route.params
+
 	// 공고 제목
 	const [title, setTitle] = useState('')
 
@@ -225,12 +241,20 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 	const [existingAnnouncement, setExistingAnnouncement] = useState('')
 
 	// 공고 이미지
-	const [images, setImages] = useState<string[]>([])
+	const [images, setImages] = useState<ImageAsset[]>([])
 
 	const handleAddImage = () => {
 		launchImageLibrary({ mediaType: 'photo', selectionLimit: 1 }, response => {
-			if (response.assets?.[0]?.uri) {
-				setImages(prev => [...prev, response.assets![0].uri!])
+			const asset = response.assets?.[0]
+			if (asset?.uri) {
+				setImages(prev => [
+					...prev,
+					{
+						uri: asset.uri!,
+						type: asset.type ?? 'image/jpeg',
+						name: asset.fileName ?? `image_${Date.now()}.jpg`,
+					},
+				])
 			}
 		})
 	}
@@ -242,6 +266,7 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 	// 모달
 	const [showConfirm, setShowConfirm] = useState(false)
 	const [showSuccess, setShowSuccess] = useState(false)
+	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	// 정기 모임 관리
 	const addRegularMeeting = () => {
@@ -263,9 +288,60 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 		setShowConfirm(true)
 	}
 
-	const handleConfirm = () => {
+	const handleConfirm = async () => {
 		setShowConfirm(false)
-		setShowSuccess(true)
+		setIsSubmitting(true)
+
+		try {
+			// 1. 이미지 업로드
+			const imageUrls: string[] = []
+			for (const img of images) {
+				const res = await recruitmentService.uploadRecruitmentImage({
+					clubId,
+					uri: img.uri,
+					type: img.type,
+					name: img.name,
+				})
+				imageUrls.push(res.url)
+			}
+
+			// 2. 공고 등록
+			const deadline = `${year}-${month}-${day}T${hour}:${minute}:00Z`
+
+			await recruitmentService.createRecruitment({
+				clubId,
+				title,
+				deadline,
+				is_mandatory: hasRequiredActivity ?? false,
+				has_regular_meeting: hasRegularMeeting ?? false,
+				regular_meetings:
+					hasRegularMeeting === true
+						? regularMeetings.map(m => ({
+								day_of_week: m.day,
+								start_time: m.startTime,
+								end_time: m.endTime,
+							}))
+						: [],
+				activity_location_type: activityLocation ?? '',
+				activity_location_text: locationText,
+				has_eligibility: qualification === '제한 있음',
+				eligibility_text: qualificationText,
+				has_capacity_limit: recruitCount === '정원 있음',
+				capacity_limit_text: recruitCountText,
+				has_membership_fee: hasFee ?? false,
+				membership_fee_text: feeText,
+				application_url: joinUrl,
+				application_process: joinDescription,
+				full_recruitment_text: existingAnnouncement,
+				image_urls: imageUrls,
+			})
+
+			setShowSuccess(true)
+		} catch (e) {
+			Alert.alert('등록 실패', '공고 등록 중 오류가 발생했어요. 다시 시도해주세요.')
+		} finally {
+			setIsSubmitting(false)
+		}
 	}
 
 	const handleSuccessConfirm = () => {
@@ -573,9 +649,9 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 				<View style={[styles.section, { marginBottom: 40 }]}>
 					<Text style={styles.sectionLabel}>공고 이미지</Text>
 					<View style={styles.imageRow}>
-						{images.map((uri, idx) => (
+						{images.map((img, idx) => (
 							<View key={idx} style={styles.imageThumbnail}>
-								<Image source={{ uri }} style={styles.thumbnailImg} />
+								<Image source={{ uri: img.uri }} style={styles.thumbnailImg} />
 								<TouchableOpacity
 									style={styles.deleteImageBtn}
 									onPress={() => handleRemoveImage(idx)}>
@@ -592,11 +668,21 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 
 			{/* 하단 버튼 */}
 			<View style={styles.bottomBar}>
-				<TouchableOpacity style={styles.prevButton} onPress={() => navigation.goBack()}>
+				<TouchableOpacity
+					style={styles.prevButton}
+					onPress={() => navigation.goBack()}
+					disabled={isSubmitting}>
 					<Text style={styles.prevButtonText}>이전</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-					<Text style={styles.submitButtonText}>완료</Text>
+				<TouchableOpacity
+					style={[styles.submitButton, isSubmitting && { opacity: 0.6 }]}
+					onPress={handleSubmit}
+					disabled={isSubmitting}>
+					{isSubmitting ? (
+						<ActivityIndicator color="#fff" size="small" />
+					) : (
+						<Text style={styles.submitButtonText}>완료</Text>
+					)}
 				</TouchableOpacity>
 			</View>
 
