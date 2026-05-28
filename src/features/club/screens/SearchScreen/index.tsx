@@ -21,6 +21,7 @@ import {
 	resetClubSearchOverlayFilters,
 } from '@/features/search/types/clubSearchForm'
 import { ListRandomRecommendationsResponse, SearchClubsResponse } from '@/repositories/club'
+import { ListRecentSearchesResponse } from '@/repositories/recentSearch'
 import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import { typography } from '@/shared/constants/typography'
@@ -195,7 +196,9 @@ const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 		{
 			enabled: query.length > 0,
 			keepPreviousData: true,
+			staleTime: 0,
 			onSuccess: () => {
+				queryClient.cancelQueries(RECENT_SEARCHES_QUERY_KEY)
 				queryClient.invalidateQueries(RECENT_SEARCHES_QUERY_KEY)
 			},
 		},
@@ -221,7 +224,10 @@ const useClearRecentSearches = () => {
 
 	return useMutation(() => recentSearchService.deleteAllRecentSearches(), {
 		onSuccess: () => {
-			queryClient.invalidateQueries(RECENT_SEARCHES_QUERY_KEY)
+			queryClient.setQueryData<ListRecentSearchesResponse>(RECENT_SEARCHES_QUERY_KEY, {
+				recentSearches: [],
+				totalSize: 0,
+			})
 		},
 	})
 }
