@@ -20,7 +20,7 @@ import {
 } from '@/repositories/club'
 
 export type ClubService = {
-	searchClubs: (req: SearchClubsRequest) => Promise<SearchClubsResponse>
+	searchClubs: (req: SearchClubsRequest, signal?: AbortSignal) => Promise<SearchClubsResponse>
 	listPopularClubs: () => Promise<ListPopularClubsResponse>
 	listLatestClubs: () => Promise<ListLatestClubsResponse>
 	listClubs: (req: ListClubsRequest) => Promise<ListClubsResponse>
@@ -40,7 +40,7 @@ type Deps = {
 }
 
 export const getClubService = ({ repositories }: Deps): ClubService => ({
-	searchClubs: req => repositories[0].searchClubs(req),
+	searchClubs: (req, signal) => repositories[0].searchClubs(req, signal),
 	listPopularClubs: () => repositories[0].listPopularClubs(),
 	listLatestClubs: () => repositories[0].listLatestClubs(),
 	listClubs: req => repositories[0].listClubs(req),

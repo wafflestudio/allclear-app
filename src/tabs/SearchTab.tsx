@@ -3,6 +3,7 @@ import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import SearchScreen from '@/features/club/screens/SearchScreen'
 import ClubDetailScreen from '@/features/club/screens/ClubDetailScreen'
 import ClubReviewScreen from '@/features/club/screens/ClubReviewScreen'
+import WebViewScreen from '@/features/webview/screens/WebviewScreen'
 
 const Stack = createNativeStackNavigator<StackParamList>()
 

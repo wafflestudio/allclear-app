@@ -93,10 +93,10 @@ const SearchScreen = ({ navigation }: Props) => {
 	)
 
 	const handleSubmitQuery = (nextQuery: string) => {
+		queryClient.cancelQueries(['searchClubs'])
 		setSubmittedQuery(nextQuery)
 		setIsTypoNoticeVisible(true)
 		setIsFilterOverlayVisible(false)
-		queryClient.invalidateQueries(['searchClubs'])
 	}
 
 	const handleSelectRecentSearch = (query: string) => {
@@ -191,7 +191,7 @@ const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 
 	return useQuery<SearchClubsResponse>(
 		['searchClubs', request],
-		() => clubService.searchClubs(request),
+		({ signal }) => clubService.searchClubs(request, signal),
 		{
 			enabled: query.length > 0,
 			keepPreviousData: true,
