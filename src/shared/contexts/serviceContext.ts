@@ -1,5 +1,6 @@
 import { createContext } from 'react'
 import { AnnouncementService } from '@/usecases/announcement'
+import { AppVersionService } from '@/usecases/appVersion'
 import { AuthService } from '@/usecases/auth'
 import { CategoryService } from '@/usecases/category'
 import { ClubService } from '@/usecases/club'
@@ -10,6 +11,7 @@ import { UserService } from '@/usecases/user'
 
 type ServiceContext = {
 	announcementService: AnnouncementService
+	appVersionService: AppVersionService
 	authService: AuthService
 	categoryService: CategoryService
 	clubService: ClubService
