@@ -123,11 +123,6 @@ const MyPageScreen = () => {
 		navigation.navigate(SCREEN_TYPE.SAVED_CLUB_LIST)
 	}
 
-	// TODO: 테스트용 버튼 - 나중에 삭제
-	const handleMoveAnnouncementRegistrationPage = () => {
-		navigation.navigate(SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION)
-	}
-
 	return (
 		<SafeAreaView
 			edges={['top', 'left', 'right']}
@@ -440,13 +435,6 @@ const MyPageScreen = () => {
 							</View>
 							<Icon color={'#3A3434'} name="arrow-forward-ios" size={12} />
 						</View>
-					</TouchableOpacity>
-				</View>
-
-				{/* TODO: 테스트용 버튼 - 나중에 삭제 */}
-				<View style={styles.optionContainer}>
-					<TouchableOpacity onPress={handleMoveAnnouncementRegistrationPage}>
-						<Text style={styles.option}>공고 등록 (테스트)</Text>
 					</TouchableOpacity>
 				</View>
 

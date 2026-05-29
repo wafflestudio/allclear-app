@@ -296,6 +296,7 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 		(recruitCount !== '정원 있음' || recruitCountText.trim().length > 0) &&
 		hasFee !== null &&
 		(hasFee !== true || feeText.trim().length > 0) &&
+		joinUrl.trim().length > 0 &&
 		joinDescription.trim().length > 0
 
 	const handleSubmit = () => {
@@ -311,7 +312,7 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 			const imageUrls: string[] = []
 			for (const img of images) {
 				const res = await recruitmentService.uploadRecruitmentImage({
-					clubId,
+					clubId: clubId,
 					uri: img.uri,
 					type: img.type,
 					name: img.name,
@@ -323,7 +324,7 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 			const deadline = `${year}-${month}-${day}T${hour}:${minute}:00Z`
 
 			await recruitmentService.createRecruitment({
-				clubId,
+				clubId: clubId,
 				title,
 				deadline,
 				is_mandatory: hasRequiredActivity ?? false,
@@ -351,8 +352,14 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 			})
 
 			setShowSuccess(true)
-		} catch (e) {
-			Alert.alert('등록 실패', '공고 등록 중 오류가 발생했어요. 다시 시도해주세요.')
+		} catch (e: unknown) {
+			console.log('[DEV] 공고 등록 실패:', JSON.stringify(e))
+			const status = (e as { status?: number })?.status
+			const message =
+				status === 409
+					? '이번 달에 이미 등록된 공고가 있어요.\n공고는 월 1회만 등록할 수 있어요.'
+					: '공고 등록 중 오류가 발생했어요. 다시 시도해주세요.'
+			Alert.alert('등록 실패', message)
 		} finally {
 			setIsSubmitting(false)
 		}
@@ -371,6 +378,7 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 				keyboardShouldPersistTaps="handled">
 				{/* 헤더 */}
 				<Text style={styles.screenTitle}>모집 공고를 작성해주세요</Text>
+
 				<TouchableOpacity style={styles.loadPreviousButton}>
 					<Text style={styles.loadPreviousText}>이전 공고 불러오기</Text>
 				</TouchableOpacity>

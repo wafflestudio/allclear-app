@@ -39,6 +39,15 @@ export type ListManageClubsResponse = {
 	totalSize: number
 }
 
+type ListManageClubsV2Response = {
+	success: boolean
+	message: string
+	data: {
+		total_count: number
+		clubs: Club[]
+	}
+}
+
 export type ListClubRankingsRequest = {
 	topK?: number
 }
@@ -123,9 +132,11 @@ export const getClubRepository = (): ClubRepository => ({
 		return club
 	},
 	listManageClubs: async () => {
-		const response = await apiConnector.get<ListManageClubsResponse>('/v1/managers/me/clubs')
-
-		return response
+		const response = await apiConnector.get<ListManageClubsV2Response>('/v2/managers/me/clubs')
+		return {
+			clubs: response.data.clubs,
+			totalSize: response.data.total_count,
+		}
 	},
 	listClubRankings: async req => {
 		const response = await apiConnector.get<ListClubRankingsResponse>(

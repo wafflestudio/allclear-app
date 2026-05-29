@@ -52,11 +52,12 @@ export class APIConnector {
 
 		return this.request(path, 'POST', {
 			data: body,
+			...options,
 			headers: {
 				...this.commonHeaders,
 				...headers,
+				...options?.headers,
 			},
-			...options,
 		})
 	}
 
