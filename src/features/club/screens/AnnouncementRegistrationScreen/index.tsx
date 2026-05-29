@@ -284,6 +284,20 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 		setRegularMeetings(prev => prev.map(m => (m.id === id ? { ...m, [field]: value } : m)))
 	}
 
+	const isFormValid =
+		title.trim().length > 0 &&
+		hasRequiredActivity !== null &&
+		hasRegularMeeting !== null &&
+		activityLocation !== null &&
+		(activityLocation !== '동방 외' || locationText.trim().length > 0) &&
+		qualification !== null &&
+		(qualification !== '제한 있음' || qualificationText.trim().length > 0) &&
+		recruitCount !== null &&
+		(recruitCount !== '정원 있음' || recruitCountText.trim().length > 0) &&
+		hasFee !== null &&
+		(hasFee !== true || feeText.trim().length > 0) &&
+		joinDescription.trim().length > 0
+
 	const handleSubmit = () => {
 		setShowConfirm(true)
 	}
@@ -675,9 +689,9 @@ const AnnouncementRegistrationScreen = ({ navigation }: Props) => {
 					<Text style={styles.prevButtonText}>이전</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
-					style={[styles.submitButton, isSubmitting && { opacity: 0.6 }]}
+					style={[styles.submitButton, (!isFormValid || isSubmitting) && { opacity: 0.4 }]}
 					onPress={handleSubmit}
-					disabled={isSubmitting}>
+					disabled={!isFormValid || isSubmitting}>
 					{isSubmitting ? (
 						<ActivityIndicator color="#fff" size="small" />
 					) : (
