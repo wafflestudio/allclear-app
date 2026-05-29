@@ -1,7 +1,9 @@
 import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Colors } from '@/shared/constants/colors'
 import { Club } from '@/entities/club'
+import AnnouncementModal from '@/features/home/components/AnnouncementModal'
+import useHomeAnnouncements from '@/features/home/hooks/useHomeAnnouncements'
+import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import useClickEventLog from '@/shared/hooks/useClickEventLog'
@@ -22,6 +24,8 @@ type Props = {
 
 const HomeScreen = ({ navigation }: Props) => {
 	const { logClickEvent } = useClickEventLog()
+	const { currentAnnouncement, handleCloseAnnouncement, handleHideAnnouncement } =
+		useHomeAnnouncements()
 
 	const handleMoveToDetailPage = (club: Club) => {
 		logClickEvent({
@@ -56,6 +60,16 @@ const HomeScreen = ({ navigation }: Props) => {
 					</Text>
 					<LatestClubsSection openDetailPage={handleMoveToDetailPage} />
 				</View>
+				{currentAnnouncement && (
+					<AnnouncementModal
+						visible
+						announcementUuid={currentAnnouncement.uuid}
+						title={currentAnnouncement.title}
+						description={currentAnnouncement.description}
+						onHide={handleHideAnnouncement}
+						onClose={handleCloseAnnouncement}
+					/>
+				)}
 			</SafeAreaView>
 		</WithViewEventLog>
 	)

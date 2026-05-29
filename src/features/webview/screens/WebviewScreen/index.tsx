@@ -1,16 +1,17 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
+import { navigation } from '@/shared/utils/navigation'
+import Header from '@/shared/components/BackHeader'
 import React, { useState } from 'react'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import WebView, { WebViewMessageEvent } from 'react-native-webview'
-import { navigation } from '@/shared/utils/navigation'
-import Header from '@/features/webview/screens/WebviewScreen/Header'
-import { ActivityIndicator, View, StyleSheet } from 'react-native'
 
 type WebviewType = NativeStackScreenProps<StackParamList, SCREEN_TYPE.WEBVIEW>
 
 const WebViewScreen = ({ route }: WebviewType) => {
-	const { uri, authorization } = route.params
+	const { uri, title = '', authorization } = route.params
 
 	const [isLoading, setLoading] = useState(true)
 
@@ -25,10 +26,10 @@ const WebViewScreen = ({ route }: WebviewType) => {
 
 	return (
 		<SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-			<Header onBack={() => navigation.goBack()} />
+			<Header title={title} onBack={() => navigation.goBack()} />
 			{isLoading && (
 				<View style={styles.loadingContainer}>
-					<ActivityIndicator size="large" color="#000000" />
+					<ActivityIndicator size="large" color={Colors.POINTCOLOR} />
 				</View>
 			)}
 			<WebView
@@ -58,12 +59,10 @@ export default WebViewScreen
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: 0,
-		overflow: 'scroll',
+		backgroundColor: Colors.WHITE,
 	},
 	webview: {
 		flex: 1,
-		backgroundColor: 'transparent',
 	},
 	loadingContainer: {
 		position: 'absolute',
@@ -74,5 +73,4 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
-	// 기타 스타일
 })

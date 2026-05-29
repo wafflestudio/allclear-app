@@ -2,9 +2,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import AnnouncementRegistrationScreen from '@/features/club/screens/AnnouncementRegistrationScreen'
 import ClubDetailScreen from '@/features/club/screens/ClubDetailScreen'
+import SavedClubListScreen from '@/features/club/screens/SavedClubListScreen'
 import EditProfileScreen from '@/features/mypage/screens/EditProfileScreen'
 import MyPageScreen from '@/features/mypage/screens/MyPageScreen'
-import SavedClubListScreen from '@/features/club/screens/SavedClubListScreen'
 import WebViewScreen from '@/features/webview/screens/WebviewScreen'
 
 const Stack = createNativeStackNavigator<StackParamList>()
