@@ -2,8 +2,9 @@ import {
 	createBottomTabNavigator,
 	type BottomTabNavigationOptions,
 } from '@react-navigation/bottom-tabs'
-import { SCREEN_TYPE } from '@/shared/constants/screen'
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import { Colors } from '@/shared/constants/colors'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
 import { useProfile } from '@/shared/contexts/profileContext'
 import { Image, Pressable, type ImageSourcePropType } from 'react-native'
@@ -61,17 +62,18 @@ export function TabNavigator() {
 	// 안드로이드 네비게이션바 있는 경우에만 inset 적용, 나머지는 전부 미적용
 	const bottomInset = insets.bottom >= 40 ? insets.bottom : 0
 
+	const defaultTabBarStyle = {
+		height: vs(70) + bottomInset,
+		backgroundColor: Colors.BACKGROUND_SUB,
+		borderTopWidth: 0, // iOS 그림자 제거
+		elevation: 0, // Android 그림자 제거
+		paddingBottom: vs(10) + bottomInset,
+	}
+
 	const screenOptions: BottomTabNavigationOptions = {
 		headerShown: false,
 		tabBarActiveTintColor: Colors.BUTTON_SELECTED,
 		tabBarInactiveTintColor: Colors.BUTTON_UNSELECTED,
-		tabBarStyle: {
-			height: vs(70) + bottomInset,
-			backgroundColor: Colors.BACKGROUND_SUB,
-			borderTopWidth: 0, // iOS 그림자 제거
-			elevation: 0, // Android 그림자 제거
-			paddingBottom: vs(10) + bottomInset,
-		},
 		tabBarLabelStyle: {
 			...typography.bodySMedium,
 		},
@@ -84,7 +86,14 @@ export function TabNavigator() {
 	}
 
 	return (
-		<Tab.Navigator screenOptions={screenOptions}>
+		<Tab.Navigator
+			screenOptions={({ route }) => ({
+				...screenOptions,
+				tabBarStyle:
+					getFocusedRouteNameFromRoute(route) === SCREEN_TYPE.CLUB_DETAIL
+						? { display: 'none' }
+						: defaultTabBarStyle,
+			})}>
 			<Tab.Screen options={{ tabBarIcon: renderHomeTabIcon }} name="홈" component={HomeTab} />
 			<Tab.Screen
 				options={{ tabBarIcon: renderExploreTabIcon }}

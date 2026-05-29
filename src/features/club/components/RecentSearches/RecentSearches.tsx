@@ -45,6 +45,7 @@ const RecentSearches = ({ searches, onPressItem, onClearAll }: Props) => {
 const styles = StyleSheet.create({
 	container: {
 		width: '100%',
+		minHeight: vs(100),
 		gap: vs(9),
 	},
 	headerRow: {

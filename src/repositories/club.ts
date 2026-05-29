@@ -92,7 +92,7 @@ export type ListRandomRecommendationsResponse = {
 }
 
 export type ClubRepository = {
-	searchClubs: (req: SearchClubsRequest) => Promise<SearchClubsResponse>
+	searchClubs: (req: SearchClubsRequest, signal?: AbortSignal) => Promise<SearchClubsResponse>
 	listPopularClubs: () => Promise<ListPopularClubsResponse>
 	listLatestClubs: () => Promise<ListLatestClubsResponse>
 	listClubs: (req: ListClubsRequest) => Promise<ListClubsResponse>
@@ -108,7 +108,7 @@ export type ClubRepository = {
 }
 
 export const getClubRepository = (): ClubRepository => ({
-	searchClubs: async req => {
+	searchClubs: async (req, signal) => {
 		const searchParams = new URLSearchParams()
 		searchParams.append('query', req.query.toLowerCase().trim())
 		if (req.affiliation_type && req.affiliation_type !== '전체') {
@@ -133,7 +133,7 @@ export const getClubRepository = (): ClubRepository => ({
 			searchParams.append('min_activity_period', period)
 		})
 
-		const response = await apiConnector.get<SearchClubsResponse>(`/v2/clubs/search`, searchParams)
+		const response = await apiConnector.get<SearchClubsResponse>('/v2/clubs/search', searchParams, signal)
 
 		return response
 	},
