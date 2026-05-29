@@ -15,6 +15,7 @@ export enum SCREEN_TYPE {
 	EDIT_PROFILE = 'EditProfile',
 
 	ANNOUNCEMENT_REGISTRATION = 'AnnouncementRegistration',
+	CLUB_MANAGEMENT = 'ClubManagement',
 
 	WEBVIEW = 'WebView',
 }
@@ -50,6 +51,7 @@ export type StackParamList = {
 	[SCREEN_TYPE.MYPAGE]: undefined
 
 	[SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION]: { clubId: string }
+	[SCREEN_TYPE.CLUB_MANAGEMENT]: { clubId: string }
 
 	[SCREEN_TYPE.WEBVIEW]: { uri: string; title?: string; authorization?: string }
 }

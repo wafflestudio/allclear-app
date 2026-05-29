@@ -8,6 +8,23 @@ export type RegularMeetingPayload = {
 	end_time: string
 }
 
+export type RecruitmentSummary = {
+	id: string
+	title: string
+	year_month: string
+	deadline: string
+	created_at: string
+}
+
+export type ListClubRecruitmentsRequest = {
+	clubId: string
+}
+
+export type ListClubRecruitmentsResponse = {
+	recruitments: RecruitmentSummary[]
+	total_count: number
+}
+
 export type CreateRecruitmentRequest = {
 	clubId: string
 	title: string
@@ -45,13 +62,22 @@ export type UploadRecruitmentImageResponse = {
 }
 
 export type RecruitmentRepository = {
+	listClubRecruitments: (req: ListClubRecruitmentsRequest) => Promise<ListClubRecruitmentsResponse>
 	createRecruitment: (req: CreateRecruitmentRequest) => Promise<CreateRecruitmentResponse>
-	uploadRecruitmentImage: (req: UploadRecruitmentImageRequest) => Promise<UploadRecruitmentImageResponse>
+	uploadRecruitmentImage: (
+		req: UploadRecruitmentImageRequest,
+	) => Promise<UploadRecruitmentImageResponse>
 }
 
 // ─── Implementation ───────────────────────────────────────────────────────────
 
 export const getRecruitmentRepository = (): RecruitmentRepository => ({
+	listClubRecruitments: async req => {
+		return apiConnector.get<ListClubRecruitmentsResponse>(
+			`/v2/managers/me/clubs/${req.clubId}/recruitments`,
+		)
+	},
+
 	createRecruitment: async req => {
 		const { clubId, ...body } = req
 		return apiConnector.post<CreateRecruitmentResponse>(
