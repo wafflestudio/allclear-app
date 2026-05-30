@@ -281,8 +281,8 @@ const AnnouncementForm = (props: AnnouncementFormProps) => {
 						c.regular_meetings.map((m, i) => ({
 							id: i + 1,
 							day: m.day_of_week,
-							startTime: m.start_time,
-							endTime: m.end_time,
+							startTime: m.start_time.slice(0, 5),
+							endTime: m.end_time.slice(0, 5),
 						})),
 					)
 				}
@@ -608,8 +608,14 @@ const AnnouncementForm = (props: AnnouncementFormProps) => {
 										onChange={v => updateRegularMeeting(meeting.id, 'endTime', v)}
 										width={76}
 									/>
-									<TouchableOpacity onPress={() => removeRegularMeeting(meeting.id)}>
-										<Icon name="delete-outline" size={20} color="#999" />
+									<TouchableOpacity
+										onPress={() => removeRegularMeeting(meeting.id)}
+										disabled={regularMeetings.length === 1}>
+										<Icon
+											name="delete-outline"
+											size={20}
+											color={regularMeetings.length === 1 ? '#e0e0e0' : '#999'}
+										/>
 									</TouchableOpacity>
 								</View>
 							))}
