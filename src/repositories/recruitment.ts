@@ -70,12 +70,17 @@ export type UploadRecruitmentImageResponse = {
 	url: string
 }
 
+export type DeleteRecruitmentRequest = {
+	recruitmentId: number
+}
+
 export type RecruitmentRepository = {
 	listClubRecruitments: (req: ListClubRecruitmentsRequest) => Promise<ListClubRecruitmentsResponse>
 	createRecruitment: (req: CreateRecruitmentRequest) => Promise<CreateRecruitmentResponse>
 	uploadRecruitmentImage: (
 		req: UploadRecruitmentImageRequest,
 	) => Promise<UploadRecruitmentImageResponse>
+	deleteRecruitment: (req: DeleteRecruitmentRequest) => Promise<void>
 }
 
 // ─── Implementation ───────────────────────────────────────────────────────────
@@ -97,6 +102,10 @@ export const getRecruitmentRepository = (): RecruitmentRepository => ({
 			`/v2/managers/me/clubs/${clubId}/recruitments`,
 			body,
 		)
+	},
+
+	deleteRecruitment: async req => {
+		await apiConnector.delete<void>(`/v2/managers/me/recruitments/${req.recruitmentId}`)
 	},
 
 	uploadRecruitmentImage: async req => {

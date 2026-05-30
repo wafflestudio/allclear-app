@@ -1,19 +1,23 @@
 import React, { useContext, useState } from 'react'
-
-const snuLogo = require('@/assets/images/mypage/snu-logo.png') as number
 import {
 	ActivityIndicator,
 	Image,
+	Modal,
 	Pressable,
 	ScrollView,
 	StyleSheet,
 	Text,
+	TouchableOpacity,
 	View,
 } from 'react-native'
+import { BlurView } from '@react-native-community/blur'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { RouteProp, useRoute } from '@react-navigation/native'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+
+ 
+const snuLogo = require('@/assets/images/mypage/snu-logo.png') as number
 
 import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
@@ -23,16 +27,19 @@ import { navigation } from '@/shared/utils/navigation'
 
 type RouteProps = RouteProp<StackParamList, typeof SCREEN_TYPE.CLUB_MANAGEMENT>
 
-// 최근 공고 표시 개수 (더보기 전)
 const VISIBLE_COUNT = 3
+
+type DeleteTarget = { id: number; title: string } | null
 
 const ClubManagementScreen = () => {
 	const route = useRoute<RouteProps>()
 	const { clubId } = route.params
 
 	const { clubService, recruitmentService } = useContext(serviceContext)
+	const queryClient = useQueryClient()
 
 	const [showMore, setShowMore] = useState(false)
+	const [deleteTarget, setDeleteTarget] = useState<DeleteTarget>(null)
 
 	const { data: club } = useQuery({
 		queryKey: ['club', clubId],
@@ -42,6 +49,17 @@ const ClubManagementScreen = () => {
 	const { data: recruitmentsData, isLoading } = useQuery({
 		queryKey: ['clubRecruitments', clubId],
 		queryFn: () => recruitmentService.listClubRecruitments({ clubId }),
+	})
+
+	const { mutate: deleteRecruitment, isPending: isDeleting } = useMutation({
+		mutationFn: (recruitmentId: number) => recruitmentService.deleteRecruitment({ recruitmentId }),
+		onSuccess: () => {
+			setDeleteTarget(null)
+			queryClient.invalidateQueries({ queryKey: ['clubRecruitments', clubId] })
+		},
+		onError: () => {
+			setDeleteTarget(null)
+		},
 	})
 
 	const recruitments = recruitmentsData?.recruitments ?? []
@@ -72,16 +90,13 @@ const ClubManagementScreen = () => {
 					<View style={styles.clubCardOverlay} />
 					<View style={styles.clubCardContent}>
 						<View style={styles.clubCardTop}>
-							{/* 로고 */}
 							<View style={styles.clubLogo}>
 								<Image source={snuLogo} style={styles.clubLogoImage} />
 							</View>
-							{/* 편집 아이콘 */}
 							<View style={styles.editIconWrapper}>
 								<Icon name="edit" size={ms(20)} color="#8F8686" style={{ opacity: 0.5 }} />
 							</View>
 						</View>
-						{/* 텍스트 */}
 						<View style={styles.clubTexts}>
 							<Text style={styles.clubName} numberOfLines={1}>
 								{club?.name ?? ''}
@@ -153,14 +168,15 @@ const ClubManagementScreen = () => {
 											<Pressable hitSlop={8}>
 												<Icon name="edit" size={ms(16)} color="#C1C1C1" />
 											</Pressable>
-											<Pressable hitSlop={8}>
+											<Pressable
+												hitSlop={8}
+												onPress={() => setDeleteTarget({ id: item.id, title: item.display_title })}>
 												<Icon name="delete" size={ms(16)} color="#C1C1C1" />
 											</Pressable>
 										</View>
 									</View>
 								))}
 
-								{/* 이전 공고 더보기 */}
 								{hasMore && (
 									<Pressable
 										style={[styles.row, styles.rowMore]}
@@ -190,6 +206,47 @@ const ClubManagementScreen = () => {
 					</View>
 				</View>
 			</ScrollView>
+
+			{/* 삭제 확인 모달 */}
+			<Modal
+				visible={deleteTarget !== null}
+				transparent
+				animationType="fade"
+				onRequestClose={() => !isDeleting && setDeleteTarget(null)}>
+				<Pressable style={styles.modalOverlay} onPress={() => !isDeleting && setDeleteTarget(null)}>
+					<BlurView
+						style={StyleSheet.absoluteFillObject}
+						blurType="light"
+						blurAmount={1}
+						overlayColor="transparent"
+						reducedTransparencyFallbackColor="transparent"
+					/>
+					<Pressable style={styles.modalCard} onPress={e => e.stopPropagation()}>
+						{/* Contents */}
+						<View style={styles.modalContents}>
+							<Text style={styles.modalTitle}>{deleteTarget?.title ?? ''} 삭제</Text>
+							<Text style={styles.modalDesc}>공고를 삭제하면 되돌릴 수 없어요.</Text>
+						</View>
+						{/* Actions */}
+						<View style={styles.modalActions}>
+							<TouchableOpacity
+								style={styles.modalCancelBtn}
+								onPress={() => setDeleteTarget(null)}
+								disabled={isDeleting}
+								activeOpacity={0.6}>
+								<Text style={styles.modalCancelText}>취소</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={[styles.modalConfirmBtn, isDeleting && { opacity: 0.6 }]}
+								onPress={() => deleteTarget && deleteRecruitment(deleteTarget.id)}
+								disabled={isDeleting}
+								activeOpacity={0.6}>
+								<Text style={styles.modalConfirmText}>{isDeleting ? '삭제 중...' : '삭제'}</Text>
+							</TouchableOpacity>
+						</View>
+					</Pressable>
+				</Pressable>
+			</Modal>
 		</SafeAreaView>
 	)
 }
@@ -199,7 +256,7 @@ export default ClubManagementScreen
 const styles = StyleSheet.create({
 	safeArea: {
 		flex: 1,
-		backgroundColor: '#FFFFFF', // 상태바 영역 흰색
+		backgroundColor: '#FFFFFF',
 	},
 
 	// ── 헤더
@@ -442,5 +499,80 @@ const styles = StyleSheet.create({
 		letterSpacing: -0.02 * 12,
 		color: '#757474',
 		flex: 1,
+	},
+
+	// ── 삭제 확인 모달
+	modalOverlay: {
+		flex: 1,
+		backgroundColor: 'rgba(0, 0, 0, 0.2)',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	modalCard: {
+		width: ms(320),
+		backgroundColor: '#FFFFFF',
+		borderRadius: ms(12),
+		padding: ms(24),
+		gap: ms(24),
+		alignItems: 'center',
+	},
+	modalContents: {
+		alignSelf: 'stretch',
+		alignItems: 'center',
+		gap: ms(8),
+	},
+	modalTitle: {
+		fontFamily: 'Apple SD Gothic Neo',
+		fontWeight: '700',
+		fontSize: ms(16),
+		lineHeight: ms(24),
+		color: Colors.POINTCOLOR,
+		textAlign: 'center',
+		alignSelf: 'stretch',
+	},
+	modalDesc: {
+		fontFamily: 'Apple SD Gothic Neo',
+		fontWeight: '500',
+		fontSize: ms(14),
+		lineHeight: ms(24),
+		color: '#000000',
+		textAlign: 'center',
+		alignSelf: 'stretch',
+	},
+	modalActions: {
+		flexDirection: 'row',
+		alignSelf: 'stretch',
+		gap: ms(7),
+	},
+	modalCancelBtn: {
+		width: ms(128),
+		height: ms(44),
+		borderWidth: 1,
+		borderColor: Colors.POINTCOLOR,
+		borderRadius: ms(8),
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	modalCancelText: {
+		fontFamily: 'Apple SD Gothic Neo',
+		fontWeight: '700',
+		fontSize: ms(16),
+		lineHeight: ms(20),
+		color: Colors.POINTCOLOR,
+	},
+	modalConfirmBtn: {
+		width: ms(128),
+		height: ms(44),
+		backgroundColor: Colors.POINTCOLOR,
+		borderRadius: ms(8),
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	modalConfirmText: {
+		fontFamily: 'Apple SD Gothic Neo',
+		fontWeight: '600',
+		fontSize: ms(16),
+		lineHeight: ms(20),
+		color: '#FFFFFF',
 	},
 })

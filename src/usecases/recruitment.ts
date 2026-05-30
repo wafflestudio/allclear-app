@@ -6,6 +6,7 @@ import {
 	CreateRecruitmentResponse,
 	UploadRecruitmentImageRequest,
 	UploadRecruitmentImageResponse,
+	DeleteRecruitmentRequest,
 } from '@/repositories/recruitment'
 
 export type RecruitmentService = {
@@ -14,6 +15,7 @@ export type RecruitmentService = {
 	uploadRecruitmentImage: (
 		req: UploadRecruitmentImageRequest,
 	) => Promise<UploadRecruitmentImageResponse>
+	deleteRecruitment: (req: DeleteRecruitmentRequest) => Promise<void>
 }
 
 type Deps = {
@@ -24,4 +26,5 @@ export const getRecruitmentService = ({ repositories }: Deps): RecruitmentServic
 	listClubRecruitments: req => repositories[0].listClubRecruitments(req),
 	createRecruitment: req => repositories[0].createRecruitment(req),
 	uploadRecruitmentImage: req => repositories[0].uploadRecruitmentImage(req),
+	deleteRecruitment: req => repositories[0].deleteRecruitment(req),
 })
