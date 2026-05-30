@@ -494,12 +494,23 @@ const AnnouncementForm = (props: AnnouncementFormProps) => {
 
 	return (
 		<SafeAreaView edges={['top', 'left', 'right', 'bottom']} style={styles.container}>
+			{/* 헤더 (edit 모드만) */}
+			{isEdit && (
+				<View style={styles.header}>
+					<TouchableOpacity onPress={() => navigation.goBack()} hitSlop={8}>
+						<Icon name="chevron-left" size={24} color="#757474" />
+					</TouchableOpacity>
+					<Text style={styles.headerTitle}>{screenTitle}</Text>
+					<View style={{ width: 24 }} />
+				</View>
+			)}
+
 			<ScrollView
 				style={styles.scrollView}
 				showsVerticalScrollIndicator={false}
 				keyboardShouldPersistTaps="handled">
-				{/* 헤더 */}
-				<Text style={styles.screenTitle}>{screenTitle}</Text>
+				{/* create 모드: 기존 스타일 타이틀 */}
+				{!isEdit && <Text style={styles.screenTitle}>{screenTitle}</Text>}
 
 				{/* 이전 공고 불러오기 (create 모드만) */}
 				{!isEdit && (
@@ -873,6 +884,21 @@ const styles = StyleSheet.create({
 	scrollView: {
 		flex: 1,
 		paddingHorizontal: 20,
+	},
+	header: {
+		flexDirection: 'row',
+		alignItems: 'flex-end',
+		justifyContent: 'space-between',
+		paddingHorizontal: 20,
+		paddingBottom: 10,
+		paddingTop: 4,
+		backgroundColor: '#FFFFFF',
+	},
+	headerTitle: {
+		fontSize: 17,
+		fontWeight: '600',
+		color: '#111',
+		textAlign: 'center',
 	},
 	screenTitle: {
 		fontSize: 24,
