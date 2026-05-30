@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import {
 	ActivityIndicator,
 	Image,
@@ -12,11 +12,10 @@ import {
 } from 'react-native'
 import { BlurView } from '@react-native-community/blur'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { RouteProp, useRoute } from '@react-navigation/native'
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
- 
 const snuLogo = require('@/assets/images/mypage/snu-logo.png') as number
 
 import { Colors } from '@/shared/constants/colors'
@@ -40,21 +39,34 @@ const ClubManagementScreen = () => {
 
 	const [showMore, setShowMore] = useState(false)
 	const [deleteTarget, setDeleteTarget] = useState<DeleteTarget>(null)
+	const [deletedTitle, setDeletedTitle] = useState<string | null>(null)
 
 	const { data: club } = useQuery({
 		queryKey: ['club', clubId],
 		queryFn: () => clubService.getClub({ uuid: clubId }),
 	})
 
-	const { data: recruitmentsData, isLoading } = useQuery({
+	const {
+		data: recruitmentsData,
+		isLoading,
+		refetch: refetchRecruitments,
+	} = useQuery({
 		queryKey: ['clubRecruitments', clubId],
 		queryFn: () => recruitmentService.listClubRecruitments({ clubId }),
 	})
 
+	useFocusEffect(
+		useCallback(() => {
+			refetchRecruitments()
+		}, [refetchRecruitments]),
+	)
+
 	const { mutate: deleteRecruitment, isPending: isDeleting } = useMutation({
 		mutationFn: (recruitmentId: number) => recruitmentService.deleteRecruitment({ recruitmentId }),
 		onSuccess: () => {
+			const title = deleteTarget?.title ?? ''
 			setDeleteTarget(null)
+			setDeletedTitle(title)
 			queryClient.invalidateQueries({ queryKey: ['clubRecruitments', clubId] })
 		},
 		onError: () => {
@@ -119,27 +131,15 @@ const ClubManagementScreen = () => {
 
 					<View style={styles.listContainer}>
 						{/* 새 공고 작성하기 버튼 */}
-						<Pressable
-							style={({ pressed }) => [
-								styles.newAnnouncementRow,
-								pressed && styles.newAnnouncementRowPressed,
-							]}
+						<TouchableOpacity
+							style={styles.newAnnouncementRow}
+							activeOpacity={0.6}
 							onPress={() =>
 								navigation.navigate(SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION, { clubId })
 							}>
-							{({ pressed }) => (
-								<>
-									<Text
-										style={[
-											styles.newAnnouncementText,
-											pressed && styles.newAnnouncementTextPressed,
-										]}>
-										새 공고 작성하기
-									</Text>
-									<Icon name="edit" size={ms(16)} color={pressed ? '#FFFFFF' : Colors.POINTCOLOR} />
-								</>
-							)}
-						</Pressable>
+							<Text style={styles.newAnnouncementText}>새 공고 작성하기</Text>
+							<Icon name="edit" size={ms(16)} color={Colors.POINTCOLOR} />
+						</TouchableOpacity>
 
 						{/* 공고 목록 */}
 						{isLoading ? (
@@ -244,6 +244,37 @@ const ClubManagementScreen = () => {
 								<Text style={styles.modalConfirmText}>{isDeleting ? '삭제 중...' : '삭제'}</Text>
 							</TouchableOpacity>
 						</View>
+					</Pressable>
+				</Pressable>
+			</Modal>
+
+			{/* 삭제 완료 모달 */}
+			<Modal
+				visible={deletedTitle !== null}
+				transparent
+				animationType="fade"
+				onRequestClose={() => setDeletedTitle(null)}>
+				<Pressable style={styles.modalOverlay} onPress={() => setDeletedTitle(null)}>
+					<BlurView
+						style={StyleSheet.absoluteFillObject}
+						blurType="light"
+						blurAmount={1}
+						overlayColor="transparent"
+						reducedTransparencyFallbackColor="transparent"
+					/>
+					<Pressable style={styles.modalCard} onPress={e => e.stopPropagation()}>
+						<View style={styles.modalContents}>
+							<Text style={styles.modalTitle}>
+								{deletedTitle}
+								<Text style={styles.modalTitleBlack}>{'가 삭제되었어요.'}</Text>
+							</Text>
+						</View>
+						<TouchableOpacity
+							style={styles.modalSingleBtn}
+							activeOpacity={0.6}
+							onPress={() => setDeletedTitle(null)}>
+							<Text style={styles.modalConfirmText}>확인</Text>
+						</TouchableOpacity>
 					</Pressable>
 				</Pressable>
 			</Modal>
@@ -409,10 +440,6 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: Colors.POINTCOLOR,
 	},
-	newAnnouncementRowPressed: {
-		backgroundColor: Colors.POINTCOLOR,
-		borderColor: Colors.POINTCOLOR,
-	},
 	newAnnouncementText: {
 		fontFamily: 'Pretendard',
 		fontWeight: '500',
@@ -420,9 +447,6 @@ const styles = StyleSheet.create({
 		lineHeight: ms(14),
 		letterSpacing: -0.02 * 12,
 		color: Colors.POINTCOLOR,
-	},
-	newAnnouncementTextPressed: {
-		color: '#FFFFFF',
 	},
 
 	// ── 공고 행 공통
@@ -568,11 +592,22 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
+	modalTitleBlack: {
+		color: '#000000',
+	},
 	modalConfirmText: {
 		fontFamily: 'Apple SD Gothic Neo',
 		fontWeight: '600',
 		fontSize: ms(16),
 		lineHeight: ms(20),
 		color: '#FFFFFF',
+	},
+	modalSingleBtn: {
+		alignSelf: 'stretch',
+		height: ms(44),
+		backgroundColor: Colors.POINTCOLOR,
+		borderRadius: ms(8),
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
 })
