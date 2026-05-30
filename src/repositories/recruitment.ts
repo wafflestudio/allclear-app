@@ -164,7 +164,7 @@ export const getRecruitmentRepository = (): RecruitmentRepository => ({
 
 	updateRecruitment: async req => {
 		const { recruitmentId, ...body } = req
-		await apiConnector.put<void>(`/v2/managers/me/recruitments/${recruitmentId}`, body)
+		await apiConnector.patch<void>(`/v2/managers/me/recruitments/${recruitmentId}`, body)
 	},
 
 	uploadRecruitmentImage: async req => {
