@@ -1,4 +1,6 @@
 import React, { useContext, useState } from 'react'
+ 
+const snuLogo = require('@/assets/images/mypage/snu-logo.png') as number
 import {
 	ActivityIndicator,
 	Image,
@@ -72,9 +74,7 @@ const ClubManagementScreen = () => {
 						<View style={styles.clubCardTop}>
 							{/* 로고 */}
 							<View style={styles.clubLogo}>
-								{club?.imageUri ? (
-									<Image source={{ uri: club.imageUri }} style={styles.clubLogoImage} />
-								) : null}
+								<Image source={snuLogo} style={styles.clubLogoImage} />
 							</View>
 							{/* 편집 아이콘 */}
 							<View style={styles.editIconWrapper}>
@@ -105,12 +105,25 @@ const ClubManagementScreen = () => {
 					<View style={styles.listContainer}>
 						{/* 새 공고 작성하기 버튼 */}
 						<Pressable
-							style={styles.newAnnouncementRow}
+							style={({ pressed }) => [
+								styles.newAnnouncementRow,
+								pressed && styles.newAnnouncementRowPressed,
+							]}
 							onPress={() =>
 								navigation.navigate(SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION, { clubId })
 							}>
-							<Text style={styles.newAnnouncementText}>새 공고 작성하기</Text>
-							<Icon name="edit" size={ms(16)} color={Colors.POINTCOLOR} />
+							{({ pressed }) => (
+								<>
+									<Text
+										style={[
+											styles.newAnnouncementText,
+											pressed && styles.newAnnouncementTextPressed,
+										]}>
+										새 공고 작성하기
+									</Text>
+									<Icon name="edit" size={ms(16)} color={pressed ? '#FFFFFF' : Colors.POINTCOLOR} />
+								</>
+							)}
 						</Pressable>
 
 						{/* 공고 목록 */}
@@ -186,7 +199,7 @@ export default ClubManagementScreen
 const styles = StyleSheet.create({
 	safeArea: {
 		flex: 1,
-		backgroundColor: '#F5F4F0',
+		backgroundColor: '#FFFFFF', // 상태바 영역 흰색
 	},
 
 	// ── 헤더
@@ -216,6 +229,7 @@ const styles = StyleSheet.create({
 	// ── 스크롤 영역
 	scroll: {
 		flex: 1,
+		backgroundColor: '#F5F4F0',
 	},
 	scrollContent: {
 		paddingHorizontal: s(20),
@@ -338,13 +352,20 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: Colors.POINTCOLOR,
 	},
+	newAnnouncementRowPressed: {
+		backgroundColor: Colors.POINTCOLOR,
+		borderColor: Colors.POINTCOLOR,
+	},
 	newAnnouncementText: {
 		fontFamily: 'Pretendard',
 		fontWeight: '500',
 		fontSize: ms(12),
 		lineHeight: ms(14),
 		letterSpacing: -0.02 * 12,
-		color: '#AAAAAA',
+		color: Colors.POINTCOLOR,
+	},
+	newAnnouncementTextPressed: {
+		color: '#FFFFFF',
 	},
 
 	// ── 공고 행 공통
