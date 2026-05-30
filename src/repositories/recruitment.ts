@@ -9,11 +9,20 @@ export type RegularMeetingPayload = {
 }
 
 export type RecruitmentSummary = {
-	id: string
+	id: number
+	display_title: string
 	title: string
-	year_month: string
 	deadline: string
-	created_at: string
+	is_active: boolean
+}
+
+type ListClubRecruitmentsApiResponse = {
+	success: boolean
+	message: string
+	data: {
+		club_name: string
+		recruitments: RecruitmentSummary[]
+	}
 }
 
 export type ListClubRecruitmentsRequest = {
@@ -21,8 +30,8 @@ export type ListClubRecruitmentsRequest = {
 }
 
 export type ListClubRecruitmentsResponse = {
+	club_name: string
 	recruitments: RecruitmentSummary[]
-	total_count: number
 }
 
 export type CreateRecruitmentRequest = {
@@ -73,9 +82,13 @@ export type RecruitmentRepository = {
 
 export const getRecruitmentRepository = (): RecruitmentRepository => ({
 	listClubRecruitments: async req => {
-		return apiConnector.get<ListClubRecruitmentsResponse>(
-			`/v2/managers/me/clubs/${req.clubId}/recruitments`,
+		const res = await apiConnector.get<ListClubRecruitmentsApiResponse>(
+			`/v2/clubs/${req.clubId}/recruitments`,
 		)
+		return {
+			club_name: res.data.club_name,
+			recruitments: res.data.recruitments,
+		}
 	},
 
 	createRecruitment: async req => {

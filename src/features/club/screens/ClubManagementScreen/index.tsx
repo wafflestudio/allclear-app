@@ -14,14 +14,15 @@ import { useQuery } from '@tanstack/react-query'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 
 import { Colors } from '@/shared/constants/colors'
-import { typography } from '@/shared/constants/typography'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { ms, s, vs } from '@/shared/utils/scale'
 import { navigation } from '@/shared/utils/navigation'
-import BackHeader from '@/shared/components/BackHeader'
 
 type RouteProps = RouteProp<StackParamList, typeof SCREEN_TYPE.CLUB_MANAGEMENT>
+
+// 최근 공고 표시 개수 (더보기 전)
+const VISIBLE_COUNT = 3
 
 const ClubManagementScreen = () => {
 	const route = useRoute<RouteProps>()
@@ -29,145 +30,150 @@ const ClubManagementScreen = () => {
 
 	const { clubService, recruitmentService } = useContext(serviceContext)
 
-	const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+	const [showMore, setShowMore] = useState(false)
 
-	const { data: clubData } = useQuery({
+	const { data: club } = useQuery({
 		queryKey: ['club', clubId],
 		queryFn: () => clubService.getClub({ uuid: clubId }),
 	})
 
-	const { data: recruitmentsData, isLoading: isLoadingRecruitments } = useQuery({
+	const { data: recruitmentsData, isLoading } = useQuery({
 		queryKey: ['clubRecruitments', clubId],
 		queryFn: () => recruitmentService.listClubRecruitments({ clubId }),
 	})
 
-	const club = clubData
 	const recruitments = recruitmentsData?.recruitments ?? []
-
-	const toggleExpand = (id: string) => {
-		setExpandedIds(prev => {
-			const next = new Set(prev)
-			if (next.has(id)) {
-				next.delete(id)
-			} else {
-				next.add(id)
-			}
-			return next
-		})
-	}
-
-	const formatYearMonth = (yearMonth: string) => {
-		// yearMonth format: "YYYY-MM" or "YYYYMM"
-		const cleaned = yearMonth.replace('-', '')
-		if (cleaned.length === 6) {
-			const year = cleaned.slice(0, 4)
-			const month = parseInt(cleaned.slice(4, 6), 10)
-			return `${year}년 ${month}월 공고`
-		}
-		return yearMonth
-	}
-
-	const isCurrentRecruitment = (yearMonth: string) => {
-		const now = new Date()
-		const currentYM = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}`
-		const cleaned = yearMonth.replace('-', '')
-		return cleaned === currentYM
-	}
+	const visibleRecruitments = showMore ? recruitments : recruitments.slice(0, VISIBLE_COUNT)
+	const hasMore = recruitments.length > VISIBLE_COUNT
 
 	return (
 		<SafeAreaView edges={['top', 'left', 'right']} style={styles.safeArea}>
-			<BackHeader title="동아리 관리" onBack={() => navigation.goBack()} />
+			{/* 헤더 */}
+			<View style={styles.header}>
+				<Pressable style={styles.backBtn} onPress={() => navigation.goBack()} hitSlop={8}>
+					<Icon name="chevron-left" size={ms(24)} color="#757474" />
+				</Pressable>
+				<Text style={styles.headerTitle}>동아리 관리</Text>
+			</View>
 
-			<ScrollView contentContainerStyle={styles.scrollContent}>
+			<ScrollView
+				style={styles.scroll}
+				contentContainerStyle={styles.scrollContent}
+				showsVerticalScrollIndicator={false}>
 				{/* 동아리 카드 */}
 				<View style={styles.clubCard}>
-					<View style={styles.clubCardLeft}>
-						<View style={styles.clubLogoPlaceholder}>
-							{club?.imageUri ? (
-								<Image source={{ uri: club.imageUri }} style={styles.clubLogoImage} />
-							) : null}
+					{club?.imageUri ? (
+						<Image source={{ uri: club.imageUri }} style={styles.clubCardBg} />
+					) : (
+						<View style={[styles.clubCardBg, { backgroundColor: '#E8E4F0' }]} />
+					)}
+					<View style={styles.clubCardOverlay} />
+					<View style={styles.clubCardContent}>
+						<View style={styles.clubCardTop}>
+							{/* 로고 */}
+							<View style={styles.clubLogo}>
+								{club?.imageUri ? (
+									<Image source={{ uri: club.imageUri }} style={styles.clubLogoImage} />
+								) : null}
+							</View>
+							{/* 편집 아이콘 */}
+							<View style={styles.editIconWrapper}>
+								<Icon name="edit" size={ms(20)} color="#8F8686" style={{ opacity: 0.5 }} />
+							</View>
 						</View>
-						<View style={styles.clubInfo}>
+						{/* 텍스트 */}
+						<View style={styles.clubTexts}>
 							<Text style={styles.clubName} numberOfLines={1}>
 								{club?.name ?? ''}
 							</Text>
-							<Text style={styles.clubSub} numberOfLines={1}>
+							<Text style={styles.clubCollege} numberOfLines={1}>
 								{club?.college ?? ''}
 							</Text>
-							<Text style={styles.clubSub} numberOfLines={1}>
+							<Text style={styles.clubDesc} numberOfLines={1}>
 								{club?.description ?? ''}
 							</Text>
 						</View>
 					</View>
-					<Pressable style={styles.editButton} hitSlop={8}>
-						<Icon name="edit" size={ms(18)} color={Colors.BODYTEXT_SUB} style={{ opacity: 0.4 }} />
-					</Pressable>
 				</View>
 
-				{/* 공고 목록 */}
+				{/* 공고 관리 */}
 				<View style={styles.section}>
 					<View style={styles.sectionLabel}>
-						<Text style={styles.sectionLabelText}>공고 목록</Text>
+						<Text style={styles.sectionLabelText}>공고 관리</Text>
 					</View>
 
-					{isLoadingRecruitments ? (
-						<ActivityIndicator color={Colors.POINTCOLOR} style={{ marginTop: vs(12) }} />
-					) : recruitments.length === 0 ? (
-						<View style={[styles.recruitmentRow, { justifyContent: 'center' }]}>
-							<Text style={[styles.recruitmentTitle, { color: Colors.BODYTEXT_DISABLED }]}>
-								등록된 공고가 없어요
-							</Text>
-						</View>
-					) : (
-						recruitments.map((item, index) => {
-							const isCurrent = isCurrentRecruitment(item.year_month)
-							const isExpanded = expandedIds.has(item.id)
-							const isSelected = isCurrent || isExpanded
+					<View style={styles.listContainer}>
+						{/* 새 공고 작성하기 버튼 */}
+						<Pressable
+							style={styles.newAnnouncementRow}
+							onPress={() =>
+								navigation.navigate(SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION, { clubId })
+							}>
+							<Text style={styles.newAnnouncementText}>새 공고 작성하기</Text>
+							<Icon name="edit" size={ms(16)} color={Colors.POINTCOLOR} />
+						</Pressable>
 
-							return (
-								<Pressable
-									key={item.id}
-									onPress={() => toggleExpand(item.id)}
-									style={[
-										styles.recruitmentRow,
-										isSelected && styles.recruitmentRowSelected,
-										isCurrent && styles.recruitmentRowCurrent,
-										index === 0 && !isSelected && styles.recruitmentRowBorder,
-									]}>
-									<View style={styles.recruitmentLeft}>
-										{isCurrent && (
-											<View style={styles.currentBadge}>
-												<Text style={styles.currentBadgeText}>현재 공고</Text>
-											</View>
-										)}
-										<Text
-											style={[
-												styles.recruitmentTitle,
-												isCurrent && styles.recruitmentTitleCurrent,
-											]}>
-											{formatYearMonth(item.year_month)}
-										</Text>
+						{/* 공고 목록 */}
+						{isLoading ? (
+							<ActivityIndicator color={Colors.POINTCOLOR} style={{ marginVertical: vs(16) }} />
+						) : recruitments.length === 0 ? (
+							<View style={[styles.row, styles.rowNormal]}>
+								<Text style={styles.rowTextGray}>등록된 공고가 없어요</Text>
+							</View>
+						) : (
+							<>
+								{visibleRecruitments.map(item => (
+									<View
+										key={item.id}
+										style={[styles.row, item.is_active ? styles.rowActive : styles.rowNormal]}>
+										<View style={styles.rowLeft}>
+											{item.is_active && (
+												<View style={styles.badge}>
+													<Text style={styles.badgeText}>현재 공고</Text>
+												</View>
+											)}
+											<Text style={styles.rowTextGray} numberOfLines={1}>
+												{item.display_title}
+											</Text>
+										</View>
+										<View style={styles.rowIcons}>
+											<Pressable hitSlop={8}>
+												<Icon name="edit" size={ms(16)} color="#C1C1C1" />
+											</Pressable>
+											<Pressable hitSlop={8}>
+												<Icon name="delete" size={ms(16)} color="#C1C1C1" />
+											</Pressable>
+										</View>
 									</View>
-									<Icon
-										name={isExpanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-										size={ms(16)}
-										color={isCurrent ? Colors.POINTCOLOR : Colors.BODYTEXT_DISABLED}
-									/>
-								</Pressable>
-							)
-						})
-					)}
+								))}
+
+								{/* 이전 공고 더보기 */}
+								{hasMore && (
+									<Pressable
+										style={[styles.row, styles.rowMore]}
+										onPress={() => setShowMore(prev => !prev)}>
+										<Text style={styles.rowMoreText}>이전 공고 더보기</Text>
+										<Icon
+											name={showMore ? 'expand-less' : 'expand-more'}
+											size={ms(18)}
+											color={Colors.POINTCOLOR}
+										/>
+									</Pressable>
+								)}
+							</>
+						)}
+					</View>
 				</View>
 
-				{/* 멤버 목록 */}
+				{/* 운영진 목록 */}
 				<View style={styles.section}>
 					<View style={styles.sectionLabel}>
-						<Text style={styles.sectionLabelText}>멤버 목록</Text>
+						<Text style={styles.sectionLabelText}>운영진 목록</Text>
 					</View>
-					<View style={styles.memberCard}>
-						<Text style={[styles.recruitmentTitle, { color: Colors.BODYTEXT_DISABLED }]}>
-							멤버 기능은 준비 중이에요
-						</Text>
+					<View style={styles.listContainer}>
+						<View style={[styles.row, styles.rowNormal, { justifyContent: 'center' }]}>
+							<Text style={styles.rowTextGray}>멤버 기능은 준비 중이에요</Text>
+						</View>
 					</View>
 				</View>
 			</ScrollView>
@@ -180,127 +186,240 @@ export default ClubManagementScreen
 const styles = StyleSheet.create({
 	safeArea: {
 		flex: 1,
-		backgroundColor: Colors.BACKGROUND_SUB,
+		backgroundColor: '#F5F4F0',
+	},
+
+	// ── 헤더
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingHorizontal: s(20),
+		gap: s(105),
+		height: vs(39),
+		backgroundColor: '#FFFFFF',
+	},
+	backBtn: {
+		width: ms(24),
+		height: ms(24),
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	headerTitle: {
+		fontFamily: 'Pretendard',
+		fontWeight: '600',
+		fontSize: ms(16),
+		lineHeight: ms(19),
+		letterSpacing: -0.02 * 16,
+		color: '#757474',
+	},
+
+	// ── 스크롤 영역
+	scroll: {
+		flex: 1,
 	},
 	scrollContent: {
 		paddingHorizontal: s(20),
-		paddingTop: vs(12),
+		paddingTop: vs(10),
 		paddingBottom: vs(40),
 		gap: vs(20),
 	},
 
-	// 동아리 카드
+	// ── 동아리 카드
 	clubCard: {
-		backgroundColor: Colors.WHITE,
 		borderRadius: ms(12),
-		paddingVertical: vs(30),
-		paddingHorizontal: s(20),
-		flexDirection: 'row',
-		alignItems: 'flex-start',
+		overflow: 'hidden',
+		height: vs(160),
+	},
+	clubCardBg: {
+		position: 'absolute',
+		width: '100%',
+		height: '100%',
+		resizeMode: 'cover',
+	},
+	clubCardOverlay: {
+		position: 'absolute',
+		width: '100%',
+		height: '100%',
+		backgroundColor: 'rgba(255,255,255,0.45)',
+	},
+	clubCardContent: {
+		flex: 1,
+		padding: s(16),
 		justifyContent: 'space-between',
 	},
-	clubCardLeft: {
+	clubCardTop: {
 		flexDirection: 'row',
-		alignItems: 'center',
-		gap: s(15),
-		flex: 1,
+		justifyContent: 'space-between',
+		alignItems: 'flex-start',
 	},
-	clubLogoPlaceholder: {
-		width: ms(41),
-		height: ms(41),
-		borderRadius: ms(8),
-		backgroundColor: '#EAEAEA',
+	clubLogo: {
+		width: ms(40),
+		height: ms(40),
+		borderRadius: ms(20),
+		backgroundColor: '#D9D9D9',
+		opacity: 0.7,
 		overflow: 'hidden',
 	},
 	clubLogoImage: {
 		width: '100%',
 		height: '100%',
 	},
-	clubInfo: {
-		flex: 1,
-		gap: vs(5),
+	editIconWrapper: {
+		width: ms(24),
+		height: ms(24),
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	clubTexts: {
+		gap: vs(4),
 	},
 	clubName: {
-		...typography.headerXL,
-		color: Colors.BODYTEXT_MAIN,
+		fontFamily: 'Pretendard',
+		fontWeight: '700',
+		fontSize: ms(20),
+		lineHeight: ms(24),
 		letterSpacing: -0.02 * 20,
+		color: '#000000',
 	},
-	clubSub: {
-		...typography.bodyMRegular,
-		color: Colors.BODYTEXT_SUB,
+	clubCollege: {
+		fontFamily: 'Pretendard',
+		fontWeight: '500',
+		fontSize: ms(14),
+		lineHeight: ms(17),
 		letterSpacing: -0.02 * 14,
+		color: '#757474',
 	},
-	editButton: {
-		padding: s(4),
+	clubDesc: {
+		fontFamily: 'Pretendard',
+		fontWeight: '500',
+		fontSize: ms(14),
+		lineHeight: ms(17),
+		letterSpacing: -0.02 * 14,
+		color: '#757474',
 	},
 
-	// 섹션
+	// ── 섹션
 	section: {
-		gap: vs(10),
+		gap: 0,
 	},
 	sectionLabel: {
-		paddingHorizontal: s(5),
-		paddingVertical: vs(5),
+		flexDirection: 'row',
+		alignItems: 'center',
+		paddingTop: vs(5),
+		paddingBottom: vs(5),
+		paddingLeft: s(5),
+		paddingRight: s(12),
+		height: vs(34),
 	},
 	sectionLabelText: {
-		...typography.bodyMMedium,
-		color: Colors.BODYTEXT_SUB,
-		letterSpacing: -0.02 * 14,
+		fontFamily: 'Pretendard',
+		fontWeight: '500',
+		fontSize: ms(14),
+		lineHeight: ms(24),
+		color: '#757474',
+		flex: 1,
 	},
 
-	// 공고 목록 행
-	recruitmentRow: {
+	// ── 리스트 컨테이너
+	listContainer: {
+		gap: vs(10),
+	},
+
+	// ── 새 공고 작성하기
+	newAnnouncementRow: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
 		paddingVertical: vs(10),
 		paddingHorizontal: s(15),
-		backgroundColor: Colors.WHITE,
 		borderRadius: ms(12),
 		minHeight: vs(34),
-	},
-	recruitmentRowBorder: {
+		backgroundColor: '#FFFFFF',
 		borderWidth: 1,
 		borderColor: Colors.POINTCOLOR,
 	},
-	recruitmentRowSelected: {
-		backgroundColor: Colors.BACKGROUND_SUB,
+	newAnnouncementText: {
+		fontFamily: 'Pretendard',
+		fontWeight: '500',
+		fontSize: ms(12),
+		lineHeight: ms(14),
+		letterSpacing: -0.02 * 12,
+		color: '#AAAAAA',
 	},
-	recruitmentRowCurrent: {
-		backgroundColor: Colors.WHITE,
+
+	// ── 공고 행 공통
+	row: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingVertical: vs(10),
+		paddingHorizontal: s(15),
+		borderRadius: ms(12),
+		minHeight: vs(34),
+	},
+	rowNormal: {
+		backgroundColor: '#FFFFFF',
+	},
+	rowActive: {
+		backgroundColor: '#FFFFFF',
 		minHeight: vs(48),
+		paddingLeft: s(10),
 	},
-	recruitmentLeft: {
+	rowMore: {
+		backgroundColor: '#F3F0F5',
+	},
+	rowLeft: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		gap: s(10),
+		flex: 1,
 	},
-	currentBadge: {
-		backgroundColor: Colors.POINTCOLOR,
-		borderRadius: ms(12),
-		paddingHorizontal: s(10),
-		paddingVertical: vs(8),
-	},
-	currentBadgeText: {
-		...typography.bodyXSSemibold,
-		color: Colors.WHITE,
-		letterSpacing: -0.02 * 10,
-	},
-	recruitmentTitle: {
-		...typography.bodySMedium,
-		color: Colors.BODYTEXT_SUB,
-		letterSpacing: -0.02 * 12,
-	},
-	recruitmentTitleCurrent: {
-		color: Colors.BODYTEXT_SUB,
+	rowIcons: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: s(12),
+		flexShrink: 0,
 	},
 
-	// 멤버
-	memberCard: {
-		backgroundColor: Colors.WHITE,
-		borderRadius: ms(12),
-		paddingVertical: vs(15),
-		paddingHorizontal: s(15),
+	// ── 이전 공고 더보기
+	rowMoreText: {
+		fontFamily: 'Pretendard',
+		fontWeight: '500',
+		fontSize: ms(12),
+		lineHeight: ms(14),
+		letterSpacing: -0.02 * 12,
+		color: Colors.POINTCOLOR,
+	},
+
+	// ── 현재 공고 배지
+	badge: {
+		flexDirection: 'row',
+		justifyContent: 'center',
 		alignItems: 'center',
+		paddingHorizontal: s(10),
+		paddingVertical: vs(8),
+		backgroundColor: Colors.POINTCOLOR,
+		borderRadius: ms(12),
+		width: ms(57),
+		height: ms(28),
+	},
+	badgeText: {
+		fontFamily: 'Pretendard',
+		fontWeight: '600',
+		fontSize: ms(10),
+		lineHeight: ms(12),
+		letterSpacing: -0.02 * 10,
+		color: '#FFFFFF',
+	},
+
+	// ── 공고 제목 텍스트
+	rowTextGray: {
+		fontFamily: 'Pretendard',
+		fontWeight: '500',
+		fontSize: ms(12),
+		lineHeight: ms(14),
+		letterSpacing: -0.02 * 12,
+		color: '#757474',
+		flex: 1,
 	},
 })
