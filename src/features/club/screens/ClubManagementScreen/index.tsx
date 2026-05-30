@@ -42,8 +42,8 @@ const ClubManagementScreen = () => {
 	const [deletedTitle, setDeletedTitle] = useState<string | null>(null)
 
 	const { data: club } = useQuery({
-		queryKey: ['club', clubId],
-		queryFn: () => clubService.getClub({ uuid: clubId }),
+		queryKey: ['managedClub', clubId],
+		queryFn: () => clubService.getManagedClubDetail({ uuid: clubId }),
 	})
 
 	const {
@@ -206,9 +206,20 @@ const ClubManagementScreen = () => {
 						<Text style={styles.sectionLabelText}>운영진 목록</Text>
 					</View>
 					<View style={styles.listContainer}>
-						<View style={[styles.row, styles.rowNormal, { justifyContent: 'center' }]}>
-							<Text style={styles.rowTextGray}>멤버 기능은 준비 중이에요</Text>
-						</View>
+						{!club?.managers || club.managers.length === 0 ? (
+							<View style={[styles.row, styles.rowNormal, { justifyContent: 'center' }]}>
+								<Text style={styles.rowTextGray}>등록된 운영진이 없어요</Text>
+							</View>
+						) : (
+							club.managers.map(manager => (
+								<View key={manager.serviceUserId} style={[styles.row, styles.rowNormal]}>
+									<Text style={styles.managerName}>{manager.name}</Text>
+									{!!manager.studentId && (
+										<Text style={styles.managerStudentId}>{manager.studentId}</Text>
+									)}
+								</View>
+							))
+						)}
 					</View>
 				</View>
 			</ScrollView>
@@ -529,6 +540,19 @@ const styles = StyleSheet.create({
 		letterSpacing: -0.02 * 12,
 		color: '#757474',
 		flex: 1,
+	},
+	managerName: {
+		fontFamily: 'Pretendard',
+		fontWeight: '600',
+		fontSize: ms(13),
+		color: '#333',
+		flex: 1,
+	},
+	managerStudentId: {
+		fontFamily: 'Pretendard',
+		fontWeight: '400',
+		fontSize: ms(12),
+		color: '#757474',
 	},
 
 	// ── 삭제 확인 모달
