@@ -250,6 +250,14 @@ const AnnouncementForm = (props: AnnouncementFormProps) => {
 	const [showSuccess, setShowSuccess] = useState(false)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
+	// 이전 공고 불러오기
+	const [showPrevList, setShowPrevList] = useState(false)
+	const [prevRecruitments, setPrevRecruitments] = useState<{ id: number; display_title: string }[]>(
+		[],
+	)
+	const [isLoadingPrev, setIsLoadingPrev] = useState(false)
+	const [isLoadingPrevDetail, setIsLoadingPrevDetail] = useState(false)
+
 	// ─── edit 모드: 상세 데이터 불러와서 필드 채우기 ─────────────────────────────
 
 	useEffect(() => {
@@ -470,6 +478,88 @@ const AnnouncementForm = (props: AnnouncementFormProps) => {
 		props.onSuccess()
 	}
 
+	// ─── 이전 공고 불러오기 ──────────────────────────────────────────────────────
+
+	const handleOpenPrevList = async () => {
+		setShowPrevList(true)
+		setIsLoadingPrev(true)
+		try {
+			const data = await recruitmentService.listClubRecruitments({ clubId: clubIdRef.current })
+			setPrevRecruitments(data.recruitments)
+		} catch {
+			Alert.alert('오류', '공고 목록을 불러오는데 실패했어요.')
+			setShowPrevList(false)
+		} finally {
+			setIsLoadingPrev(false)
+		}
+	}
+
+	const handleSelectPrevRecruitment = async (recruitmentId: number) => {
+		setIsLoadingPrevDetail(true)
+		try {
+			const detail = await recruitmentService.getRecruitmentDetail({ recruitmentId })
+			const c = detail.content
+
+			setTitle(c.title)
+
+			const d = new Date(c.deadline)
+			setYear(String(d.getUTCFullYear()))
+			setMonth(String(d.getUTCMonth() + 1).padStart(2, '0'))
+			setDay(String(d.getUTCDate()).padStart(2, '0'))
+			setHour(String(d.getUTCHours()).padStart(2, '0'))
+			setMinute(String(d.getUTCMinutes()).padStart(2, '0'))
+
+			setHasRequiredActivity(c.is_mandatory)
+			setHasRegularMeeting(c.has_regular_meeting)
+
+			if (c.regular_meetings.length > 0) {
+				setRegularMeetings(
+					c.regular_meetings.map((m, i) => ({
+						id: i + 1,
+						day: m.day_of_week,
+						startTime: m.start_time.slice(0, 5),
+						endTime: m.end_time.slice(0, 5),
+					})),
+				)
+			}
+
+			const locType = c.activity_location_type as '동방' | '동방 외' | '미정'
+			setActivityLocation(locType)
+			setLocationText(c.activity_location_text)
+
+			setQualification(c.has_eligibility ? '제한 있음' : '제한 없음')
+			setQualificationText(c.eligibility_text)
+
+			setRecruitCount(c.has_capacity_limit ? '정원 있음' : '제한 없음')
+			setRecruitCountText(c.capacity_limit_text)
+
+			setHasFee(c.has_membership_fee)
+			setFeeText(c.membership_fee_text)
+
+			setJoinUrl(c.application_url)
+			setJoinDescription(c.application_process)
+
+			setExistingAnnouncement(c.full_recruitment_text ?? '')
+
+			if (c.image_urls.length > 0) {
+				setImages(
+					c.image_urls.map(url => ({
+						uri: url,
+						type: 'image/jpeg',
+						name: '',
+						isRemote: true,
+					})),
+				)
+			}
+
+			setShowPrevList(false)
+		} catch {
+			Alert.alert('오류', '공고 정보를 불러오는데 실패했어요.')
+		} finally {
+			setIsLoadingPrevDetail(false)
+		}
+	}
+
 	// ─── mode별 텍스트 ───────────────────────────────────────────────────────────
 
 	const screenTitle = isEdit ? '공고 관리' : '모집 공고를 작성해주세요'
@@ -514,10 +604,68 @@ const AnnouncementForm = (props: AnnouncementFormProps) => {
 
 				{/* 이전 공고 불러오기 (create 모드만) */}
 				{!isEdit && (
-					<TouchableOpacity style={styles.loadPreviousButton}>
+					<TouchableOpacity
+						style={styles.loadPreviousButton}
+						onPress={handleOpenPrevList}
+						activeOpacity={0.7}>
 						<Text style={styles.loadPreviousText}>이전 공고 불러오기</Text>
 					</TouchableOpacity>
 				)}
+
+				{/* 이전 공고 목록 모달 */}
+				<Modal
+					visible={showPrevList}
+					transparent
+					animationType="fade"
+					onRequestClose={() => !isLoadingPrevDetail && setShowPrevList(false)}>
+					<View
+						style={styles.prevModalOverlay}
+						onStartShouldSetResponder={() => true}
+						onResponderGrant={() => !isLoadingPrevDetail && setShowPrevList(false)}>
+						<View
+							style={styles.prevModalCard}
+							onStartShouldSetResponder={() => true}
+							onResponderGrant={() => {}}>
+							<View style={styles.prevModalHeader}>
+								<Text style={styles.prevModalTitle}>이전 공고 불러오기</Text>
+								<TouchableOpacity
+									onPress={() => !isLoadingPrevDetail && setShowPrevList(false)}
+									hitSlop={8}>
+									<Icon name="close" size={20} color="#757474" />
+								</TouchableOpacity>
+							</View>
+
+							{isLoadingPrev ? (
+								<ActivityIndicator color={PRIMARY} style={{ marginVertical: 24 }} />
+							) : isLoadingPrevDetail ? (
+								<View style={{ alignItems: 'center', paddingVertical: 24 }}>
+									<ActivityIndicator color={PRIMARY} />
+									<Text style={styles.prevLoadingText}>공고 불러오는 중...</Text>
+								</View>
+							) : prevRecruitments.length === 0 ? (
+								<View style={styles.prevEmptyRow}>
+									<Text style={styles.prevEmptyText}>등록된 공고가 없어요</Text>
+								</View>
+							) : (
+								<ScrollView showsVerticalScrollIndicator={false} style={{ maxHeight: 320 }}>
+									{prevRecruitments.map((item, index) => (
+										<TouchableOpacity
+											key={item.id}
+											style={[
+												styles.prevRow,
+												index < prevRecruitments.length - 1 && styles.prevRowBorder,
+											]}
+											onPress={() => handleSelectPrevRecruitment(item.id)}
+											activeOpacity={0.6}>
+											<Text style={styles.prevRowText}>{item.display_title}</Text>
+											<Icon name="chevron-right" size={18} color={BORDER} />
+										</TouchableOpacity>
+									))}
+								</ScrollView>
+							)}
+						</View>
+					</View>
+				</Modal>
 
 				{/* 공고 제목 */}
 				<View style={styles.section}>
@@ -918,6 +1066,62 @@ const styles = StyleSheet.create({
 		color: '#fafafa',
 		fontSize: 12,
 		fontWeight: '700',
+	},
+	prevModalOverlay: {
+		flex: 1,
+		backgroundColor: 'rgba(0,0,0,0.35)',
+		justifyContent: 'center',
+		alignItems: 'center',
+		paddingHorizontal: 24,
+	},
+	prevModalCard: {
+		width: '100%',
+		backgroundColor: '#fff',
+		borderRadius: 16,
+		paddingTop: 20,
+		paddingBottom: 8,
+		overflow: 'hidden',
+	},
+	prevModalHeader: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingHorizontal: 20,
+		marginBottom: 12,
+	},
+	prevModalTitle: {
+		fontSize: 15,
+		fontWeight: '700',
+		color: '#111',
+	},
+	prevRow: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		paddingVertical: 14,
+		paddingHorizontal: 20,
+	},
+	prevRowBorder: {
+		borderBottomWidth: 1,
+		borderBottomColor: '#F3F0F5',
+	},
+	prevRowText: {
+		fontSize: 14,
+		fontWeight: '500',
+		color: '#333',
+	},
+	prevEmptyRow: {
+		paddingVertical: 24,
+		alignItems: 'center',
+	},
+	prevEmptyText: {
+		fontSize: 13,
+		color: '#999',
+	},
+	prevLoadingText: {
+		marginTop: 8,
+		fontSize: 13,
+		color: '#999',
 	},
 	section: {
 		marginBottom: 20,
