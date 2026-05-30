@@ -493,7 +493,7 @@ const AnnouncementForm = (props: AnnouncementFormProps) => {
 	// ─── 렌더 ────────────────────────────────────────────────────────────────────
 
 	return (
-		<SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
+		<SafeAreaView edges={['top', 'left', 'right', 'bottom']} style={styles.container}>
 			<ScrollView
 				style={styles.scrollView}
 				showsVerticalScrollIndicator={false}
@@ -801,7 +801,7 @@ const AnnouncementForm = (props: AnnouncementFormProps) => {
 				</View>
 
 				{/* 공고 이미지 */}
-				<View style={[styles.section, { marginBottom: 40 }]}>
+				<View style={styles.section}>
 					<Text style={styles.sectionLabel}>공고 이미지</Text>
 					<View style={styles.imageRow}>
 						{images.map((img, idx) => (
@@ -819,28 +819,28 @@ const AnnouncementForm = (props: AnnouncementFormProps) => {
 						</TouchableOpacity>
 					</View>
 				</View>
-			</ScrollView>
 
-			{/* 하단 버튼 */}
-			<View style={styles.bottomBar}>
-				<TouchableOpacity
-					style={styles.prevButton}
-					onPress={() => navigation.goBack()}
-					disabled={isSubmitting}>
-					<Text style={styles.prevButtonText}>이전</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					style={[styles.submitButton, (!isFormValid || isSubmitting) && { opacity: 0.4 }]}
-					onPress={handleSubmit}
-					disabled={!isFormValid || isSubmitting}
-					activeOpacity={0.6}>
-					{isSubmitting ? (
-						<ActivityIndicator color="#fff" size="small" />
-					) : (
-						<Text style={styles.submitButtonText}>{submitLabel}</Text>
-					)}
-				</TouchableOpacity>
-			</View>
+				{/* 하단 버튼 */}
+				<View style={styles.bottomBar}>
+					<TouchableOpacity
+						style={styles.prevButton}
+						onPress={() => navigation.goBack()}
+						disabled={isSubmitting}>
+						<Text style={styles.prevButtonText}>이전</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={[styles.submitButton, (!isFormValid || isSubmitting) && { opacity: 0.4 }]}
+						onPress={handleSubmit}
+						disabled={!isFormValid || isSubmitting}
+						activeOpacity={0.6}>
+						{isSubmitting ? (
+							<ActivityIndicator color="#fff" size="small" />
+						) : (
+							<Text style={styles.submitButtonText}>{submitLabel}</Text>
+						)}
+					</TouchableOpacity>
+				</View>
+			</ScrollView>
 
 			{/* 확인 모달 */}
 			<ConfirmModal
@@ -1121,10 +1121,8 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		gap: 10,
 		paddingHorizontal: 20,
-		paddingVertical: 12,
-		backgroundColor: BG,
-		borderTopWidth: 1,
-		borderTopColor: BORDER,
+		paddingTop: 12,
+		paddingBottom: 32,
 	},
 	prevButton: {
 		flex: 1,

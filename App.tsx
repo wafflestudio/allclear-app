@@ -22,6 +22,10 @@ import { getReviewRepository } from '@/repositories/review'
 import { getTermRepository } from '@/repositories/term'
 import { getUserRepository } from '@/repositories/user'
 import { TabNavigator } from '@/tabs/TabNavigator'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import AnnouncementRegistrationScreen from '@/features/club/screens/AnnouncementRegistrationScreen'
+import AnnouncementEditScreen from '@/features/club/screens/AnnouncementEditScreen'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { getAnnouncementService } from '@/usecases/announcement'
 import { getAuthService } from '@/usecases/auth'
 import { getCategoryService } from '@/usecases/category'
@@ -33,12 +37,13 @@ import { getReviewService } from '@/usecases/review'
 import { getTermService } from '@/usecases/term'
 import { getUserService } from '@/usecases/user'
 import { _navigationRef, setIsNavigationReady } from '@/shared/utils/navigation'
-import { ENV } from '@/config/ENV'
 import { linking } from '@/config/linking'
 import { initToken } from '@/shared/utils/api'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
+
+const RootStack = createNativeStackNavigator()
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -103,7 +108,17 @@ function App(): React.JSX.Element {
 									<UserVoiceBottomSheetProvider>
 										<ManageClubBottomSheetProvider>
 											<NavigationContainer ref={_navigationRef} linking={linking}>
-												<TabNavigator />
+												<RootStack.Navigator screenOptions={{ headerShown: false }}>
+													<RootStack.Screen name="Main" component={TabNavigator} />
+													<RootStack.Screen
+														name={SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION}
+														component={AnnouncementRegistrationScreen}
+													/>
+													<RootStack.Screen
+														name={SCREEN_TYPE.ANNOUNCEMENT_EDIT}
+														component={AnnouncementEditScreen}
+													/>
+												</RootStack.Navigator>
 											</NavigationContainer>
 										</ManageClubBottomSheetProvider>
 									</UserVoiceBottomSheetProvider>
