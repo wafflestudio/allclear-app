@@ -49,9 +49,33 @@ export type GetClubRequest = {
 	uuid: Club['uuid']
 }
 
+export type ClubManager = {
+	serviceUserId: string
+	name: string
+	phone: string
+	studentId: string
+}
+
+export type ManagedClubDetail = Club & {
+	managers: ClubManager[]
+}
+
+export type GetManagedClubDetailRequest = {
+	uuid: Club['uuid']
+}
+
 export type ListManageClubsResponse = {
 	clubs: Club[]
 	totalSize: number
+}
+
+type ListManageClubsV2Response = {
+	success: boolean
+	message: string
+	data: {
+		total_count: number
+		clubs: Club[]
+	}
 }
 
 export type ListClubRankingsRequest = {
@@ -97,6 +121,7 @@ export type ClubRepository = {
 	listLatestClubs: () => Promise<ListLatestClubsResponse>
 	listClubs: (req: ListClubsRequest) => Promise<ListClubsResponse>
 	getClub: (req: GetClubRequest) => Promise<Club>
+	getManagedClubDetail: (req: GetManagedClubDetailRequest) => Promise<ManagedClubDetail>
 	listManageClubs: () => Promise<ListManageClubsResponse>
 	listClubRankings: (req: ListClubRankingsRequest) => Promise<ListClubRankingsResponse>
 	requestClubManager: (req: RequestClubmanagerRequest) => Promise<void>
@@ -133,7 +158,11 @@ export const getClubRepository = (): ClubRepository => ({
 			searchParams.append('min_activity_period', period)
 		})
 
-		const response = await apiConnector.get<SearchClubsResponse>('/v2/clubs/search', searchParams, signal)
+		const response = await apiConnector.get<SearchClubsResponse>(
+			'/v2/clubs/search',
+			searchParams,
+			signal,
+		)
 
 		return response
 	},
@@ -162,10 +191,16 @@ export const getClubRepository = (): ClubRepository => ({
 		}
 		return club
 	},
+	getManagedClubDetail: async req => {
+		const res = await apiConnector.get<ManagedClubDetail>(`/v2/managers/me/clubs/${req.uuid}`)
+		return res
+	},
 	listManageClubs: async () => {
-		const response = await apiConnector.get<ListManageClubsResponse>('/v1/managers/me/clubs')
-
-		return response
+		const response = await apiConnector.get<ListManageClubsV2Response>('/v2/managers/me/clubs')
+		return {
+			clubs: response.data.clubs,
+			totalSize: response.data.total_count,
+		}
 	},
 	listClubRankings: async req => {
 		const response = await apiConnector.get<ListClubRankingsResponse>(

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import axios, { AxiosRequestConfig } from 'axios'
+import axios, { type AxiosRequestConfig } from 'axios'
 import { ENV } from '@/config/ENV'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 import { getOrCreateGuestId } from '@/shared/utils/guestId'
@@ -32,7 +32,7 @@ _apiInstance.interceptors.request.use(async config => {
 
 const request = async <T>(
 	path: string,
-	method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+	method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
 	options: AxiosRequestConfig = {},
 ): Promise<T> => {
 	const response = await _apiInstance.request<T>({ method, url: path, ...options })
@@ -40,10 +40,14 @@ const request = async <T>(
 }
 
 export const apiConnector = {
-	get: <T>(path: string, params?: Record<string, unknown> | URLSearchParams, signal?: AbortSignal) =>
-		request<T>(path, 'GET', { params, signal }),
+	get: <T>(
+		path: string,
+		params?: Record<string, unknown> | URLSearchParams,
+		signal?: AbortSignal,
+	) => request<T>(path, 'GET', { params, signal }),
 	post: <T>(path: string, body?: object, options?: AxiosRequestConfig) =>
 		request<T>(path, 'POST', { data: body, ...options }),
 	put: <T>(path: string, body?: object) => request<T>(path, 'PUT', { data: body }),
+	patch: <T>(path: string, body?: object) => request<T>(path, 'PATCH', { data: body }),
 	delete: <T>(path: string) => request<T>(path, 'DELETE', {}),
 }
