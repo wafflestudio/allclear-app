@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
- 
+
 const snuLogo = require('@/assets/images/mypage/snu-logo.png') as number
 import {
 	ActivityIndicator,
@@ -269,14 +269,14 @@ const styles = StyleSheet.create({
 	clubLogo: {
 		width: ms(40),
 		height: ms(40),
-		borderRadius: ms(20),
-		backgroundColor: '#D9D9D9',
-		opacity: 0.7,
+		borderRadius: ms(8),
+		backgroundColor: '#FFFFFF',
 		overflow: 'hidden',
 	},
 	clubLogoImage: {
 		width: '100%',
 		height: '100%',
+		resizeMode: 'contain',
 	},
 	editIconWrapper: {
 		width: ms(24),
