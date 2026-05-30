@@ -26,7 +26,7 @@ import { navigation } from '@/shared/utils/navigation'
 
 type RouteProps = RouteProp<StackParamList, typeof SCREEN_TYPE.CLUB_MANAGEMENT>
 
-const VISIBLE_COUNT = 3
+const VISIBLE_COUNT = 2
 
 type DeleteTarget = { id: number; title: string } | null
 
@@ -75,7 +75,7 @@ const ClubManagementScreen = () => {
 	})
 
 	const recruitments = recruitmentsData?.recruitments ?? []
-	const visibleRecruitments = showMore ? recruitments : recruitments.slice(0, VISIBLE_COUNT)
+	const activeRecruitment = recruitments.find(r => r.is_active) ?? null
 	const hasMore = recruitments.length > VISIBLE_COUNT
 
 	return (
@@ -150,16 +150,45 @@ const ClubManagementScreen = () => {
 							</View>
 						) : (
 							<>
-								{visibleRecruitments.map(item => (
-									<View
-										key={item.id}
-										style={[styles.row, item.is_active ? styles.rowActive : styles.rowNormal]}>
+								{/* 현재 공고 - 상단 고정 표시 */}
+								{activeRecruitment && (
+									<View style={[styles.row, styles.rowActive]}>
 										<View style={styles.rowLeft}>
-											{item.is_active && (
-												<View style={styles.badge}>
-													<Text style={styles.badgeText}>현재 공고</Text>
-												</View>
-											)}
+											<View style={styles.badge}>
+												<Text style={styles.badgeText}>현재 공고</Text>
+											</View>
+											<Text style={styles.rowTextGray} numberOfLines={1}>
+												{activeRecruitment.display_title}
+											</Text>
+										</View>
+										<View style={styles.rowIcons}>
+											<Pressable
+												hitSlop={8}
+												onPress={() =>
+													navigation.navigate(SCREEN_TYPE.ANNOUNCEMENT_EDIT, {
+														recruitmentId: activeRecruitment.id,
+													})
+												}>
+												<Icon name="edit" size={ms(16)} color="#C1C1C1" />
+											</Pressable>
+											<Pressable
+												hitSlop={8}
+												onPress={() =>
+													setDeleteTarget({
+														id: activeRecruitment.id,
+														title: activeRecruitment.display_title,
+													})
+												}>
+												<Icon name="delete" size={ms(16)} color="#C1C1C1" />
+											</Pressable>
+										</View>
+									</View>
+								)}
+
+								{/* 전체 목록 (현재 공고 포함, 배지 없이 동일 스타일) */}
+								{recruitments.slice(0, VISIBLE_COUNT).map(item => (
+									<View key={item.id} style={[styles.row, styles.rowNormal]}>
+										<View style={styles.rowLeft}>
 											<Text style={styles.rowTextGray} numberOfLines={1}>
 												{item.display_title}
 											</Text>
@@ -195,6 +224,35 @@ const ClubManagementScreen = () => {
 										/>
 									</Pressable>
 								)}
+
+								{showMore &&
+									recruitments.slice(VISIBLE_COUNT).map(item => (
+										<View key={item.id} style={[styles.row, styles.rowMore]}>
+											<View style={styles.rowLeft}>
+												<Text style={styles.rowTextGray} numberOfLines={1}>
+													{item.display_title}
+												</Text>
+											</View>
+											<View style={styles.rowIcons}>
+												<Pressable
+													hitSlop={8}
+													onPress={() =>
+														navigation.navigate(SCREEN_TYPE.ANNOUNCEMENT_EDIT, {
+															recruitmentId: item.id,
+														})
+													}>
+													<Icon name="edit" size={ms(16)} color="#C1C1C1" />
+												</Pressable>
+												<Pressable
+													hitSlop={8}
+													onPress={() =>
+														setDeleteTarget({ id: item.id, title: item.display_title })
+													}>
+													<Icon name="delete" size={ms(16)} color="#C1C1C1" />
+												</Pressable>
+											</View>
+										</View>
+									))}
 							</>
 						)}
 					</View>
