@@ -176,7 +176,7 @@ export const getRecruitmentRepository = (): RecruitmentRepository => ({
 		} as unknown as Blob)
 
 		return apiConnector.post<UploadRecruitmentImageResponse>(
-			`/v2/managers/me/clubs/${req.clubId}/images`,
+			`/v2/managers/me/clubs/${req.clubId}/recruitments/images`,
 			formData as unknown as object,
 			{ timeout: 60000, headers: { 'Content-Type': 'multipart/form-data' } },
 		)
