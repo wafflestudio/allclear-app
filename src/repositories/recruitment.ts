@@ -74,6 +74,51 @@ export type DeleteRecruitmentRequest = {
 	recruitmentId: number
 }
 
+export type RecruitmentContent = {
+	title: string
+	deadline: string
+	is_mandatory: boolean
+	has_regular_meeting: boolean
+	regular_meetings: RegularMeetingPayload[]
+	activity_location_type: string
+	activity_location_text: string
+	has_eligibility: boolean
+	eligibility_text: string
+	has_capacity_limit: boolean
+	capacity_limit_text: string
+	has_membership_fee: boolean
+	membership_fee_text: string
+	application_url: string
+	application_process: string
+	full_recruitment_text: string | null
+	image_urls: string[]
+}
+
+export type GetRecruitmentDetailRequest = {
+	recruitmentId: number
+}
+
+type GetRecruitmentDetailApiResponse = {
+	success: boolean
+	data: {
+		id: number
+		display_title: string
+		club_id: string
+		content: RecruitmentContent
+	}
+}
+
+export type GetRecruitmentDetailResponse = {
+	id: number
+	display_title: string
+	club_id: string
+	content: RecruitmentContent
+}
+
+export type UpdateRecruitmentRequest = {
+	recruitmentId: number
+} & Omit<CreateRecruitmentRequest, 'clubId'>
+
 export type RecruitmentRepository = {
 	listClubRecruitments: (req: ListClubRecruitmentsRequest) => Promise<ListClubRecruitmentsResponse>
 	createRecruitment: (req: CreateRecruitmentRequest) => Promise<CreateRecruitmentResponse>
@@ -81,6 +126,8 @@ export type RecruitmentRepository = {
 		req: UploadRecruitmentImageRequest,
 	) => Promise<UploadRecruitmentImageResponse>
 	deleteRecruitment: (req: DeleteRecruitmentRequest) => Promise<void>
+	getRecruitmentDetail: (req: GetRecruitmentDetailRequest) => Promise<GetRecruitmentDetailResponse>
+	updateRecruitment: (req: UpdateRecruitmentRequest) => Promise<void>
 }
 
 // ─── Implementation ───────────────────────────────────────────────────────────
@@ -106,6 +153,18 @@ export const getRecruitmentRepository = (): RecruitmentRepository => ({
 
 	deleteRecruitment: async req => {
 		await apiConnector.delete<void>(`/v2/managers/me/recruitments/${req.recruitmentId}`)
+	},
+
+	getRecruitmentDetail: async req => {
+		const res = await apiConnector.get<GetRecruitmentDetailApiResponse>(
+			`/v2/recruitments/${req.recruitmentId}`,
+		)
+		return res.data
+	},
+
+	updateRecruitment: async req => {
+		const { recruitmentId, ...body } = req
+		await apiConnector.put<void>(`/v2/managers/me/recruitments/${recruitmentId}`, body)
 	},
 
 	uploadRecruitmentImage: async req => {

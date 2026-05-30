@@ -165,7 +165,13 @@ const ClubManagementScreen = () => {
 											</Text>
 										</View>
 										<View style={styles.rowIcons}>
-											<Pressable hitSlop={8}>
+											<Pressable
+												hitSlop={8}
+												onPress={() =>
+													navigation.navigate(SCREEN_TYPE.ANNOUNCEMENT_EDIT, {
+														recruitmentId: item.id,
+													})
+												}>
 												<Icon name="edit" size={ms(16)} color="#C1C1C1" />
 											</Pressable>
 											<Pressable
