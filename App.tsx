@@ -10,9 +10,9 @@ import React, { useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import SplashScreen from 'react-native-splash-screen'
 import Toast, { ToastConfig } from 'react-native-toast-message'
 import { getAnnouncementRepository } from '@/repositories/announcement'
+import { getAppVersionRepository } from '@/repositories/appVersion'
 import { getAuthRepository } from '@/repositories/auth'
 import { getCategoryRepository } from '@/repositories/category'
 import { getClubRepository } from '@/repositories/club'
@@ -27,6 +27,7 @@ import AnnouncementRegistrationScreen from '@/features/club/screens/Announcement
 import AnnouncementEditScreen from '@/features/club/screens/AnnouncementEditScreen'
 import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { getAnnouncementService } from '@/usecases/announcement'
+import { getAppVersionService } from '@/usecases/appVersion'
 import { getAuthService } from '@/usecases/auth'
 import { getCategoryService } from '@/usecases/category'
 import { getClubService } from '@/usecases/club'
@@ -42,6 +43,7 @@ import { initToken } from '@/shared/utils/api'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
+import ForceUpdateGate from '@/shared/components/ForceUpdateGate'
 
 const RootStack = createNativeStackNavigator()
 
@@ -58,6 +60,7 @@ function App(): React.JSX.Element {
 	const { Provider: ServiceProvider } = serviceContext
 
 	const announcementRepository = getAnnouncementRepository()
+	const appVersionRepository = getAppVersionRepository()
 	const authRepository = getAuthRepository()
 	const categoryRepository = getCategoryRepository()
 	const clubRepository = getClubRepository()
@@ -68,6 +71,7 @@ function App(): React.JSX.Element {
 	const userRepository = getUserRepository()
 
 	const announcementService = getAnnouncementService({ repositories: [announcementRepository] })
+	const appVersionService = getAppVersionService({ repositories: [appVersionRepository] })
 	const authService = getAuthService({ repositories: [authRepository] })
 	const categoryService = getCategoryService({ repositories: [categoryRepository] })
 	const clubService = getClubService({ repositories: [clubRepository] })
@@ -80,6 +84,7 @@ function App(): React.JSX.Element {
 
 	const services = {
 		announcementService,
+		appVersionService,
 		authService,
 		categoryService,
 		clubService,
@@ -94,7 +99,6 @@ function App(): React.JSX.Element {
 	useEffect(() => {
 		setIsNavigationReady(true)
 		initToken()
-		setTimeout(() => SplashScreen.hide(), 1000)
 	}, [])
 
 	return (
@@ -107,19 +111,21 @@ function App(): React.JSX.Element {
 								<LoginBottomSheetProvider>
 									<UserVoiceBottomSheetProvider>
 										<ManageClubBottomSheetProvider>
-											<NavigationContainer ref={_navigationRef} linking={linking}>
-												<RootStack.Navigator screenOptions={{ headerShown: false }}>
-													<RootStack.Screen name="Main" component={TabNavigator} />
-													<RootStack.Screen
-														name={SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION}
-														component={AnnouncementRegistrationScreen}
-													/>
-													<RootStack.Screen
-														name={SCREEN_TYPE.ANNOUNCEMENT_EDIT}
-														component={AnnouncementEditScreen}
-													/>
-												</RootStack.Navigator>
-											</NavigationContainer>
+											<ForceUpdateGate>
+												<NavigationContainer ref={_navigationRef} linking={linking}>
+													<RootStack.Navigator screenOptions={{ headerShown: false }}>
+														<RootStack.Screen name="Main" component={TabNavigator} />
+														<RootStack.Screen
+															name={SCREEN_TYPE.ANNOUNCEMENT_REGISTRATION}
+															component={AnnouncementRegistrationScreen}
+														/>
+														<RootStack.Screen
+															name={SCREEN_TYPE.ANNOUNCEMENT_EDIT}
+															component={AnnouncementEditScreen}
+														/>
+													</RootStack.Navigator>
+												</NavigationContainer>
+											</ForceUpdateGate>
 										</ManageClubBottomSheetProvider>
 									</UserVoiceBottomSheetProvider>
 								</LoginBottomSheetProvider>
