@@ -1,4 +1,5 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
+import { Pressable } from 'react-native-gesture-handler'
 
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
@@ -6,23 +7,26 @@ import { Category } from '@/entities/category'
 import { CategoryMap } from '@/shared/constants/category'
 import { Club } from '@/entities/club'
 import { ms, s, vs } from '@/shared/utils/scale'
+import useSaveClub from '@/shared/hooks/useSaveClub'
 
 type Props = {
 	club: Club
 	category?: Category['name']
+	onPress?: () => void
 }
 
-const ClubCard = ({ club, category }: Props) => {
+const ClubCard = ({ club, category, onPress }: Props) => {
 	const categoryDetail = category ? CategoryMap[category] : undefined
 	const borderColor = categoryDetail ? categoryDetail.themeColor : Colors.BUTTON_SELECTED
 	const backgroundColor = categoryDetail ? categoryDetail.backgroundColor : Colors.POINTCOLOR_10
 
-	return (
-		<View style={styles.container}>
-			<View style={[styles.imageWrapper, { borderColor: borderColor }]}>
+	const { isSaved, handleToggle } = useSaveClub(club)
+
+	const cardInner = (
+		<>
+			<View style={[styles.imageWrapper, { borderColor }]}>
 				<Image style={styles.image} resizeMode="contain" source={{ uri: club.imageUri }} />
 			</View>
-
 			<View style={styles.contentWrapper}>
 				<View style={styles.textGroup}>
 					<Text style={styles.title}>{club.name}</Text>
@@ -59,6 +63,32 @@ const ClubCard = ({ club, category }: Props) => {
 					)}
 				</View>
 			</View>
+		</>
+	)
+
+	return (
+		<View style={styles.container}>
+			{onPress ? (
+				<Pressable
+					style={({ pressed }) => [styles.cardContent, { opacity: pressed ? 0.5 : 1 }]}
+					onPress={onPress}>
+					{cardInner}
+				</Pressable>
+			) : (
+				<View style={styles.cardContent}>{cardInner}</View>
+			)}
+			<Pressable
+				onPress={handleToggle}
+				hitSlop={ms(8)}
+				style={({ pressed }) => [styles.heartButton, { opacity: pressed ? 0.5 : 1 }]}>
+				<Image
+					source={
+						isSaved ? require('@/assets/icons/heart-fill.png') : require('@/assets/icons/heart.png')
+					}
+					style={styles.heartIcon}
+					resizeMode="contain"
+				/>
+			</Pressable>
 		</View>
 	)
 }
@@ -66,9 +96,12 @@ const ClubCard = ({ club, category }: Props) => {
 const styles = StyleSheet.create({
 	container: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
 		width: '100%',
 		height: s(90),
+	},
+	cardContent: {
+		flex: 1,
+		flexDirection: 'row',
 	},
 	imageWrapper: {
 		justifyContent: 'center',
@@ -122,6 +155,14 @@ const styles = StyleSheet.create({
 		...typography.bodyXSRegular,
 		color: Colors.BODYTEXT_SUB,
 		flexShrink: 1,
+	},
+	heartButton: {
+		alignSelf: 'flex-start',
+		marginLeft: s(4),
+	},
+	heartIcon: {
+		width: ms(20),
+		height: ms(20),
 	},
 })
 

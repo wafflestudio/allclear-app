@@ -24,6 +24,7 @@ export type Club = {
 	reviewKeywords: ReviewKeyword[]
 	// v240218
 	totalReviews: number
+	isSaved: boolean
 }
 
 type ReviewKeyword = {
