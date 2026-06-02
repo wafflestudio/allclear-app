@@ -51,6 +51,7 @@ const useSavedClubs = () => {
 	const { clubService } = useContext(serviceContext)
 
 	return useQuery(['savedClubs'], () => clubService.listSavedClubs(), {
-		select: data => data.clubs,
+		// 저장 목록의 동아리는 정의상 모두 저장 상태이므로 하트가 항상 채워지도록 보정
+		select: data => data.clubs.map(club => ({ ...club, isSaved: true })),
 	})
 }
