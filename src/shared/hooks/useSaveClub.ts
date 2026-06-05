@@ -3,12 +3,12 @@ import { useQueryClient } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 import { Club } from '@/entities/club'
 import { useProfile } from '@/shared/contexts/profileContext'
-import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
+import useRequireLogin from '@/shared/hooks/useRequireLogin'
 
 const useSaveClub = (club: Club | undefined) => {
 	const { user } = useProfile()
-	const { openBottomSheet } = useLoginBottomSheet()
+	const requireLogin = useRequireLogin()
 	const { clubService } = useContext(serviceContext)
 	const queryClient = useQueryClient()
 
@@ -119,7 +119,9 @@ const useSaveClub = (club: Club | undefined) => {
 
 	const handleToggle = useCallback(() => {
 		if (!user) {
-			openBottomSheet()
+			// 로그인 시트만 띄우고 빈 콜백을 넘긴다. requireLogin에 토글 로직을 넘기면
+			// 로그인 성공 직후 자동 저장되는데, 여기서는 의도적으로 그 동작을 하지 않는다.
+			requireLogin(() => {})
 			return
 		}
 
@@ -134,7 +136,7 @@ const useSaveClub = (club: Club | undefined) => {
 			debounceRef.current = null
 			callApi(next)
 		}, 300)
-	}, [user, openBottomSheet, callApi, updateClubsCache, applyLocal])
+	}, [user, requireLogin, callApi, updateClubsCache, applyLocal])
 
 	return { isSaved: localIsSaved, handleToggle }
 }
