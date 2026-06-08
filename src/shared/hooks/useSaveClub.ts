@@ -40,10 +40,10 @@ const useSaveClub = (club: Club | undefined) => {
 
 	// savedClubs 캐시 업데이트
 	const updateSavedClubsCache = useCallback(
-		(shouldSave: boolean) => {
+		async (shouldSave: boolean) => {
 			if (!club) return
 			// 진행 중인 refetch가 optimistic 값을 덮어쓰지 못하도록 먼저 취소
-			queryClient.cancelQueries(['savedClubs'])
+			await queryClient.cancelQueries(['savedClubs'])
 
 			queryClient.setQueriesData(
 				['savedClubs'],
@@ -84,7 +84,7 @@ const useSaveClub = (club: Club | undefined) => {
 				serverIsSavedRef.current = shouldSave
 			} catch {
 				// 실패 시 서버 상태로 롤백
-				updateSavedClubsCache(serverIsSavedRef.current)
+				await updateSavedClubsCache(serverIsSavedRef.current)
 				Toast.show({ type: 'info', text1: '저장에 실패했어요.' })
 			} finally {
 				hasPendingRef.current = false
@@ -107,7 +107,7 @@ const useSaveClub = (club: Club | undefined) => {
 			pendingShouldSaveRef.current !== null ? pendingShouldSaveRef.current : displayed
 		const next = !baseline
 
-		updateSavedClubsCache(next)
+		void updateSavedClubsCache(next)
 		hasPendingRef.current = true
 		pendingShouldSaveRef.current = next
 
