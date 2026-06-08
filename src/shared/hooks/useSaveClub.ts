@@ -1,10 +1,13 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useCallback, useContext, useEffect, useRef } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Toast from 'react-native-toast-message'
 import { Club } from '@/entities/club'
+import { ListSavedClubsResponse } from '@/repositories/club'
 import { useProfile } from '@/shared/contexts/profileContext'
 import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
+
+const selectSavedIds = (data: ListSavedClubsResponse) => new Set(data.clubs.map(c => c.uuid)) // 모듈 레벨에서 선언하여 매번 새로 생성하지 않음
 
 const useSaveClub = (club: Club | undefined) => {
 	const { user } = useProfile()
@@ -12,63 +15,44 @@ const useSaveClub = (club: Club | undefined) => {
 	const { clubService } = useContext(serviceContext)
 	const queryClient = useQueryClient()
 
-	const initialSaved = user ? (club?.isSaved ?? false) : false
-	const [localIsSaved, setLocalIsSaved] = useState(initialSaved)
-	const localSavedRef = useRef(initialSaved)
+	// 저장 여부의 SoT는 savedClubs 캐시
+	const { data: savedIds } = useQuery(['savedClubs'], () => clubService.listSavedClubs(), {
+		enabled: !!user,
+		staleTime: Infinity,
+		select: selectSavedIds, // Set<uuid> 형태로 저장
+	})
+
+	const isSaved = club ? (savedIds?.has(club.uuid) ?? false) : false // 저장 여부 계산
+
+	const serverIsSavedRef = useRef(isSaved) // 기존 서버 상태 (skip/롤백용)
+	const pendingShouldSaveRef = useRef<boolean | null>(null) // 대기 중인 토글의 최종 목표 상태 (null: 대기 없음)
+
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-	const hasPendingRef = useRef(false)
-	const serverIsSavedRef = useRef(initialSaved)
-	const pendingShouldSaveRef = useRef<boolean | null>(null)
-	const callApiRef = useRef<(shouldSave: boolean) => Promise<void>>()
+	const hasPendingRef = useRef(false) // API 요청이 진행 중인지 여부
+	const callApiRef = useRef<(shouldSave: boolean) => Promise<void>>() // flush 시점에 최신 callApi 참조용
 
-	// state와 ref를 항상 함께 갱신해 같은 렌더 틱 내 연속 토글에서도 최신 값을 보장
-	const applyLocal = useCallback((value: boolean) => {
-		localSavedRef.current = value
-		setLocalIsSaved(value)
-	}, [])
-
+	// serverIsSavedRef 초기화
 	useEffect(() => {
 		if (!hasPendingRef.current) {
-			const serverValue = user ? (club?.isSaved ?? false) : false
-			applyLocal(serverValue)
-			serverIsSavedRef.current = serverValue
+			serverIsSavedRef.current = club ? (savedIds?.has(club.uuid) ?? false) : false
 		}
-	}, [club?.isSaved, user, applyLocal])
+	}, [savedIds, club])
 
-	// unmount 시 pending debounce가 있으면 취소 대신 즉시 API 호출
-	useEffect(
-		() => () => {
-			if (debounceRef.current !== null && pendingShouldSaveRef.current !== null) {
-				clearTimeout(debounceRef.current)
-				callApiRef.current?.(pendingShouldSaveRef.current)
-			}
-		},
-		[],
-	)
-
-	const updateClubsCache = useCallback(
+	// savedClubs 캐시 업데이트
+	const updateSavedClubsCache = useCallback(
 		(shouldSave: boolean) => {
 			if (!club) return
-			const updater = (old: { clubs: Club[]; totalSize: number } | undefined) => {
-				if (!old || !old.clubs) return old
-				return {
-					...old,
-					clubs: old.clubs.map(c => (c.uuid === club.uuid ? { ...c, isSaved: shouldSave } : c)),
-				}
-			}
+			// 진행 중인 refetch가 optimistic 값을 덮어쓰지 못하도록 먼저 취소
+			queryClient.cancelQueries(['savedClubs'])
 
-			queryClient.setQueriesData(['clubs'], updater)
-			queryClient.setQueriesData(['searchClubs'], updater)
 			queryClient.setQueriesData(
 				['savedClubs'],
 				(old: { clubs: Club[]; totalSize: number } | undefined) => {
 					if (!old) return old
 					const alreadyIn = old.clubs.some(c => c.uuid === club.uuid)
 					if (shouldSave) {
-						const clubs = alreadyIn
-							? old.clubs.map(c => (c.uuid === club.uuid ? { ...c, isSaved: true } : c))
-							: [...old.clubs, { ...club, isSaved: true }]
-						return { ...old, clubs, totalSize: alreadyIn ? old.totalSize : old.totalSize + 1 }
+						if (alreadyIn) return old
+						return { ...old, clubs: [...old.clubs, club], totalSize: old.totalSize + 1 }
 					}
 					return {
 						...old,
@@ -81,6 +65,7 @@ const useSaveClub = (club: Club | undefined) => {
 		[club, queryClient],
 	)
 
+	// API 호출 함수
 	const callApi = useCallback(
 		async (shouldSave: boolean) => {
 			if (!club) return
@@ -97,35 +82,32 @@ const useSaveClub = (club: Club | undefined) => {
 					await clubService.removeSavedClub({ clubId: club.uuid })
 				}
 				serverIsSavedRef.current = shouldSave
-				// 로그인 직후 invalidate 리페치가 옵티미스틱 값을 덮어쓰는 레이스 방지를 위해 확정값 재기록
-				updateClubsCache(shouldSave)
 			} catch {
-				const serverValue = serverIsSavedRef.current
-				applyLocal(serverValue)
-				updateClubsCache(serverValue)
+				// 실패 시 서버 상태로 롤백
+				updateSavedClubsCache(serverIsSavedRef.current)
 				Toast.show({ type: 'info', text1: '저장에 실패했어요.' })
 			} finally {
 				hasPendingRef.current = false
 				pendingShouldSaveRef.current = null
 			}
 		},
-		[club, clubService, updateClubsCache, applyLocal],
+		[club, clubService, updateSavedClubsCache],
 	)
 
-	// callApiRef를 항상 최신 callApi로 유지 (unmount cleanup에서 stale closure 방지)
-	useEffect(() => {
-		callApiRef.current = callApi
-	}, [callApi])
-
+	// 토글 핸들러
 	const handleToggle = useCallback(() => {
 		if (!user) {
 			openBottomSheet()
 			return
 		}
+		if (!club) return
 
-		const next = !localSavedRef.current
-		applyLocal(next)
-		updateClubsCache(next)
+		const displayed = savedIds?.has(club.uuid) ?? false
+		const baseline =
+			pendingShouldSaveRef.current !== null ? pendingShouldSaveRef.current : displayed
+		const next = !baseline
+
+		updateSavedClubsCache(next)
 		hasPendingRef.current = true
 		pendingShouldSaveRef.current = next
 
@@ -134,9 +116,25 @@ const useSaveClub = (club: Club | undefined) => {
 			debounceRef.current = null
 			callApi(next)
 		}, 300)
-	}, [user, openBottomSheet, callApi, updateClubsCache, applyLocal])
+	}, [user, club, savedIds, openBottomSheet, callApi, updateSavedClubsCache])
 
-	return { isSaved: localIsSaved, handleToggle }
+	// callApiRef를 항상 최신 callApi로 유지
+	useEffect(() => {
+		callApiRef.current = callApi
+	}, [callApi])
+
+	// unmount 시 pending debounce가 있으면 취소 대신 즉시 API 호출
+	useEffect(
+		() => () => {
+			if (debounceRef.current !== null && pendingShouldSaveRef.current !== null) {
+				clearTimeout(debounceRef.current)
+				callApiRef.current?.(pendingShouldSaveRef.current) // api 호출
+			}
+		},
+		[],
+	)
+
+	return { isSaved, handleToggle }
 }
 
 export default useSaveClub
