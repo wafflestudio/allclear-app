@@ -1,7 +1,7 @@
 import { RouteProp, useFocusEffect } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -42,30 +42,47 @@ type Props = {
 const SearchScreen = ({ navigation }: Props) => {
 	const [inputValue, setInputValue] = useState('')
 	const [submittedQuery, setSubmittedQuery] = useState('')
+	const [submittedSearchId, setSubmittedSearchId] = useState(0)
 	const [isTypoNoticeVisible, setIsTypoNoticeVisible] = useState(true)
 	const [filters, setFilters] = useState<ClubSearchFilters>(DEFAULT_CLUB_SEARCH_FILTERS)
 	const [isFilterOverlayVisible, setIsFilterOverlayVisible] = useState(false)
 
 	const queryClient = useQueryClient()
-	const request = createSearchClubsRequest({ query: submittedQuery, filters })
+	const request = useMemo(
+		() => createSearchClubsRequest({ query: submittedQuery, filters }),
+		[filters, submittedQuery],
+	)
 	const { data: searchResult, isFetching } = useSearchClubs({ query: submittedQuery, request })
 	const { data: recentSearches } = useRecentSearches()
 	const { mutate: clearRecentSearches } = useClearRecentSearches()
-	const { data: randomRecommendations } = useRandomRecommendations()
+	const {
+		data: randomRecommendations,
+		isError: isRandomRecommendationsError,
+		isLoading: isFetchingRandomRecommendations,
+		mutate: fetchRandomRecommendations,
+		reset: resetRandomRecommendations,
+	} = useRandomRecommendations()
 
 	const clubs = searchResult?.clubs
 
 	const hasSubmittedQuery = submittedQuery.length > 0
+	const shouldShowRandomRecommendations = hasSubmittedQuery && clubs?.length === 0 && !isFetching
+	const isWaitingForRandomRecommendations =
+		shouldShowRandomRecommendations &&
+		(isFetchingRandomRecommendations || (!randomRecommendations && !isRandomRecommendationsError))
+	const isShowingSearchLoading = isFetching || isWaitingForRandomRecommendations
 	const shouldShowTypoNotice =
 		isTypoNoticeVisible && !!searchResult?.isTypoCorrected && !!searchResult.correctedQuery
 
 	const resetSearchState = useCallback(() => {
 		setInputValue('')
 		setSubmittedQuery('')
+		setSubmittedSearchId(0)
+		resetRandomRecommendations()
 		setIsTypoNoticeVisible(true)
 		setFilters(DEFAULT_CLUB_SEARCH_FILTERS)
 		setIsFilterOverlayVisible(false)
-	}, [])
+	}, [resetRandomRecommendations])
 
 	const resetToInitialState = useCallback(() => {
 		navigation.reset({
@@ -93,9 +110,21 @@ const SearchScreen = ({ navigation }: Props) => {
 		}, []),
 	)
 
+	useEffect(() => {
+		resetRandomRecommendations()
+	}, [request, resetRandomRecommendations])
+
+	useEffect(() => {
+		if (!shouldShowRandomRecommendations) return
+
+		fetchRandomRecommendations()
+	}, [fetchRandomRecommendations, request, shouldShowRandomRecommendations, submittedSearchId])
+
 	const handleSubmitQuery = (nextQuery: string) => {
 		queryClient.cancelQueries(['searchClubs'])
+		resetRandomRecommendations()
 		setSubmittedQuery(nextQuery)
+		setSubmittedSearchId(prev => prev + 1)
 		setIsTypoNoticeVisible(true)
 		setIsFilterOverlayVisible(false)
 	}
@@ -146,11 +175,11 @@ const SearchScreen = ({ navigation }: Props) => {
 								clubs={clubs}
 								openDetailPage={openDetailPage}
 								emptyPlaceholder={'앗 검색 결과가 없어요!\n다른 키워드로 검색해주세요'}
-								isLoading={isFetching}
+								isLoading={isShowingSearchLoading}
 							/>
-							{clubs?.length === 0 && !isFetching && randomRecommendations?.clubs ? (
+							{shouldShowRandomRecommendations ? (
 								<RandomRecommendations
-									clubs={randomRecommendations.clubs}
+									clubs={randomRecommendations?.clubs ?? []}
 									onPressClub={openDetailPage}
 								/>
 							) : null}
@@ -208,14 +237,10 @@ const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 const useRecentSearches = () => {
 	const { recentSearchService } = useContext(serviceContext)
 
-	return useQuery(
-		RECENT_SEARCHES_QUERY_KEY,
-		() => recentSearchService.listRecentSearches(),
-		{
-			staleTime: 0,
-			select: data => data.recentSearches.map(it => it.query),
-		},
-	)
+	return useQuery(RECENT_SEARCHES_QUERY_KEY, () => recentSearchService.listRecentSearches(), {
+		staleTime: 0,
+		select: data => data.recentSearches.map(it => it.query),
+	})
 }
 
 const useClearRecentSearches = () => {
@@ -235,7 +260,7 @@ const useClearRecentSearches = () => {
 const useRandomRecommendations = () => {
 	const { clubService } = useContext(serviceContext)
 
-	return useQuery<ListRandomRecommendationsResponse>(['randomRecommendations'], () =>
+	return useMutation<ListRandomRecommendationsResponse>(() =>
 		clubService.listRandomRecommendations(),
 	)
 }
