@@ -91,12 +91,13 @@ const styles = StyleSheet.create({
 	textWrapper: {
 		backgroundColor: Colors.WHITE,
 		paddingHorizontal: s(10),
-		paddingVertical: vs(6),
+		paddingTop: vs(9),
+		paddingBottom: vs(8),
 	},
 	title: {
 		...typography.bodyMSemibold,
 		color: Colors.BODYTEXT_MAIN,
-		marginBottom: vs(2),
+		marginBottom: vs(3),
 	},
 	description: {
 		...typography.bodySRegular,
