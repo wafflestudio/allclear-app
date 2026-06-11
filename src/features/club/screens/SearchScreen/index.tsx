@@ -48,7 +48,14 @@ const SearchScreen = ({ navigation }: Props) => {
 
 	const queryClient = useQueryClient()
 	const request = createSearchClubsRequest({ query: submittedQuery, filters })
-	const { data: searchResult, isFetching } = useSearchClubs({ query: submittedQuery, request })
+	const {
+		data: searchResult,
+		isFetching,
+		isLoading,
+	} = useSearchClubs({
+		query: submittedQuery,
+		request,
+	})
 	const { data: recentSearches } = useRecentSearches()
 	const { mutate: clearRecentSearches } = useClearRecentSearches()
 	const { data: randomRecommendations } = useRandomRecommendations()
@@ -146,7 +153,7 @@ const SearchScreen = ({ navigation }: Props) => {
 								clubs={clubs}
 								openDetailPage={openDetailPage}
 								emptyPlaceholder={'앗 검색 결과가 없어요!\n다른 키워드로 검색해주세요'}
-								isLoading={isFetching}
+								isLoading={isLoading}
 							/>
 							{clubs?.length === 0 && !isFetching && randomRecommendations?.clubs ? (
 								<RandomRecommendations
@@ -208,14 +215,10 @@ const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 const useRecentSearches = () => {
 	const { recentSearchService } = useContext(serviceContext)
 
-	return useQuery(
-		RECENT_SEARCHES_QUERY_KEY,
-		() => recentSearchService.listRecentSearches(),
-		{
-			staleTime: 0,
-			select: data => data.recentSearches.map(it => it.query),
-		},
-	)
+	return useQuery(RECENT_SEARCHES_QUERY_KEY, () => recentSearchService.listRecentSearches(), {
+		staleTime: 0,
+		select: data => data.recentSearches.map(it => it.query),
+	})
 }
 
 const useClearRecentSearches = () => {
