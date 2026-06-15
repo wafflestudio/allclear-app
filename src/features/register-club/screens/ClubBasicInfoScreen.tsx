@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: s(24),
 		backgroundColor: Colors.BUTTON_SELECTED,
 		borderRadius: s(8),
-		alignItems: 'center',
+		alignItems: 'flex-start',
 		marginVertical: vs(8),
 	},
 	imageButtonText: {

@@ -21,6 +21,7 @@ export type RegisterClubFormData = {
 	recruitType: string
 	activityCycle: string
 	hasDongbang: boolean
+	dongbangLocation: string
 	clubSNS: string
 	clubDescription: string
 }
@@ -37,6 +38,7 @@ export const initialFormData: RegisterClubFormData = {
 	recruitType: '',
 	activityCycle: '',
 	hasDongbang: false,
+	dongbangLocation: '',
 	clubSNS: '',
 	clubDescription: '',
 }

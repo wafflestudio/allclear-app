@@ -16,9 +16,16 @@ type Props = {
 	onFormDataChange: (data: Partial<RegisterClubFormData>) => void
 	onComplete: () => void
 	onPrevious: () => void
+	isLoading?: boolean
 }
 
-export const ClubDetailsScreen = ({ formData, onFormDataChange, onComplete, onPrevious }: Props) => {
+export const ClubDetailsScreen = ({
+	formData,
+	onFormDataChange,
+	onComplete,
+	onPrevious,
+	isLoading = false,
+}: Props) => {
 	const [activityCycleMode, setActivityCycleMode] = useState<'none' | 'number'>(
 		formData.activityCycle ? 'number' : 'none'
 	)
@@ -188,6 +195,18 @@ export const ClubDetailsScreen = ({ formData, onFormDataChange, onComplete, onPr
 								동방 있음
 							</Text>
 						</Pressable>
+
+						{formData.hasDongbang && (
+							<View style={{ marginTop: vs(8) }}>
+								<TextField
+									placeholder="예) 63동 619호"
+									value={formData.dongbangLocation}
+									onChangeText={(text) => onFormDataChange({ dongbangLocation: text })}
+									maxLength={100}
+								/>
+								<Text style={styles.helperText}>동방 위치를 입력해주세요</Text>
+							</View>
+						)}
 					</View>
 
 					{/* SNS */}
@@ -225,7 +244,7 @@ export const ClubDetailsScreen = ({ formData, onFormDataChange, onComplete, onPr
 				onNext={onComplete}
 				nextLabel="완료"
 				isLastStep
-				isNextDisabled={!isComplete}
+				isNextDisabled={!isComplete || isLoading}
 			/>
 		</SafeAreaView>
 	)

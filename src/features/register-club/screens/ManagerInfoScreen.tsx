@@ -22,7 +22,8 @@ export const ManagerInfoScreen = ({ formData, onFormDataChange, onNext }: Props)
 		<SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
 			<ScrollView contentContainerStyle={styles.content}>
 				<View style={styles.header}>
-					<Text style={styles.title}>운영진 기본 정보를\n입력해주세요</Text>
+					<Text style={styles.title}>운영진 기본 정보를</Text>
+					<Text style={styles.title}>입력해주세요</Text>
 				</View>
 
 				<View style={styles.form}>
