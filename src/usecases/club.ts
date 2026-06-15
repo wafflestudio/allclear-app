@@ -12,6 +12,8 @@ import {
 	ListMyClubsResponse,
 	ListPopularClubsResponse,
 	ListSavedClubsResponse,
+	RegisterClubRequest,
+	RegisterClubResponse,
 	RemoveSavedClubRequest,
 	RequestClubmanagerRequest,
 	SearchClubsRequest,
@@ -31,6 +33,7 @@ export type ClubService = {
 	createSavedClub: (req: CreateSavedClubRequest) => Promise<void>
 	removeSavedClub: (req: RemoveSavedClubRequest) => Promise<void>
 	listMyClubs: () => Promise<ListMyClubsResponse>
+	registerClub: (req: RegisterClubRequest) => Promise<RegisterClubResponse>
 }
 
 type Deps = {
@@ -50,4 +53,5 @@ export const getClubService = ({ repositories }: Deps): ClubService => ({
 	createSavedClub: req => repositories[0].createSavedClub(req),
 	removeSavedClub: req => repositories[0].removeSavedClub(req),
 	listMyClubs: () => repositories[0].listMyClubs(),
+	registerClub: req => repositories[0].registerClub(req),
 })

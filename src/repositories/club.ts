@@ -66,6 +66,33 @@ export type RemoveSavedClubRequest = {
 	clubId: Club['uuid']
 }
 
+export type RegisterClubRequest = {
+	club_data: {
+		name: string
+		type: string
+		image_uri: string
+		category: string
+		affiliation: string
+		short_description: string
+		recruit_type: string
+		min_activity_period: number
+		has_dongbang: boolean
+		dongbang_location?: string
+		sns: string
+		introduction: string
+	}
+	manager_data: {
+		name: string
+		phone: string
+		student_id: string
+	}
+}
+
+export type RegisterClubResponse = {
+	success: boolean
+	message: string
+}
+
 export type ListMyClubsResponse = {
 	clubs: Club[]
 	totalSize: number
@@ -84,6 +111,7 @@ export type ClubRepository = {
 	createSavedClub: (req: CreateSavedClubRequest) => Promise<void>
 	removeSavedClub: (req: RemoveSavedClubRequest) => Promise<void>
 	listMyClubs: () => Promise<ListMyClubsResponse>
+	registerClub: (req: RegisterClubRequest) => Promise<RegisterClubResponse>
 }
 
 export const getClubRepository = (): ClubRepository => ({
@@ -147,6 +175,14 @@ export const getClubRepository = (): ClubRepository => ({
 	},
 	listMyClubs: async () => {
 		const response = await apiConnector.get<ListMyClubsResponse>('/v1/users/me/clubs')
+
+		return response
+	},
+	registerClub: async req => {
+		const response = await apiConnector.post<RegisterClubResponse>(
+			'/v2/clubs/register',
+			req,
+		)
 
 		return response
 	},
