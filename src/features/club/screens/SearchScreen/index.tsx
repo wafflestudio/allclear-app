@@ -94,7 +94,7 @@ const SearchScreen = ({ navigation }: Props) => {
 	)
 
 	const handleSubmitQuery = (nextQuery: string) => {
-		queryClient.cancelQueries(['searchClubs'])
+		queryClient.cancelQueries({ queryKey: ['searchClubs'] })
 		setSubmittedQuery(nextQuery)
 		setIsTypoNoticeVisible(true)
 		setIsFilterOverlayVisible(false)
@@ -198,7 +198,7 @@ const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 			keepPreviousData: true,
 			staleTime: 0,
 			onSuccess: () => {
-				queryClient.cancelQueries(RECENT_SEARCHES_QUERY_KEY)
+				queryClient.cancelQueries({ queryKey: RECENT_SEARCHES_QUERY_KEY })
 				queryClient.invalidateQueries(RECENT_SEARCHES_QUERY_KEY)
 			},
 		},
@@ -208,14 +208,10 @@ const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 const useRecentSearches = () => {
 	const { recentSearchService } = useContext(serviceContext)
 
-	return useQuery(
-		RECENT_SEARCHES_QUERY_KEY,
-		() => recentSearchService.listRecentSearches(),
-		{
-			staleTime: 0,
-			select: data => data.recentSearches.map(it => it.query),
-		},
-	)
+	return useQuery(RECENT_SEARCHES_QUERY_KEY, () => recentSearchService.listRecentSearches(), {
+		staleTime: 0,
+		select: data => data.recentSearches.map(it => it.query),
+	})
 }
 
 const useClearRecentSearches = () => {
@@ -223,6 +219,27 @@ const useClearRecentSearches = () => {
 	const queryClient = useQueryClient()
 
 	return useMutation(() => recentSearchService.deleteAllRecentSearches(), {
+		onMutate: async () => {
+			await queryClient.cancelQueries({ queryKey: RECENT_SEARCHES_QUERY_KEY })
+
+			const previousRecentSearches =
+				queryClient.getQueryData<ListRecentSearchesResponse>(RECENT_SEARCHES_QUERY_KEY)
+
+			queryClient.setQueryData<ListRecentSearchesResponse>(RECENT_SEARCHES_QUERY_KEY, {
+				recentSearches: [],
+				totalSize: 0,
+			})
+
+			return { previousRecentSearches }
+		},
+		onError: (_error, _variables, context) => {
+			if (context?.previousRecentSearches) {
+				queryClient.setQueryData<ListRecentSearchesResponse>(
+					RECENT_SEARCHES_QUERY_KEY,
+					context.previousRecentSearches,
+				)
+			}
+		},
 		onSuccess: () => {
 			queryClient.setQueryData<ListRecentSearchesResponse>(RECENT_SEARCHES_QUERY_KEY, {
 				recentSearches: [],
