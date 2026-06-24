@@ -31,6 +31,8 @@ import { s, vs } from '@/shared/utils/scale'
 
 const RECENT_SEARCHES_QUERY_KEY = ['recentSearches'] as const
 
+const normalizeSearchQueryForComparison = (query: string) => query.trim().toLowerCase()
+
 type SearchScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.SEARCH>
 type SearchScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.SEARCH>
 
@@ -45,7 +47,6 @@ const SearchScreen = ({ navigation }: Props) => {
 	const [isTypoNoticeVisible, setIsTypoNoticeVisible] = useState(true)
 	const [filters, setFilters] = useState<ClubSearchFilters>(DEFAULT_CLUB_SEARCH_FILTERS)
 	const [isFilterOverlayVisible, setIsFilterOverlayVisible] = useState(false)
-	const [lastResolvedQuery, setLastResolvedQuery] = useState('')
 
 	const queryClient = useQueryClient()
 	const request = createSearchClubsRequest({ query: submittedQuery, filters })
@@ -53,21 +54,21 @@ const SearchScreen = ({ navigation }: Props) => {
 		data: searchResult,
 		isLoading: isInitialSearchLoading,
 		isFetching,
-	} = useSearchClubs({
-		query: submittedQuery,
-		request,
-		onSearchSuccess: successfulRequest => setLastResolvedQuery(successfulRequest.query),
-	})
+		isPreviousData,
+	} = useSearchClubs({ query: submittedQuery, request })
 	const { data: recentSearches } = useRecentSearches()
 	const { mutate: clearRecentSearches } = useClearRecentSearches()
 	const { data: randomRecommendations } = useRandomRecommendations()
 
 	const clubs = searchResult?.clubs
-	const currentSearchQuery = request.query
-	const shouldKeepPreviousClubList =
-		isFetching && !isInitialSearchLoading && lastResolvedQuery === currentSearchQuery
-	const shouldShowClubListSkeleton =
-		isInitialSearchLoading || (isFetching && !shouldKeepPreviousClubList)
+	const currentSearchQuery = normalizeSearchQueryForComparison(request.query)
+	const visibleSearchResultQuery = searchResult
+		? normalizeSearchQueryForComparison(searchResult.query)
+		: undefined
+	const isKeepingPreviousFilterResult =
+		isPreviousData && visibleSearchResultQuery === currentSearchQuery
+	const isLoadingNewQueryResult = isPreviousData && !isKeepingPreviousFilterResult
+	const shouldShowClubListSkeleton = isInitialSearchLoading || isLoadingNewQueryResult
 
 	const hasSubmittedQuery = submittedQuery.length > 0
 	const shouldShowTypoNotice =
@@ -79,7 +80,6 @@ const SearchScreen = ({ navigation }: Props) => {
 		setIsTypoNoticeVisible(true)
 		setFilters(DEFAULT_CLUB_SEARCH_FILTERS)
 		setIsFilterOverlayVisible(false)
-		setLastResolvedQuery('')
 	}, [])
 
 	const resetToInitialState = useCallback(() => {
@@ -199,10 +199,9 @@ export default SearchScreen
 type UseSearchClubsProps = {
 	query: string
 	request: ReturnType<typeof createSearchClubsRequest>
-	onSearchSuccess: (request: ReturnType<typeof createSearchClubsRequest>) => void
 }
 
-const useSearchClubs = ({ query, request, onSearchSuccess }: UseSearchClubsProps) => {
+const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 	const { clubService } = useContext(serviceContext)
 	const queryClient = useQueryClient()
 
@@ -214,7 +213,6 @@ const useSearchClubs = ({ query, request, onSearchSuccess }: UseSearchClubsProps
 			keepPreviousData: true,
 			staleTime: 0,
 			onSuccess: () => {
-				onSearchSuccess(request)
 				queryClient.cancelQueries(RECENT_SEARCHES_QUERY_KEY)
 				queryClient.invalidateQueries(RECENT_SEARCHES_QUERY_KEY)
 			},
