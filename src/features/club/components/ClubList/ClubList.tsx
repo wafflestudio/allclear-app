@@ -72,7 +72,8 @@ const styles = StyleSheet.create({
 	},
 	listContent: {
 		gap: vs(25),
-		paddingVertical: vs(8),
+		paddingTop: vs(8),
+		paddingBottom: vs(20),
 	},
 })
 

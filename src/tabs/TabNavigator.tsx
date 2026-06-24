@@ -2,11 +2,10 @@ import {
 	createBottomTabNavigator,
 	type BottomTabNavigationOptions,
 } from '@react-navigation/bottom-tabs'
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE } from '@/shared/constants/screen'
-import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
 import { useProfile } from '@/shared/contexts/profileContext'
+import useRequireLogin from '@/shared/hooks/useRequireLogin'
 import { Image, Pressable, type ImageSourcePropType } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { HomeTab } from '@/tabs/HomeTab'
@@ -57,7 +56,7 @@ function createTabBarIcon(
 
 export function TabNavigator() {
 	const { user } = useProfile()
-	const { openBottomSheet } = useLoginBottomSheet()
+	const requireLogin = useRequireLogin()
 	const insets = useSafeAreaInsets()
 	// 안드로이드 네비게이션바 있는 경우에만 inset 적용, 나머지는 전부 미적용
 	const bottomInset = insets.bottom >= 40 ? insets.bottom : 0
@@ -87,13 +86,10 @@ export function TabNavigator() {
 
 	return (
 		<Tab.Navigator
-			screenOptions={({ route }) => ({
+			screenOptions={{
 				...screenOptions,
-				tabBarStyle:
-					getFocusedRouteNameFromRoute(route) === SCREEN_TYPE.CLUB_DETAIL
-						? { display: 'none' }
-						: defaultTabBarStyle,
-			})}>
+				tabBarStyle: defaultTabBarStyle,
+			}}>
 			<Tab.Screen options={{ tabBarIcon: renderHomeTabIcon }} name="홈" component={HomeTab} />
 			<Tab.Screen
 				options={{ tabBarIcon: renderExploreTabIcon }}
@@ -108,7 +104,7 @@ export function TabNavigator() {
 					tabPress: e => {
 						if (!user) {
 							e.preventDefault()
-							openBottomSheet(() => navigation.navigate('저장'))
+							requireLogin(() => navigation.navigate('저장'))
 						}
 					},
 				}}
@@ -120,11 +116,7 @@ export function TabNavigator() {
 				listeners={({ navigation: tabNavigation }) => ({
 					tabPress: e => {
 						e.preventDefault()
-						if (!user) {
-							openBottomSheet(() => tabNavigation.navigate('마이'))
-						} else {
-							tabNavigation.navigate('마이', { screen: SCREEN_TYPE.MYPAGE })
-						}
+						requireLogin(() => tabNavigation.navigate('마이', { screen: SCREEN_TYPE.MYPAGE }))
 					},
 				})}
 			/>

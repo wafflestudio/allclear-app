@@ -8,6 +8,7 @@ import { CategoryMap } from '@/shared/constants/category'
 import { Club } from '@/entities/club'
 import { ms, s, vs } from '@/shared/utils/scale'
 import useSaveClub from '@/shared/hooks/useSaveClub'
+import ReviewKeywordPill from '@/shared/components/ReviewKeywordPill'
 
 type Props = {
 	club: Club
@@ -36,30 +37,22 @@ const ClubCard = ({ club, category, onPress }: Props) => {
 				</View>
 				<View style={styles.reviewView}>
 					{club.reviewKeywords && club.reviewKeywords.length > 0 ? (
-						club.reviewKeywords.slice(0, 2).map((keyword, index) => (
-							<View
-								key={`${club.name}-${index}`}
-								style={[
-									styles.reviewKeyword,
-									{ borderColor: borderColor, backgroundColor: backgroundColor },
-								]}>
-								<Text style={styles.reviewKeywordIcon}>{keyword.iconUri?.trim()}</Text>
-								<Text style={styles.reviewKeywordTitle} numberOfLines={1}>
-									{keyword.title}
-								</Text>
-							</View>
-						))
+						club.reviewKeywords
+							.slice(0, 2)
+							.map((keyword, index) => (
+								<ReviewKeywordPill
+									key={`${club.name}-${index}`}
+									keyword={keyword}
+									themeColor={borderColor}
+									backgroundColor={backgroundColor}
+								/>
+							))
 					) : (
-						<View
-							style={[
-								styles.reviewKeyword,
-								{ borderColor: '#CBCBCB', backgroundColor: 'rgba(193, 193, 193, 0.1)' },
-							]}>
-							<Text style={styles.reviewKeywordIcon}>🥲</Text>
-							<Text style={styles.reviewKeywordTitle} numberOfLines={1}>
-								아직 활동 후기가 없어요
-							</Text>
-						</View>
+						<ReviewKeywordPill
+							keyword={{ iconUri: '🥲', title: '아직 활동 후기가 없어요' }}
+							themeColor="#CBCBCB"
+							backgroundColor="rgba(193, 193, 193, 0.1)"
+						/>
 					)}
 				</View>
 			</View>
@@ -138,23 +131,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		height: vs(21),
 		gap: ms(4),
-	},
-	reviewKeyword: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		paddingHorizontal: s(6),
-		borderRadius: ms(24),
-		borderWidth: 0.5,
-		flexShrink: 1,
-	},
-	reviewKeywordIcon: {
-		...typography.bodyXSSemibold,
-		marginRight: s(4),
-	},
-	reviewKeywordTitle: {
-		...typography.bodyXSRegular,
-		color: Colors.BODYTEXT_SUB,
-		flexShrink: 1,
 	},
 	heartButton: {
 		alignSelf: 'flex-start',
