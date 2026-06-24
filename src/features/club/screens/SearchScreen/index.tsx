@@ -45,15 +45,29 @@ const SearchScreen = ({ navigation }: Props) => {
 	const [isTypoNoticeVisible, setIsTypoNoticeVisible] = useState(true)
 	const [filters, setFilters] = useState<ClubSearchFilters>(DEFAULT_CLUB_SEARCH_FILTERS)
 	const [isFilterOverlayVisible, setIsFilterOverlayVisible] = useState(false)
+	const [lastResolvedQuery, setLastResolvedQuery] = useState('')
 
 	const queryClient = useQueryClient()
 	const request = createSearchClubsRequest({ query: submittedQuery, filters })
-	const { data: searchResult, isFetching } = useSearchClubs({ query: submittedQuery, request })
+	const {
+		data: searchResult,
+		isLoading: isInitialSearchLoading,
+		isFetching,
+	} = useSearchClubs({
+		query: submittedQuery,
+		request,
+		onSearchSuccess: successfulRequest => setLastResolvedQuery(successfulRequest.query),
+	})
 	const { data: recentSearches } = useRecentSearches()
 	const { mutate: clearRecentSearches } = useClearRecentSearches()
 	const { data: randomRecommendations } = useRandomRecommendations()
 
 	const clubs = searchResult?.clubs
+	const currentSearchQuery = request.query
+	const shouldKeepPreviousClubList =
+		isFetching && !isInitialSearchLoading && lastResolvedQuery === currentSearchQuery
+	const shouldShowClubListSkeleton =
+		isInitialSearchLoading || (isFetching && !shouldKeepPreviousClubList)
 
 	const hasSubmittedQuery = submittedQuery.length > 0
 	const shouldShowTypoNotice =
@@ -65,6 +79,7 @@ const SearchScreen = ({ navigation }: Props) => {
 		setIsTypoNoticeVisible(true)
 		setFilters(DEFAULT_CLUB_SEARCH_FILTERS)
 		setIsFilterOverlayVisible(false)
+		setLastResolvedQuery('')
 	}, [])
 
 	const resetToInitialState = useCallback(() => {
@@ -146,7 +161,7 @@ const SearchScreen = ({ navigation }: Props) => {
 								clubs={clubs}
 								openDetailPage={openDetailPage}
 								emptyPlaceholder={'앗 검색 결과가 없어요!\n다른 키워드로 검색해주세요'}
-								isLoading={isFetching}
+								isLoading={shouldShowClubListSkeleton}
 							/>
 							{clubs?.length === 0 && !isFetching && randomRecommendations?.clubs ? (
 								<RandomRecommendations
@@ -184,9 +199,10 @@ export default SearchScreen
 type UseSearchClubsProps = {
 	query: string
 	request: ReturnType<typeof createSearchClubsRequest>
+	onSearchSuccess: (request: ReturnType<typeof createSearchClubsRequest>) => void
 }
 
-const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
+const useSearchClubs = ({ query, request, onSearchSuccess }: UseSearchClubsProps) => {
 	const { clubService } = useContext(serviceContext)
 	const queryClient = useQueryClient()
 
@@ -198,6 +214,7 @@ const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 			keepPreviousData: true,
 			staleTime: 0,
 			onSuccess: () => {
+				onSearchSuccess(request)
 				queryClient.cancelQueries(RECENT_SEARCHES_QUERY_KEY)
 				queryClient.invalidateQueries(RECENT_SEARCHES_QUERY_KEY)
 			},
