@@ -6,6 +6,8 @@ import ClubPreviewCard from '@/shared/components/ClubPreviewCard'
 import useAutoScroll from '@/shared/hooks/useAutoScroll'
 import { s } from '@/shared/utils/scale'
 
+export const HORIZONTAL_CAROUSEL_BOTTOM_PADDING = s(2)
+
 type Props = {
 	clubs: Club[]
 	onPressClub: (club: Club) => void
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
 	},
 	contentContainer: {
 		paddingHorizontal: s(20),
-		paddingBottom: s(2),
+		paddingBottom: HORIZONTAL_CAROUSEL_BOTTOM_PADDING,
 	},
 	itemSeparator: {
 		width: 10,

@@ -14,6 +14,10 @@ import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
 
+export const CLUB_PREVIEW_CARD_WIDTH = s(110)
+export const CLUB_PREVIEW_CARD_TEXT_HEIGHT = vs(54)
+export const CLUB_PREVIEW_CARD_HEIGHT = CLUB_PREVIEW_CARD_WIDTH + CLUB_PREVIEW_CARD_TEXT_HEIGHT
+
 type Props = {
 	title: string
 	description: string
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
 		borderRadius: ms(15),
 	},
 	cardWidth: {
-		width: s(110),
+		width: CLUB_PREVIEW_CARD_WIDTH,
 	},
 	cardContainer: {
 		overflow: 'hidden',
@@ -89,6 +93,7 @@ const styles = StyleSheet.create({
 		height: '100%',
 	},
 	textWrapper: {
+		height: CLUB_PREVIEW_CARD_TEXT_HEIGHT,
 		backgroundColor: Colors.WHITE,
 		paddingHorizontal: s(10),
 		paddingTop: vs(9),

@@ -3,7 +3,13 @@ import { StyleSheet, Text, View } from 'react-native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 
 import { Club } from '@/entities/club'
-import HorizontalCarousel from '@/shared/components/HorizontalCarousel'
+import HorizontalCarousel, {
+	HORIZONTAL_CAROUSEL_BOTTOM_PADDING,
+} from '@/shared/components/HorizontalCarousel'
+import {
+	CLUB_PREVIEW_CARD_HEIGHT,
+	CLUB_PREVIEW_CARD_WIDTH,
+} from '@/shared/components/ClubPreviewCard'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
@@ -14,10 +20,8 @@ type Props = {
 }
 
 const SKELETON_CARD_COUNT = 3
-const RECOMMENDATION_CARD_WIDTH = s(110)
-const RECOMMENDATION_CARD_TEXT_HEIGHT = vs(54)
 const RECOMMENDATION_CAROUSEL_HEIGHT =
-	RECOMMENDATION_CARD_WIDTH + RECOMMENDATION_CARD_TEXT_HEIGHT + s(2)
+	CLUB_PREVIEW_CARD_HEIGHT + HORIZONTAL_CAROUSEL_BOTTOM_PADDING
 
 const RandomRecommendationsHeader = () => (
 	<View style={styles.header}>
@@ -31,8 +35,8 @@ const RandomRecommendationCardSkeleton = () => (
 		<SkeletonPlaceholder backgroundColor={Colors.BACKGROUND_MAIN} highlightColor={Colors.WHITE}>
 			<SkeletonPlaceholder.Item>
 				<SkeletonPlaceholder.Item
-					width={RECOMMENDATION_CARD_WIDTH}
-					height={RECOMMENDATION_CARD_WIDTH}
+					width={CLUB_PREVIEW_CARD_WIDTH}
+					height={CLUB_PREVIEW_CARD_WIDTH}
 					borderTopLeftRadius={ms(15)}
 					borderTopRightRadius={ms(15)}
 				/>
@@ -115,8 +119,8 @@ const styles = StyleSheet.create({
 		overflow: 'hidden',
 	},
 	cardSkeleton: {
-		width: RECOMMENDATION_CARD_WIDTH,
-		height: RECOMMENDATION_CARD_WIDTH + RECOMMENDATION_CARD_TEXT_HEIGHT,
+		width: CLUB_PREVIEW_CARD_WIDTH,
+		height: CLUB_PREVIEW_CARD_HEIGHT,
 		backgroundColor: Colors.WHITE,
 		borderRadius: ms(15),
 		overflow: 'hidden',
