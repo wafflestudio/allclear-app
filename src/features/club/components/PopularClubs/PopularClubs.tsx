@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import React, { useContext } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 
-import { Club } from '@/entities/club'
+import { ClubRanking } from '@/entities/club'
 import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { serviceContext } from '@/shared/contexts/serviceContext'
@@ -23,7 +23,7 @@ const PopularClubs = () => {
 	const { data: clubRankings, isLoading } = useClubRankings()
 	const { logClickEvent } = useClickEventLog()
 
-	const handlePress = (uuid: Club['uuid'], ranking: number, clubName: Club['name']) => {
+	const handlePress = ({ clubId, ranking, clubName, category }: ClubRanking) => {
 		logClickEvent({
 			screen_name: 'search_screen',
 			screen_component_name: 'popularClubs',
@@ -32,7 +32,8 @@ const PopularClubs = () => {
 		})
 
 		navigation.navigate(SCREEN_TYPE.CLUB_DETAIL, {
-			uuid,
+			uuid: clubId,
+			category,
 			entry_point: 'popular_clubs',
 		})
 	}
@@ -54,8 +55,8 @@ const PopularClubs = () => {
 						<Pressable
 							style={styles.item}
 							onPress={
-								isInteractive
-									? () => handlePress(item.clubId, item.ranking, item.clubName)
+								isInteractive && clubRankings
+									? () => handlePress(clubRankings[idx])
 									: undefined
 							}>
 							<Text style={styles.rank}>{item.ranking}</Text>

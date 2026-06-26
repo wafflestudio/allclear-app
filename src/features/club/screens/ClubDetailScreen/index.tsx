@@ -51,7 +51,7 @@ type Props = {
 const deviceHeight = Dimensions.get('window').height
 
 const ClubDetailScreen = ({ route, navigation }: Props) => {
-	const { uuid, category: paramCategory, entry_point } = route.params as DetailsScreenRouteProp['params']
+	const { uuid, category: routeCategory, entry_point } = route.params as DetailsScreenRouteProp['params']
 
 	const { logClickEvent } = useClickEventLog()
 	const { openBottomSheet } = useLoginBottomSheet()
@@ -107,12 +107,14 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 		})
 	}
 
-	const currentCategory = club?.category || paramCategory
+	const currentCategory = routeCategory ?? club?.category
 
 	if (!currentCategory || isLoading) {
+		const loadingColor = currentCategory ? CategoryMap[currentCategory].themeColor : Colors.POINTCOLOR
+
 		return (
-			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>	
-				<ActivityIndicator size="large" color="#000" />
+			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+				<ActivityIndicator size="large" color={loadingColor} />
 			</View>
 		)
 	}
