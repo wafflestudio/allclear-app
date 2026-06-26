@@ -1,16 +1,64 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 
 import { Club } from '@/entities/club'
 import HorizontalCarousel from '@/shared/components/HorizontalCarousel'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
-import { s, vs } from '@/shared/utils/scale'
+import { ms, s, vs } from '@/shared/utils/scale'
 
 type Props = {
 	clubs: Club[]
 	onPressClub: (club: Club) => void
 }
+
+const SKELETON_CARD_COUNT = 3
+
+const RandomRecommendationsHeader = () => (
+	<View style={styles.header}>
+		<Text style={styles.title}>이런 동아리는 어때요?</Text>
+		<Text style={styles.subtitle}>다양한 동아리를 추천해드려요</Text>
+	</View>
+)
+
+const RandomRecommendationCardSkeleton = () => (
+	<View style={styles.cardSkeleton}>
+		<SkeletonPlaceholder backgroundColor={Colors.BACKGROUND_MAIN} highlightColor={Colors.WHITE}>
+			<SkeletonPlaceholder.Item>
+				<SkeletonPlaceholder.Item
+					width={s(110)}
+					height={s(110)}
+					borderTopLeftRadius={ms(15)}
+					borderTopRightRadius={ms(15)}
+				/>
+				<SkeletonPlaceholder.Item
+					paddingHorizontal={s(10)}
+					paddingTop={vs(9)}
+					paddingBottom={vs(8)}>
+					<SkeletonPlaceholder.Item
+						width={s(72)}
+						height={vs(16)}
+						borderRadius={ms(4)}
+						marginBottom={vs(6)}
+					/>
+					<SkeletonPlaceholder.Item width={s(88)} height={vs(15)} borderRadius={ms(4)} />
+				</SkeletonPlaceholder.Item>
+			</SkeletonPlaceholder.Item>
+		</SkeletonPlaceholder>
+	</View>
+)
+
+export const RandomRecommendationsSkeleton = () => (
+	<View style={styles.container}>
+		<RandomRecommendationsHeader />
+		<View style={styles.skeletonList}>
+			{Array.from({ length: SKELETON_CARD_COUNT }).map((_, index) => (
+				<RandomRecommendationCardSkeleton key={index} />
+			))}
+		</View>
+	</View>
+)
 
 const RandomRecommendations = ({ clubs, onPressClub }: Props) => {
 	if (clubs.length === 0) {
@@ -19,10 +67,7 @@ const RandomRecommendations = ({ clubs, onPressClub }: Props) => {
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.header}>
-				<Text style={styles.title}>이런 동아리는 어때요?</Text>
-				<Text style={styles.subtitle}>다양한 동아리를 추천해드려요</Text>
-			</View>
+			<RandomRecommendationsHeader />
 			<HorizontalCarousel clubs={clubs} onPressClub={onPressClub} />
 		</View>
 	)
@@ -48,5 +93,26 @@ const styles = StyleSheet.create({
 	subtitle: {
 		...typography.bodySRegular,
 		color: Colors.BODYTEXT_SUB,
+	},
+	skeletonList: {
+		flexDirection: 'row',
+		paddingHorizontal: s(20),
+		paddingBottom: s(2),
+		gap: s(10),
+		overflow: 'hidden',
+	},
+	cardSkeleton: {
+		width: s(110),
+		backgroundColor: Colors.WHITE,
+		borderRadius: ms(15),
+		overflow: 'hidden',
+		shadowColor: Colors.BLACK,
+		shadowOffset: {
+			width: 0,
+			height: 1,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 7,
+		elevation: 2,
 	},
 })

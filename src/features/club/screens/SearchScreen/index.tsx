@@ -8,7 +8,9 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Club } from '@/entities/club'
 import ClubList from '@/features/club/components/ClubList/ClubList'
 import PopularClubs from '@/features/club/components/PopularClubs/PopularClubs'
-import RandomRecommendations from '@/features/club/components/RandomRecommendations/RandomRecommendations'
+import RandomRecommendations, {
+	RandomRecommendationsSkeleton,
+} from '@/features/club/components/RandomRecommendations/RandomRecommendations'
 import RecentSearches from '@/features/club/components/RecentSearches/RecentSearches'
 import SearchBar from '@/features/club/components/SearchBar/SearchBar'
 import SearchFilterBar from '@/features/club/components/SearchBar/SearchFilterBar'
@@ -67,10 +69,9 @@ const SearchScreen = ({ navigation }: Props) => {
 
 	const hasSubmittedQuery = submittedQuery.length > 0
 	const shouldShowRandomRecommendations = hasSubmittedQuery && clubs?.length === 0 && !isFetching
-	const isWaitingForRandomRecommendations =
+	const isRandomRecommendationsLoading =
 		shouldShowRandomRecommendations &&
 		(isFetchingRandomRecommendations || (!randomRecommendations && !isRandomRecommendationsError))
-	const isShowingSearchLoading = isFetching || isWaitingForRandomRecommendations
 	const shouldShowTypoNotice =
 		isTypoNoticeVisible && !!searchResult?.isTypoCorrected && !!searchResult.correctedQuery
 
@@ -175,13 +176,17 @@ const SearchScreen = ({ navigation }: Props) => {
 								clubs={clubs}
 								openDetailPage={openDetailPage}
 								emptyPlaceholder={'앗 검색 결과가 없어요!\n다른 키워드로 검색해주세요'}
-								isLoading={isShowingSearchLoading}
+								isLoading={isFetching}
 							/>
 							{shouldShowRandomRecommendations ? (
-								<RandomRecommendations
-									clubs={randomRecommendations?.clubs ?? []}
-									onPressClub={openDetailPage}
-								/>
+								isRandomRecommendationsLoading ? (
+									<RandomRecommendationsSkeleton />
+								) : (
+									<RandomRecommendations
+										clubs={randomRecommendations?.clubs ?? []}
+										onPressClub={openDetailPage}
+									/>
+								)
 							) : null}
 							{isFilterOverlayVisible ? (
 								<SearchFilterOverlay
