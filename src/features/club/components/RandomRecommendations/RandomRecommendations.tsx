@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 
 import { Club } from '@/entities/club'
 import HorizontalCarousel, {
@@ -8,11 +7,11 @@ import HorizontalCarousel, {
 } from '@/shared/components/HorizontalCarousel'
 import {
 	CLUB_PREVIEW_CARD_HEIGHT,
-	CLUB_PREVIEW_CARD_WIDTH,
+	ClubPreviewCardSkeleton,
 } from '@/shared/components/ClubPreviewCard'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
-import { ms, s, vs } from '@/shared/utils/scale'
+import { s, vs } from '@/shared/utils/scale'
 
 type Props = {
 	clubs: Club[]
@@ -30,40 +29,13 @@ const RandomRecommendationsHeader = () => (
 	</View>
 )
 
-const RandomRecommendationCardSkeleton = () => (
-	<View style={styles.cardSkeleton}>
-		<SkeletonPlaceholder backgroundColor={Colors.BACKGROUND_MAIN} highlightColor={Colors.WHITE}>
-			<SkeletonPlaceholder.Item>
-				<SkeletonPlaceholder.Item
-					width={CLUB_PREVIEW_CARD_WIDTH}
-					height={CLUB_PREVIEW_CARD_WIDTH}
-					borderTopLeftRadius={ms(15)}
-					borderTopRightRadius={ms(15)}
-				/>
-				<SkeletonPlaceholder.Item
-					paddingHorizontal={s(10)}
-					paddingTop={vs(9)}
-					paddingBottom={vs(8)}>
-					<SkeletonPlaceholder.Item
-						width={s(72)}
-						height={vs(16)}
-						borderRadius={ms(4)}
-						marginBottom={vs(3)}
-					/>
-					<SkeletonPlaceholder.Item width={s(88)} height={vs(15)} borderRadius={ms(4)} />
-				</SkeletonPlaceholder.Item>
-			</SkeletonPlaceholder.Item>
-		</SkeletonPlaceholder>
-	</View>
-)
-
 export const RandomRecommendationsSkeleton = () => (
 	<View style={styles.container}>
 		<RandomRecommendationsHeader />
 		<View style={styles.carouselSlot}>
 			<View style={styles.skeletonList}>
 				{Array.from({ length: SKELETON_CARD_COUNT }).map((_, index) => (
-					<RandomRecommendationCardSkeleton key={index} />
+					<ClubPreviewCardSkeleton key={index} />
 				))}
 			</View>
 		</View>
@@ -117,20 +89,5 @@ const styles = StyleSheet.create({
 		paddingBottom: s(2),
 		gap: s(10),
 		overflow: 'hidden',
-	},
-	cardSkeleton: {
-		width: CLUB_PREVIEW_CARD_WIDTH,
-		height: CLUB_PREVIEW_CARD_HEIGHT,
-		backgroundColor: Colors.WHITE,
-		borderRadius: ms(15),
-		overflow: 'hidden',
-		shadowColor: Colors.BLACK,
-		shadowOffset: {
-			width: 0,
-			height: 1,
-		},
-		shadowOpacity: 0.1,
-		shadowRadius: 7,
-		elevation: 2,
 	},
 })
