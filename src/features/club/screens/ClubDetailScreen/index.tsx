@@ -84,11 +84,7 @@ const LOGO_BANNER_HEIGHT = vs(300) // 로고 배너(배경)의 높이
 const LOGO_HERO_OVERLAP = vs(72) // hero 카드가 로고 하단을 덮고 올라오는 양
 
 const ClubDetailScreen = ({ route, navigation }: Props) => {
-	const {
-		uuid,
-		category: paramCategory,
-		entry_point,
-	} = route.params
+	const { uuid, category: routeCategory, entry_point } = route.params as DetailsScreenRouteProp['params']
 
 	const { logClickEvent } = useClickEventLog()
 	const { user } = useProfile()
@@ -130,7 +126,7 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 		},
 	)
 
-	const currentCategory = club?.category ?? paramCategory
+	const currentCategory = routeCategory ?? club?.category
 
 	if (isLoading && !currentCategory) {
 		return (
