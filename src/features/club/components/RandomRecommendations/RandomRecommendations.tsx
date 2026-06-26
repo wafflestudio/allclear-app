@@ -14,6 +14,10 @@ type Props = {
 }
 
 const SKELETON_CARD_COUNT = 3
+const RECOMMENDATION_CARD_WIDTH = s(110)
+const RECOMMENDATION_CARD_TEXT_HEIGHT = vs(54)
+const RECOMMENDATION_CAROUSEL_HEIGHT =
+	RECOMMENDATION_CARD_WIDTH + RECOMMENDATION_CARD_TEXT_HEIGHT + s(2)
 
 const RandomRecommendationsHeader = () => (
 	<View style={styles.header}>
@@ -27,8 +31,8 @@ const RandomRecommendationCardSkeleton = () => (
 		<SkeletonPlaceholder backgroundColor={Colors.BACKGROUND_MAIN} highlightColor={Colors.WHITE}>
 			<SkeletonPlaceholder.Item>
 				<SkeletonPlaceholder.Item
-					width={s(110)}
-					height={s(110)}
+					width={RECOMMENDATION_CARD_WIDTH}
+					height={RECOMMENDATION_CARD_WIDTH}
 					borderTopLeftRadius={ms(15)}
 					borderTopRightRadius={ms(15)}
 				/>
@@ -40,7 +44,7 @@ const RandomRecommendationCardSkeleton = () => (
 						width={s(72)}
 						height={vs(16)}
 						borderRadius={ms(4)}
-						marginBottom={vs(6)}
+						marginBottom={vs(3)}
 					/>
 					<SkeletonPlaceholder.Item width={s(88)} height={vs(15)} borderRadius={ms(4)} />
 				</SkeletonPlaceholder.Item>
@@ -52,10 +56,12 @@ const RandomRecommendationCardSkeleton = () => (
 export const RandomRecommendationsSkeleton = () => (
 	<View style={styles.container}>
 		<RandomRecommendationsHeader />
-		<View style={styles.skeletonList}>
-			{Array.from({ length: SKELETON_CARD_COUNT }).map((_, index) => (
-				<RandomRecommendationCardSkeleton key={index} />
-			))}
+		<View style={styles.carouselSlot}>
+			<View style={styles.skeletonList}>
+				{Array.from({ length: SKELETON_CARD_COUNT }).map((_, index) => (
+					<RandomRecommendationCardSkeleton key={index} />
+				))}
+			</View>
 		</View>
 	</View>
 )
@@ -68,7 +74,9 @@ const RandomRecommendations = ({ clubs, onPressClub }: Props) => {
 	return (
 		<View style={styles.container}>
 			<RandomRecommendationsHeader />
-			<HorizontalCarousel clubs={clubs} onPressClub={onPressClub} />
+			<View style={styles.carouselSlot}>
+				<HorizontalCarousel clubs={clubs} onPressClub={onPressClub} />
+			</View>
 		</View>
 	)
 }
@@ -94,15 +102,21 @@ const styles = StyleSheet.create({
 		...typography.bodySRegular,
 		color: Colors.BODYTEXT_SUB,
 	},
+	carouselSlot: {
+		height: RECOMMENDATION_CAROUSEL_HEIGHT,
+		overflow: 'visible',
+	},
 	skeletonList: {
 		flexDirection: 'row',
+		height: '100%',
 		paddingHorizontal: s(20),
 		paddingBottom: s(2),
 		gap: s(10),
 		overflow: 'hidden',
 	},
 	cardSkeleton: {
-		width: s(110),
+		width: RECOMMENDATION_CARD_WIDTH,
+		height: RECOMMENDATION_CARD_WIDTH + RECOMMENDATION_CARD_TEXT_HEIGHT,
 		backgroundColor: Colors.WHITE,
 		borderRadius: ms(15),
 		overflow: 'hidden',
