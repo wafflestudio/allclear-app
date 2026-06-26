@@ -84,7 +84,11 @@ const LOGO_BANNER_HEIGHT = vs(300) // 로고 배너(배경)의 높이
 const LOGO_HERO_OVERLAP = vs(72) // hero 카드가 로고 하단을 덮고 올라오는 양
 
 const ClubDetailScreen = ({ route, navigation }: Props) => {
-	const { uuid, category, entry_point } = route.params
+	const {
+		uuid,
+		category: paramCategory,
+		entry_point,
+	} = route.params
 
 	const { logClickEvent } = useClickEventLog()
 	const { user } = useProfile()
@@ -126,13 +130,25 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 		},
 	)
 
-	if (!category) return null
-	const categoryDetail = CategoryMap[category]
+	const currentCategory = club?.category ?? paramCategory
+
+	if (isLoading && !currentCategory) {
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size="large" color={Colors.POINTCOLOR} />
+			</View>
+		)
+	}
+
+	if (!currentCategory) return null
+	const categoryDetail = CategoryMap[currentCategory]
 
 	const handleBackButton = () => navigation.goBack()
 
 	const handleWriteReview = () =>
-		requireLogin(() => navigation.navigate(SCREEN_TYPE.CLUB_REVIEW, { uuid, category }))
+		requireLogin(() =>
+			navigation.navigate(SCREEN_TYPE.CLUB_REVIEW, { uuid, category: currentCategory }),
+		)
 
 	const handleShare = async () => {
 		if (!club) return
@@ -159,7 +175,7 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 		<WithViewEventLog
 			params={{
 				screen_name: 'club_detail_screen',
-				category,
+				category: currentCategory,
 				club_name: club?.name ?? '',
 				entry_point: entry_point ?? '',
 			}}>
@@ -316,6 +332,12 @@ const useClub = ({ uuid }: UseClubProps) => {
 const styles = StyleSheet.create({
 	safeArea: {
 		flex: 1,
+		backgroundColor: Colors.BACKGROUND_MAIN,
+	},
+	loadingContainer: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
 		backgroundColor: Colors.BACKGROUND_MAIN,
 	},
 	loader: {
