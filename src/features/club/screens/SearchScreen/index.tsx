@@ -1,12 +1,13 @@
 import { RouteProp, useFocusEffect } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { Club } from '@/entities/club'
 import ClubList from '@/features/club/components/ClubList/ClubList'
+import PopularClubs from '@/features/club/components/PopularClubs/PopularClubs'
 import RandomRecommendations from '@/features/club/components/RandomRecommendations/RandomRecommendations'
 import RecentSearches from '@/features/club/components/RecentSearches/RecentSearches'
 import SearchBar from '@/features/club/components/SearchBar/SearchBar'
@@ -20,12 +21,15 @@ import {
 	resetClubSearchOverlayFilters,
 } from '@/features/search/types/clubSearchForm'
 import { ListRandomRecommendationsResponse, SearchClubsResponse } from '@/repositories/club'
+import { ListRecentSearchesResponse } from '@/repositories/recentSearch'
 import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import { typography } from '@/shared/constants/typography'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import { s, vs } from '@/shared/utils/scale'
+
+const RECENT_SEARCHES_QUERY_KEY = ['recentSearches'] as const
 
 type SearchScreenRouteProp = RouteProp<StackParamList, SCREEN_TYPE.SEARCH>
 type SearchScreenNavigationProp = NativeStackNavigationProp<StackParamList, SCREEN_TYPE.SEARCH>
@@ -41,10 +45,12 @@ const SearchScreen = ({ navigation }: Props) => {
 	const [isTypoNoticeVisible, setIsTypoNoticeVisible] = useState(true)
 	const [filters, setFilters] = useState<ClubSearchFilters>(DEFAULT_CLUB_SEARCH_FILTERS)
 	const [isFilterOverlayVisible, setIsFilterOverlayVisible] = useState(false)
-	const [recentSearches, setRecentSearches] = useState<string[]>([])
 
+	const queryClient = useQueryClient()
 	const request = createSearchClubsRequest({ query: submittedQuery, filters })
 	const { data: searchResult, isFetching } = useSearchClubs({ query: submittedQuery, request })
+	const { data: recentSearches } = useRecentSearches()
+	const { mutate: clearRecentSearches } = useClearRecentSearches()
 	const { data: randomRecommendations } = useRandomRecommendations()
 
 	const clubs = searchResult?.clubs
@@ -88,6 +94,7 @@ const SearchScreen = ({ navigation }: Props) => {
 	)
 
 	const handleSubmitQuery = (nextQuery: string) => {
+		queryClient.cancelQueries(['searchClubs'])
 		setSubmittedQuery(nextQuery)
 		setIsTypoNoticeVisible(true)
 		setIsFilterOverlayVisible(false)
@@ -99,7 +106,7 @@ const SearchScreen = ({ navigation }: Props) => {
 	}
 
 	const handleClearRecentSearches = () => {
-		setRecentSearches([])
+		clearRecentSearches()
 	}
 
 	const openDetailPage = (club: Club) => {
@@ -160,11 +167,11 @@ const SearchScreen = ({ navigation }: Props) => {
 				) : (
 					<View style={styles.placeholderContainer}>
 						<RecentSearches
-							searches={recentSearches}
+							searches={recentSearches ?? []}
 							onPressItem={handleSelectRecentSearch}
 							onClearAll={handleClearRecentSearches}
 						/>
-						{/* TODO: 인기동아리 섹션 */}
+						<PopularClubs />
 					</View>
 				)}
 			</SafeAreaView>
@@ -181,15 +188,48 @@ type UseSearchClubsProps = {
 
 const useSearchClubs = ({ query, request }: UseSearchClubsProps) => {
 	const { clubService } = useContext(serviceContext)
+	const queryClient = useQueryClient()
 
 	return useQuery<SearchClubsResponse>(
 		['searchClubs', request],
-		() => clubService.searchClubs(request),
+		({ signal }) => clubService.searchClubs(request, signal),
 		{
 			enabled: query.length > 0,
 			keepPreviousData: true,
+			staleTime: 0,
+			onSuccess: () => {
+				queryClient.cancelQueries(RECENT_SEARCHES_QUERY_KEY)
+				queryClient.invalidateQueries(RECENT_SEARCHES_QUERY_KEY)
+			},
 		},
 	)
+}
+
+const useRecentSearches = () => {
+	const { recentSearchService } = useContext(serviceContext)
+
+	return useQuery(
+		RECENT_SEARCHES_QUERY_KEY,
+		() => recentSearchService.listRecentSearches(),
+		{
+			staleTime: 0,
+			select: data => data.recentSearches.map(it => it.query),
+		},
+	)
+}
+
+const useClearRecentSearches = () => {
+	const { recentSearchService } = useContext(serviceContext)
+	const queryClient = useQueryClient()
+
+	return useMutation(() => recentSearchService.deleteAllRecentSearches(), {
+		onSuccess: () => {
+			queryClient.setQueryData<ListRecentSearchesResponse>(RECENT_SEARCHES_QUERY_KEY, {
+				recentSearches: [],
+				totalSize: 0,
+			})
+		},
+	})
 }
 
 const useRandomRecommendations = () => {
@@ -233,6 +273,6 @@ const styles = StyleSheet.create({
 	placeholderContainer: {
 		paddingHorizontal: s(20),
 		paddingTop: vs(14),
-		gap: vs(20),
+		gap: vs(30),
 	},
 })

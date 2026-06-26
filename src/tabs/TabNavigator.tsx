@@ -2,10 +2,10 @@ import {
 	createBottomTabNavigator,
 	type BottomTabNavigationOptions,
 } from '@react-navigation/bottom-tabs'
-import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { Colors } from '@/shared/constants/colors'
-import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
+import { SCREEN_TYPE } from '@/shared/constants/screen'
 import { useProfile } from '@/shared/contexts/profileContext'
+import useRequireLogin from '@/shared/hooks/useRequireLogin'
 import { Image, Pressable, type ImageSourcePropType } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { HomeTab } from '@/tabs/HomeTab'
@@ -56,22 +56,23 @@ function createTabBarIcon(
 
 export function TabNavigator() {
 	const { user } = useProfile()
-	const { openBottomSheet } = useLoginBottomSheet()
+	const requireLogin = useRequireLogin()
 	const insets = useSafeAreaInsets()
 	// 안드로이드 네비게이션바 있는 경우에만 inset 적용, 나머지는 전부 미적용
 	const bottomInset = insets.bottom >= 40 ? insets.bottom : 0
+
+	const defaultTabBarStyle = {
+		height: vs(70) + bottomInset,
+		backgroundColor: Colors.BACKGROUND_SUB,
+		borderTopWidth: 0, // iOS 그림자 제거
+		elevation: 0, // Android 그림자 제거
+		paddingBottom: vs(10) + bottomInset,
+	}
 
 	const screenOptions: BottomTabNavigationOptions = {
 		headerShown: false,
 		tabBarActiveTintColor: Colors.BUTTON_SELECTED,
 		tabBarInactiveTintColor: Colors.BUTTON_UNSELECTED,
-		tabBarStyle: {
-			height: vs(70) + bottomInset,
-			backgroundColor: Colors.BACKGROUND_SUB,
-			borderTopWidth: 0, // iOS 그림자 제거
-			elevation: 0, // Android 그림자 제거
-			paddingBottom: vs(10) + bottomInset,
-		},
 		tabBarLabelStyle: {
 			...typography.bodySMedium,
 		},
@@ -84,7 +85,11 @@ export function TabNavigator() {
 	}
 
 	return (
-		<Tab.Navigator screenOptions={screenOptions}>
+		<Tab.Navigator
+			screenOptions={{
+				...screenOptions,
+				tabBarStyle: defaultTabBarStyle,
+			}}>
 			<Tab.Screen options={{ tabBarIcon: renderHomeTabIcon }} name="홈" component={HomeTab} />
 			<Tab.Screen
 				options={{ tabBarIcon: renderExploreTabIcon }}
@@ -99,7 +104,7 @@ export function TabNavigator() {
 					tabPress: e => {
 						if (!user) {
 							e.preventDefault()
-							openBottomSheet(() => navigation.navigate('저장'))
+							requireLogin(() => navigation.navigate('저장'))
 						}
 					},
 				}}
@@ -111,11 +116,7 @@ export function TabNavigator() {
 				listeners={({ navigation: tabNavigation }) => ({
 					tabPress: e => {
 						e.preventDefault()
-						if (!user) {
-							openBottomSheet(() => tabNavigation.navigate('마이'))
-						} else {
-							tabNavigation.navigate('마이', { screen: SCREEN_TYPE.MYPAGE })
-						}
+						requireLogin(() => tabNavigation.navigate('마이', { screen: SCREEN_TYPE.MYPAGE }))
 					},
 				})}
 			/>

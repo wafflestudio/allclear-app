@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
 		color: Colors.BODYTEXT_MAIN,
 	},
 	mandatoryLabel: {
-		color: '#FF6B6B',
+		color: Colors.BUTTON_DESTRUCTIVE,
 	},
 	viewButton: {
 		flexDirection: 'row',

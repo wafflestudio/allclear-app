@@ -10,21 +10,24 @@ import React, { useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import SplashScreen from 'react-native-splash-screen'
 import Toast, { ToastConfig } from 'react-native-toast-message'
 import { getAnnouncementRepository } from '@/repositories/announcement'
+import { getAppVersionRepository } from '@/repositories/appVersion'
 import { getAuthRepository } from '@/repositories/auth'
 import { getCategoryRepository } from '@/repositories/category'
 import { getClubRepository } from '@/repositories/club'
+import { getRecentSearchRepository } from '@/repositories/recentSearch'
 import { getReviewRepository } from '@/repositories/review'
 import { getTermRepository } from '@/repositories/term'
 import { getUserRepository } from '@/repositories/user'
 import { TabNavigator } from '@/tabs/TabNavigator'
 import { getAnnouncementService } from '@/usecases/announcement'
+import { getAppVersionService } from '@/usecases/appVersion'
 import { getAuthService } from '@/usecases/auth'
 import { getCategoryService } from '@/usecases/category'
 import { getClubService } from '@/usecases/club'
 import { getEventLogService } from '@/usecases/eventLog'
+import { getRecentSearchService } from '@/usecases/recentSearch'
 import { getReviewService } from '@/usecases/review'
 import { getTermService } from '@/usecases/term'
 import { getUserService } from '@/usecases/user'
@@ -34,6 +37,7 @@ import { initToken } from '@/shared/utils/api'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
+import ForceUpdateGate from '@/shared/components/ForceUpdateGate'
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -48,28 +52,34 @@ function App(): React.JSX.Element {
 	const { Provider: ServiceProvider } = serviceContext
 
 	const announcementRepository = getAnnouncementRepository()
+	const appVersionRepository = getAppVersionRepository()
 	const authRepository = getAuthRepository()
 	const categoryRepository = getCategoryRepository()
 	const clubRepository = getClubRepository()
+	const recentSearchRepository = getRecentSearchRepository()
 	const reviewRepository = getReviewRepository()
 	const termRepository = getTermRepository()
 	const userRepository = getUserRepository()
 
 	const announcementService = getAnnouncementService({ repositories: [announcementRepository] })
+	const appVersionService = getAppVersionService({ repositories: [appVersionRepository] })
 	const authService = getAuthService({ repositories: [authRepository] })
 	const categoryService = getCategoryService({ repositories: [categoryRepository] })
 	const clubService = getClubService({ repositories: [clubRepository] })
 	const eventLogService = getEventLogService()
+	const recentSearchService = getRecentSearchService({ repositories: [recentSearchRepository] })
 	const reviewService = getReviewService({ repositories: [reviewRepository] })
 	const termService = getTermService({ repositories: [termRepository] })
 	const userService = getUserService({ repositories: [userRepository] })
 
 	const services = {
 		announcementService,
+		appVersionService,
 		authService,
 		categoryService,
 		clubService,
 		eventLogService,
+		recentSearchService,
 		reviewService,
 		termService,
 		userService,
@@ -78,7 +88,6 @@ function App(): React.JSX.Element {
 	useEffect(() => {
 		setIsNavigationReady(true)
 		initToken()
-		setTimeout(() => SplashScreen.hide(), 1000)
 	}, [])
 
 	return (
@@ -91,9 +100,11 @@ function App(): React.JSX.Element {
 								<LoginBottomSheetProvider>
 									<UserVoiceBottomSheetProvider>
 										<ManageClubBottomSheetProvider>
-											<NavigationContainer ref={_navigationRef} linking={linking}>
-												<TabNavigator />
-											</NavigationContainer>
+											<ForceUpdateGate>
+												<NavigationContainer ref={_navigationRef} linking={linking}>
+													<TabNavigator />
+												</NavigationContainer>
+											</ForceUpdateGate>
 										</ManageClubBottomSheetProvider>
 									</UserVoiceBottomSheetProvider>
 								</LoginBottomSheetProvider>
