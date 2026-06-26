@@ -4,14 +4,14 @@ import Toast from 'react-native-toast-message'
 import { Club } from '@/entities/club'
 import { ListSavedClubsResponse } from '@/repositories/club'
 import { useProfile } from '@/shared/contexts/profileContext'
-import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
+import useRequireLogin from '@/shared/hooks/useRequireLogin'
 
 const selectSavedIds = (data: ListSavedClubsResponse) => new Set(data.clubs.map(c => c.uuid)) // 모듈 레벨에서 선언하여 매번 새로 생성하지 않음
 
 const useSaveClub = (club: Club | undefined) => {
 	const { user } = useProfile()
-	const { openBottomSheet } = useLoginBottomSheet()
+	const requireLogin = useRequireLogin()
 	const { clubService } = useContext(serviceContext)
 	const queryClient = useQueryClient()
 
@@ -97,7 +97,9 @@ const useSaveClub = (club: Club | undefined) => {
 	// 토글 핸들러
 	const handleToggle = useCallback(() => {
 		if (!user) {
-			openBottomSheet()
+			// 로그인 시트만 띄우고 빈 콜백을 넘긴다. requireLogin에 토글 로직을 넘기면
+			// 로그인 성공 직후 자동 저장되는데, 여기서는 의도적으로 그 동작을 하지 않는다.
+			requireLogin(() => {})
 			return
 		}
 		if (!club) return
@@ -116,7 +118,7 @@ const useSaveClub = (club: Club | undefined) => {
 			debounceRef.current = null
 			callApi(next)
 		}, 300)
-	}, [user, club, savedIds, openBottomSheet, callApi, updateSavedClubsCache])
+	}, [user, club, savedIds, requireLogin, callApi, updateSavedClubsCache])
 
 	// callApiRef를 항상 최신 callApi로 유지
 	useEffect(() => {
