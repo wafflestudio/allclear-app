@@ -190,21 +190,19 @@ const ClubDetailScreen = ({ route, navigation }: Props) => {
 						{/* 로고 배경: 본문의 첫 블록. 투명한 헤더 뒤로 비치며, 상/하단을 페이지 배경색으로 fade 처리한다. */}
 						<View style={styles.logoBanner}>
 							<Image style={styles.logoImage} source={{ uri: club.imageUri }} resizeMode="cover" />
-							{/* 상단 fade: 헤더 영역과 자연스럽게 섞이도록 위쪽을 배경색(#FAFAFA)으로 흐린다. */}
+							{/* 로고 오버레이: 상/하단은 배경색(#FAFAFA)으로 완전히 덮고, 중앙은 30% 베일을 깔아 로고 색을 살짝 눌러 준다. */}
 							<LinearGradient
 								pointerEvents="none"
-								colors={[Colors.BACKGROUND_MAIN, 'rgba(250, 250, 250, 0)']}
+								colors={[
+									Colors.BACKGROUND_MAIN,
+									'rgba(250, 250, 250, 0.3)',
+									'rgba(250, 250, 250, 0.3)',
+									Colors.BACKGROUND_MAIN,
+								]}
+								locations={[0.0295, 0.399, 0.606, 0.8372]}
 								start={{ x: 0, y: 0 }}
 								end={{ x: 0, y: 1 }}
-								style={styles.topFade}
-							/>
-							{/* 하단 fade: hero 카드와 겹치는 아래쪽을 배경색으로 흐린다. */}
-							<LinearGradient
-								pointerEvents="none"
-								colors={['rgba(250, 250, 250, 0)', Colors.BACKGROUND_MAIN]}
-								start={{ x: 0, y: 0 }}
-								end={{ x: 0, y: 1 }}
-								style={styles.bottomFade}
+								style={styles.logoFade}
 							/>
 						</View>
 
@@ -355,19 +353,8 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%',
 	},
-	topFade: {
-		position: 'absolute',
-		top: 0,
-		left: 0,
-		right: 0,
-		height: vs(90),
-	},
-	bottomFade: {
-		position: 'absolute',
-		bottom: 0,
-		left: 0,
-		right: 0,
-		height: vs(80),
+	logoFade: {
+		...StyleSheet.absoluteFillObject,
 	},
 	// top은 노치 인셋(insets.top)을 런타임에 인라인으로 더해 준다.
 	headerOverlay: {
