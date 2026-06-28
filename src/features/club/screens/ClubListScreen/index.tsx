@@ -8,7 +8,7 @@ import { Club } from '@/entities/club'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import React, { useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Header from '@/features/club/components/ClubList/Header'
+import Header from '@/shared/components/BackHeader'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
 import ClubList from '@/features/club/components/ClubList/ClubList'
 import { Colors } from '@/shared/constants/colors'
@@ -79,7 +79,6 @@ const useCategoryClubs = ({ name, category }: UseCategoryClubsProps) => {
 		{
 			select: data => data.clubs,
 			staleTime: Infinity,
-			refetchOnMount: false,
 		},
 	)
 }

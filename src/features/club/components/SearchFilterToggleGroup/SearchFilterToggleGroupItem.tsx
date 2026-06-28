@@ -7,9 +7,12 @@ import Animated, {
 	withTiming,
 } from 'react-native-reanimated'
 
+import { Colors } from '@/shared/constants/colors'
+import { typography } from '@/shared/constants/typography'
+
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
-const SELECTED_BACKGROUND_COLOR = '#874FFF'
+const SELECTED_BACKGROUND_COLOR = Colors.BUTTON_SELECTED
 const UNSELECTED_BACKGROUND_COLOR = 'rgba(255, 255, 255, 0)'
 
 export type SearchFilterToggleGroupItemProps = {
@@ -69,17 +72,16 @@ const styles = StyleSheet.create({
 	},
 	unselected: {
 		borderWidth: 1,
-		borderColor: '#C1C1C1',
+		borderColor: Colors.BUTTON_UNSELECTED,
 	},
 	text: {
-		fontWeight: '600',
-		fontSize: 10,
-		lineHeight: 10,
+		...typography.bodySSmallMedium,
 	},
 	textSelected: {
-		color: '#FFFFFF',
+		color: Colors.TEXT_BUTTON_SELECTED,
+		...typography.bodySSmallSemibold,
 	},
 	textUnselected: {
-		color: '#C1C1C1',
+		color: Colors.TEXT_BUTTON_UNSELECTED,
 	},
 })

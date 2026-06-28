@@ -8,7 +8,7 @@ import React, { useContext } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { navigation } from '@/shared/utils/navigation'
 import ClubList from '@/features/club/components/ClubList/ClubList'
-import Header from '@/features/club/components/ClubList/Header'
+import Header from '@/shared/components/BackHeader'
 
 const SavedClubListScreen = () => {
 	const { data: savedClubs, isLoading } = useSavedClubs()
@@ -51,6 +51,7 @@ const useSavedClubs = () => {
 	const { clubService } = useContext(serviceContext)
 
 	return useQuery(['savedClubs'], () => clubService.listSavedClubs(), {
+		staleTime: Infinity,
 		select: data => data.clubs,
 	})
 }
