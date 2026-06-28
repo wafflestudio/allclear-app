@@ -122,6 +122,10 @@ const MyPageScreen = () => {
 		navigation.navigate(SCREEN_TYPE.SAVED_CLUB_LIST)
 	}
 
+	const handleMoveRegisterClubPage = () => {
+		navigation.navigate('등록')
+	}
+
 	return (
 		<SafeAreaView
 			edges={['top', 'left', 'right']}
@@ -393,6 +397,35 @@ const MyPageScreen = () => {
 						</TouchableOpacity>
 					</View>
 				)}
+
+				<View style={styles.optionContainer}>
+					<TouchableOpacity onPress={handleMoveRegisterClubPage}>
+						<View
+							style={{
+								display: 'flex',
+								flexDirection: 'row',
+								justifyContent: 'space-between',
+								paddingVertical: 4,
+								paddingHorizontal: 8,
+							}}>
+							<View
+								style={{
+									display: 'flex',
+									flexDirection: 'row',
+									alignItems: 'center',
+								}}>
+								<Icon
+									color={'#8F8686' /* #deprecated color */}
+									name="add-circle-outline"
+									size={16}
+									style={{ marginRight: 4 }}
+								/>
+								<Text style={{ color: '#8F8686' /* #deprecated color */ }}>동아리 등록하기</Text>
+							</View>
+							<Icon color={'#3A3434'} name="arrow-forward-ios" size={12} />
+						</View>
+					</TouchableOpacity>
+				</View>
 
 				<View style={styles.optionContainer}>
 					<TouchableOpacity onPress={handleMoveSavedClubListPage}>

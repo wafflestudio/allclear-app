@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { s, vs } from '@/shared/utils/scale'
-import TextField from '@/shared/components/TextField'
 import { FormNavigationButtons } from '@/features/register-club/components/FormNavigationButtons'
 import { RegisterClubFormData } from '@/features/register-club/types'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -17,6 +16,7 @@ type Props = {
 	onComplete: () => void
 	onPrevious: () => void
 	isLoading?: boolean
+	progress?: number
 }
 
 export const ClubDetailsScreen = ({
@@ -25,13 +25,16 @@ export const ClubDetailsScreen = ({
 	onComplete,
 	onPrevious,
 	isLoading = false,
+	progress,
 }: Props) => {
 	const [activityCycleMode, setActivityCycleMode] = useState<'none' | 'number'>(
-		formData.activityCycle ? 'number' : 'none'
+		formData.activityCycle ? 'number' : 'none',
 	)
 
-	const toggleDongbang = () => {
-		onFormDataChange({ hasDongbang: !formData.hasDongbang })
+	const activitySemesters = parseInt(formData.activityCycle, 10) || 0
+
+	const setHasDongbang = (value: boolean) => {
+		onFormDataChange(value ? { hasDongbang: true } : { hasDongbang: false, dongbangLocation: '' })
 	}
 
 	const handleActivityCycleModeChange = (mode: 'none' | 'number') => {
@@ -41,21 +44,14 @@ export const ClubDetailsScreen = ({
 		}
 	}
 
-	const handleActivityCycleChange = (value: string) => {
-		// Only allow numbers
-		const numValue = value.replace(/[^0-9]/g, '')
-		onFormDataChange({ activityCycle: numValue })
-	}
-
 	const incrementActivityCycle = () => {
-		const current = parseInt(formData.activityCycle, 10) || 0
-		onFormDataChange({ activityCycle: (current + 1).toString() })
+		setActivityCycleMode('number')
+		onFormDataChange({ activityCycle: (activitySemesters + 1).toString() })
 	}
 
 	const decrementActivityCycle = () => {
-		const current = parseInt(formData.activityCycle, 10) || 0
-		if (current > 0) {
-			onFormDataChange({ activityCycle: (current - 1).toString() })
+		if (activitySemesters > 0) {
+			onFormDataChange({ activityCycle: (activitySemesters - 1).toString() })
 		}
 	}
 
@@ -75,166 +71,163 @@ export const ClubDetailsScreen = ({
 						{'\n'}
 						<Text>세부정보를 입력해주세요</Text>
 					</Text>
-					<Text style={styles.helperText}>동아리에 대해 자세히 소개해주세요</Text>
+					<Text style={styles.subtitle}>관리하기 탭에서 언제든 수정할 수 있어요</Text>
 				</View>
 
 				<View style={styles.form}>
-					{/* Recruitment Type - Button Group */}
+					{/* Recruitment Type */}
 					<View style={styles.fieldWrapper}>
 						<Text style={styles.fieldLabel}>모집 형태</Text>
 						<View style={styles.buttonGroup}>
-							{RECRUIT_TYPES.map((type) => (
+							{RECRUIT_TYPES.map(type => (
 								<Pressable
 									key={type}
 									style={[
 										styles.typeButton,
 										formData.recruitType === type && styles.typeButtonSelected,
 									]}
-									onPress={() => onFormDataChange({ recruitType: type })}
-								>
+									onPress={() => onFormDataChange({ recruitType: type })}>
 									<Text
 										style={[
 											styles.typeButtonText,
 											formData.recruitType === type && styles.typeButtonTextSelected,
-										]}
-									>
+										]}>
 										{type}
 									</Text>
 								</Pressable>
 							))}
 						</View>
+						<Text style={styles.validationText}>모집 형태를 선택해주세요</Text>
 					</View>
 
-					{/* Activity Cycle */}
+					{/* Activity Period */}
 					<View style={styles.fieldWrapper}>
-						<Text style={styles.fieldLabel}>최소 활동 기간</Text>
-						<View style={styles.activityCycleContainer}>
-							<Pressable
-								style={[
-									styles.modeButton,
-									activityCycleMode === 'none' && styles.modeButtonSelected,
-								]}
-								onPress={() => handleActivityCycleModeChange('none')}
-							>
-								<Text
-									style={[
-										styles.modeButtonText,
-										activityCycleMode === 'none' && styles.modeButtonTextSelected,
-									]}
-								>
-									없음
-								</Text>
-							</Pressable>
-							<Pressable
-								style={[
-									styles.modeButton,
-									activityCycleMode === 'number' && styles.modeButtonSelected,
-								]}
-								onPress={() => handleActivityCycleModeChange('number')}
-							>
-								<Text
-									style={[
-										styles.modeButtonText,
-										activityCycleMode === 'number' && styles.modeButtonTextSelected,
-									]}
-								>
-									있음
-								</Text>
-							</Pressable>
-						</View>
-
-						{activityCycleMode === 'number' && (
-							<View style={styles.stepperContainer}>
+						<Text style={styles.fieldLabel}>(최소) 활동 기간</Text>
+						<View style={styles.periodRow}>
+							<View style={styles.modeButtons}>
 								<Pressable
-									style={styles.stepperButton}
-									onPress={decrementActivityCycle}
-								>
-									<MaterialIcons name="remove" size={20} color={Colors.BUTTON_SELECTED} />
+									style={[
+										styles.typeButton,
+										activityCycleMode === 'none' && styles.typeButtonSelected,
+									]}
+									onPress={() => handleActivityCycleModeChange('none')}>
+									<Text
+										style={[
+											styles.typeButtonText,
+											activityCycleMode === 'none' && styles.typeButtonTextSelected,
+										]}>
+										없음
+									</Text>
 								</Pressable>
-								<TextInput
-									style={styles.stepperInput}
-									value={formData.activityCycle}
-									onChangeText={handleActivityCycleChange}
-									placeholder="0"
-									keyboardType="number-pad"
-									maxLength={3}
-									textAlign="center"
-								/>
 								<Pressable
-									style={styles.stepperButton}
-									onPress={incrementActivityCycle}
-								>
-									<MaterialIcons name="add" size={20} color={Colors.BUTTON_SELECTED} />
+									style={[
+										styles.typeButton,
+										activityCycleMode === 'number' && styles.typeButtonSelected,
+									]}
+									onPress={() => handleActivityCycleModeChange('number')}>
+									<Text
+										style={[
+											styles.typeButtonText,
+											activityCycleMode === 'number' && styles.typeButtonTextSelected,
+										]}>
+										있음
+									</Text>
 								</Pressable>
-								<Text style={styles.stepperLabel}>개월</Text>
 							</View>
-						)}
+
+							<View style={styles.periodStepper}>
+								<Text style={styles.semesterValue}>{activitySemesters}학기</Text>
+								<View style={styles.stepperPill}>
+									<Pressable style={styles.stepperButton} onPress={decrementActivityCycle}>
+										<MaterialIcons name="remove" size={18} color={Colors.BODYTEXT_SUB} />
+									</Pressable>
+									<View style={styles.stepperDivider} />
+									<Pressable style={styles.stepperButton} onPress={incrementActivityCycle}>
+										<MaterialIcons name="add" size={18} color={Colors.BODYTEXT_SUB} />
+									</Pressable>
+								</View>
+							</View>
+						</View>
 					</View>
 
 					{/* Dongbang */}
 					<View style={styles.fieldWrapper}>
 						<Text style={styles.fieldLabel}>동방 보유 여부</Text>
-						<Pressable
-							style={[
-								styles.dongbangButton,
-								formData.hasDongbang && styles.dongbangButtonSelected,
-							]}
-							onPress={toggleDongbang}
-						>
-							<MaterialIcons
-								name={formData.hasDongbang ? 'check-box' : 'check-box-outline-blank'}
-								size={24}
-								color={formData.hasDongbang ? Colors.BUTTON_SELECTED : Colors.BODYTEXT_DISABLED}
-							/>
-							<Text
-								style={[
-									styles.dongbangText,
-									formData.hasDongbang && styles.dongbangTextSelected,
-								]}
-							>
-								동방 있음
-							</Text>
-						</Pressable>
+						<View style={styles.buttonGroup}>
+							<Pressable
+								style={[styles.typeButton, formData.hasDongbang && styles.typeButtonSelected]}
+								onPress={() => setHasDongbang(true)}>
+								<Text
+									style={[
+										styles.typeButtonText,
+										formData.hasDongbang && styles.typeButtonTextSelected,
+									]}>
+									보유
+								</Text>
+							</Pressable>
+							<Pressable
+								style={[styles.typeButton, !formData.hasDongbang && styles.typeButtonSelected]}
+								onPress={() => setHasDongbang(false)}>
+								<Text
+									style={[
+										styles.typeButtonText,
+										!formData.hasDongbang && styles.typeButtonTextSelected,
+									]}>
+									미보유
+								</Text>
+							</Pressable>
+						</View>
 
 						{formData.hasDongbang && (
-							<View style={{ marginTop: vs(8) }}>
-								<TextField
-									placeholder="예) 63동 619호"
+							<View style={styles.iconInputRow}>
+								<MaterialIcons name="location-on" size={20} color={Colors.BODYTEXT_DISABLED} />
+								<TextInput
+									style={styles.iconInput}
+									placeholder="활동 장소를 입력하세요"
+									placeholderTextColor={Colors.BODYTEXT_DISABLED}
 									value={formData.dongbangLocation}
-									onChangeText={(text) => onFormDataChange({ dongbangLocation: text })}
+									onChangeText={text => onFormDataChange({ dongbangLocation: text })}
 									maxLength={100}
 								/>
-								<Text style={styles.helperText}>동방 위치를 입력해주세요</Text>
 							</View>
 						)}
+						<Text style={styles.validationText}>동방 보유 여부를 알려주세요</Text>
 					</View>
 
 					{/* SNS */}
 					<View style={styles.fieldWrapper}>
 						<Text style={styles.fieldLabel}>동아리 SNS</Text>
-						<TextField
-							placeholder="@instagram_handle 또는 https://..."
-							value={formData.clubSNS}
-							onChangeText={(text) => onFormDataChange({ clubSNS: text })}
-							maxLength={200}
-						/>
+						<View style={styles.iconInputRow}>
+							<MaterialIcons name="link" size={20} color={Colors.BODYTEXT_DISABLED} />
+							<TextInput
+								style={styles.iconInput}
+								placeholder="url을 입력하세요"
+								placeholderTextColor={Colors.BODYTEXT_DISABLED}
+								value={formData.clubSNS}
+								onChangeText={text => onFormDataChange({ clubSNS: text })}
+								autoCapitalize="none"
+								keyboardType="url"
+								maxLength={200}
+							/>
+						</View>
+						<Text style={styles.validationText}>동아리 SNS 링크를 입력해주세요</Text>
 					</View>
 
 					{/* Description */}
 					<View style={styles.fieldWrapper}>
 						<Text style={styles.fieldLabel}>동아리 추가 설명</Text>
-						<TextField
-							placeholder="동아리에 대해 자유롭게 설명해주세요"
+						<TextInput
+							style={styles.descriptionInput}
+							placeholder="동아리에 대해 자세히 설명해주세요"
+							placeholderTextColor={Colors.BODYTEXT_DISABLED}
 							value={formData.clubDescription}
-							onChangeText={(text) => onFormDataChange({ clubDescription: text })}
+							onChangeText={text => onFormDataChange({ clubDescription: text })}
 							maxLength={500}
 							multiline
-							numberOfLines={6}
+							numberOfLines={4}
 							textAlignVertical="top"
 						/>
-						<Text style={styles.charCounter}>
-							{formData.clubDescription.length} / 500
-						</Text>
+						<Text style={styles.validationText}>동아리 추가 설명은 필수 입력 정보예요.</Text>
 					</View>
 				</View>
 			</ScrollView>
@@ -242,9 +235,8 @@ export const ClubDetailsScreen = ({
 			<FormNavigationButtons
 				onPrevious={onPrevious}
 				onNext={onComplete}
-				nextLabel="완료"
-				isLastStep
 				isNextDisabled={!isComplete || isLoading}
+				progress={progress}
 			/>
 		</SafeAreaView>
 	)
@@ -271,9 +263,9 @@ const styles = StyleSheet.create({
 		color: Colors.BUTTON_SELECTED,
 		fontWeight: '800',
 	},
-	helperText: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_DISABLED,
+	subtitle: {
+		...typography.bodyMRegular,
+		color: Colors.BODYTEXT_SUB,
 	},
 	form: {
 		gap: vs(24),
@@ -282,8 +274,8 @@ const styles = StyleSheet.create({
 		gap: vs(8),
 	},
 	fieldLabel: {
-		...typography.bodySMedium,
-		color: Colors.BODYTEXT_MAIN,
+		...typography.headerXLSemibold,
+		color: Colors.BODYTEXT_SUB,
 	},
 	buttonGroup: {
 		flexDirection: 'row',
@@ -291,9 +283,9 @@ const styles = StyleSheet.create({
 	},
 	typeButton: {
 		flex: 1,
-		paddingVertical: vs(12),
+		paddingVertical: vs(14),
 		paddingHorizontal: s(12),
-		borderRadius: 4,
+		borderRadius: 12,
 		borderWidth: 1,
 		borderColor: Colors.BODYTEXT_DISABLED,
 		backgroundColor: Colors.WHITE,
@@ -304,97 +296,77 @@ const styles = StyleSheet.create({
 		borderColor: Colors.BUTTON_SELECTED,
 	},
 	typeButtonText: {
-		...typography.bodySMedium,
-		color: Colors.BODYTEXT_MAIN,
+		...typography.bodyMMedium,
+		color: Colors.BODYTEXT_DISABLED,
 	},
 	typeButtonTextSelected: {
 		color: Colors.WHITE,
 		fontWeight: '600',
 	},
-	activityCycleContainer: {
-		gap: vs(12),
+	periodRow: {
+		flexDirection: 'row',
+		alignItems: 'flex-end',
+		gap: s(16),
 	},
-	modeButton: {
+	modeButtons: {
 		flex: 1,
-		paddingVertical: vs(12),
-		paddingHorizontal: s(12),
-		borderRadius: 4,
-		borderWidth: 1,
-		borderColor: Colors.BODYTEXT_DISABLED,
-		backgroundColor: Colors.WHITE,
+		flexDirection: 'row',
+		gap: s(8),
+	},
+	periodStepper: {
 		alignItems: 'center',
+		gap: vs(6),
 	},
-	modeButtonSelected: {
-		backgroundColor: Colors.BUTTON_SELECTED,
-		borderColor: Colors.BUTTON_SELECTED,
-	},
-	modeButtonText: {
-		...typography.bodySMedium,
+	semesterValue: {
+		...typography.headerL,
 		color: Colors.BODYTEXT_MAIN,
 	},
-	modeButtonTextSelected: {
-		color: Colors.WHITE,
-		fontWeight: '600',
-	},
-	stepperContainer: {
+	stepperPill: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: s(8),
-		paddingHorizontal: s(12),
-		paddingVertical: vs(12),
-		borderWidth: 1,
-		borderColor: Colors.BODYTEXT_DISABLED,
-		borderRadius: 4,
+		borderRadius: 8,
 		backgroundColor: Colors.BACKGROUND_SUB,
 	},
 	stepperButton: {
-		width: s(40),
-		height: vs(40),
-		borderRadius: 4,
-		backgroundColor: Colors.WHITE,
+		paddingHorizontal: s(16),
+		paddingVertical: vs(8),
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 1,
-		borderColor: Colors.BUTTON_SELECTED,
 	},
-	stepperInput: {
-		flex: 1,
-		...typography.bodySMedium,
-		color: Colors.BODYTEXT_MAIN,
-		textAlign: 'center',
-		paddingVertical: vs(8),
-		paddingHorizontal: s(8),
+	stepperDivider: {
+		width: 1,
+		height: vs(16),
+		backgroundColor: Colors.BODYTEXT_DISABLED,
 	},
-	stepperLabel: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_SUB,
-	},
-	dongbangButton: {
+	iconInputRow: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		gap: s(12),
-		paddingVertical: vs(12),
+		gap: s(8),
+	},
+	iconInput: {
+		flex: 1,
+		...typography.bodyMRegular,
+		color: Colors.BODYTEXT_MAIN,
 		paddingHorizontal: s(16),
-		borderRadius: 4,
+		paddingVertical: vs(14),
 		borderWidth: 1,
 		borderColor: Colors.BODYTEXT_DISABLED,
+		borderRadius: 8,
 		backgroundColor: Colors.WHITE,
 	},
-	dongbangButtonSelected: {
-		borderColor: Colors.BUTTON_SELECTED,
-		backgroundColor: Colors.BACKGROUND_SUB,
-	},
-	dongbangText: {
-		...typography.bodySMedium,
+	descriptionInput: {
+		...typography.bodyMRegular,
 		color: Colors.BODYTEXT_MAIN,
+		minHeight: vs(96),
+		paddingHorizontal: s(16),
+		paddingVertical: vs(14),
+		borderWidth: 1,
+		borderColor: Colors.BODYTEXT_DISABLED,
+		borderRadius: 8,
+		backgroundColor: Colors.WHITE,
 	},
-	dongbangTextSelected: {
-		color: Colors.BUTTON_SELECTED,
-		fontWeight: '600',
-	},
-	charCounter: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_DISABLED,
-		textAlign: 'right',
+	validationText: {
+		...typography.bodyMRegular,
+		color: Colors.POINTCOLOR,
 	},
 })

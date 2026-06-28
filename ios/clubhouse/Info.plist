@@ -57,6 +57,8 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>동아리 대표 이미지를 등록하기 위해 사진 보관함 접근 권한이 필요해요</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

@@ -106,17 +106,18 @@ export function TabNavigator() {
 				component={SearchTab}
 			/>
 			<Tab.Screen
-				options={{ tabBarIcon: renderRegisterClubIcon() }}
+				options={{ tabBarIcon: renderRegisterClubIcon(), tabBarStyle: { display: 'none' } }}
 				name="등록"
 				component={RegisterClubTab}
-				listeners={{
-					tabPress: e => {
-						if (!user) {
-							e.preventDefault()
-							openBottomSheet(() => navigation.navigate('등록'))
-						}
-					},
-				}}
+				// TODO: Re-enable login requirement after testing
+				// listeners={{
+				// 	tabPress: e => {
+				// 		if (!user) {
+				// 			e.preventDefault()
+				// 			openBottomSheet(() => navigation.navigate('등록'))
+				// 		}
+				// 	},
+				// }}
 			/>
 			<Tab.Screen
 				options={{ tabBarIcon: renderSavedTabIcon }}

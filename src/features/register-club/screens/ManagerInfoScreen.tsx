@@ -12,9 +12,17 @@ type Props = {
 	formData: RegisterClubFormData
 	onFormDataChange: (data: Partial<RegisterClubFormData>) => void
 	onNext: () => void
+	onPrevious?: () => void
+	progress?: number
 }
 
-export const ManagerInfoScreen = ({ formData, onFormDataChange, onNext }: Props) => {
+export const ManagerInfoScreen = ({
+	formData,
+	onFormDataChange,
+	onNext,
+	onPrevious,
+	progress,
+}: Props) => {
 	const isComplete =
 		formData.managerName.trim() && formData.managerPhone.trim() && formData.studentId.trim()
 
@@ -32,7 +40,7 @@ export const ManagerInfoScreen = ({ formData, onFormDataChange, onNext }: Props)
 						<TextField
 							placeholder="홍길동"
 							value={formData.managerName}
-							onChangeText={(text) => onFormDataChange({ managerName: text })}
+							onChangeText={text => onFormDataChange({ managerName: text })}
 							maxLength={50}
 						/>
 						<Text style={styles.helperText}>이름을 입력해주세요</Text>
@@ -43,7 +51,7 @@ export const ManagerInfoScreen = ({ formData, onFormDataChange, onNext }: Props)
 						<TextField
 							placeholder="01012345678"
 							value={formData.managerPhone}
-							onChangeText={(text) => onFormDataChange({ managerPhone: text })}
+							onChangeText={text => onFormDataChange({ managerPhone: text })}
 							keyboardType="phone-pad"
 							maxLength={20}
 						/>
@@ -55,7 +63,7 @@ export const ManagerInfoScreen = ({ formData, onFormDataChange, onNext }: Props)
 						<TextField
 							placeholder="1970-12345"
 							value={formData.studentId}
-							onChangeText={(text) => onFormDataChange({ studentId: text })}
+							onChangeText={text => onFormDataChange({ studentId: text })}
 							keyboardType="numeric"
 							maxLength={20}
 						/>
@@ -64,7 +72,12 @@ export const ManagerInfoScreen = ({ formData, onFormDataChange, onNext }: Props)
 				</View>
 			</ScrollView>
 
-			<FormNavigationButtons onNext={onNext} isNextDisabled={!isComplete} />
+			<FormNavigationButtons
+				onPrevious={onPrevious}
+				onNext={onNext}
+				isNextDisabled={!isComplete}
+				progress={progress}
+			/>
 		</SafeAreaView>
 	)
 }
@@ -93,13 +106,13 @@ const styles = StyleSheet.create({
 		gap: vs(4),
 	},
 	label: {
-		...typography.bodySMedium,
-		color: Colors.BODYTEXT_MAIN,
+		...typography.headerXLSemibold,
+		color: Colors.BODYTEXT_SUB,
 		marginBottom: vs(4),
 	},
 	helperText: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_DISABLED,
+		...typography.bodyMRegular,
+		color: Colors.POINTCOLOR,
 		marginTop: vs(4),
 	},
 })

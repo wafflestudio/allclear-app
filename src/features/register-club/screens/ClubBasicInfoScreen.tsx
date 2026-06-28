@@ -1,5 +1,7 @@
 import React from 'react'
 import { View, Text, ScrollView, StyleSheet, Pressable, Image } from 'react-native'
+import { launchImageLibrary } from 'react-native-image-picker'
+import Toast from 'react-native-toast-message'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
@@ -14,15 +16,45 @@ type Props = {
 	onFormDataChange: (data: Partial<RegisterClubFormData>) => void
 	onNext: () => void
 	onPrevious: () => void
+	progress?: number
 }
 
-export const ClubBasicInfoScreen = ({ formData, onFormDataChange, onNext, onPrevious }: Props) => {
+export const ClubBasicInfoScreen = ({
+	formData,
+	onFormDataChange,
+	onNext,
+	onPrevious,
+	progress,
+}: Props) => {
 	const isComplete = formData.clubName.trim()
 
-	const handleAddImage = () => {
-		// TODO: Implement image picker
-		// For now, we'll use a placeholder
-		// You can integrate react-native-image-picker or similar library
+	const handleAddImage = async () => {
+		const result = await launchImageLibrary({
+			mediaType: 'photo',
+			selectionLimit: 1,
+			includeBase64: false,
+		})
+
+		if (result.didCancel) {
+			return
+		}
+
+		if (result.errorCode) {
+			Toast.show({
+				type: 'error',
+				text1: '이미지를 불러오지 못했어요',
+				text2: result.errorMessage,
+				position: 'top',
+				topOffset: 60,
+				visibilityTime: 2000,
+			})
+			return
+		}
+
+		const uri = result.assets?.[0]?.uri
+		if (uri) {
+			onFormDataChange({ clubImage: uri })
+		}
 	}
 
 	return (
@@ -39,30 +71,17 @@ export const ClubBasicInfoScreen = ({ formData, onFormDataChange, onNext, onPrev
 				<View style={styles.form}>
 					<View style={styles.fieldWrapper}>
 						<Text style={styles.label}>동아리 대표 이미지</Text>
-						<Text style={styles.helperText}>4X4 정방형 이미지를 권장드려요</Text>
-						<Pressable
-							style={styles.imageUploadBox}
-							onPress={handleAddImage}
-						>
+						<Text style={styles.helperDescription}>4X4 정방형 이미지를 권장드려요</Text>
+						<Pressable style={styles.imageUploadBox} onPress={handleAddImage}>
 							{formData.clubImage ? (
-								<Image
-									source={{ uri: formData.clubImage }}
-									style={styles.uploadedImage}
-								/>
+								<Image source={{ uri: formData.clubImage }} style={styles.uploadedImage} />
 							) : (
-								<View style={styles.placeholderContent}>
-									<Icon
-										name="add-photo-alternate"
-										size={s(40)}
-										color={Colors.BODYTEXT_DISABLED}
-									/>
-								</View>
+								<Icon name="add" size={s(40)} color={Colors.BODYTEXT_DISABLED} />
 							)}
 						</Pressable>
-						<Pressable style={styles.imageButton}>
-							<Text style={styles.imageButtonText}>이미지 변경</Text>
-						</Pressable>
-						<Text style={styles.errorText}>대표 이미지를 등록해주세요</Text>
+						{!formData.clubImage && (
+							<Text style={styles.validationText}>대표 이미지를 등록해주세요</Text>
+						)}
 					</View>
 
 					<View style={styles.fieldWrapper}>
@@ -70,10 +89,10 @@ export const ClubBasicInfoScreen = ({ formData, onFormDataChange, onNext, onPrev
 						<TextField
 							placeholder="와플스튜디오"
 							value={formData.clubName}
-							onChangeText={(text) => onFormDataChange({ clubName: text })}
+							onChangeText={text => onFormDataChange({ clubName: text })}
 							maxLength={100}
 						/>
-						<Text style={styles.helperText}>동아리명을 입력해주세요</Text>
+						<Text style={styles.validationText}>동아리명을 입력해주세요</Text>
 					</View>
 				</View>
 			</ScrollView>
@@ -82,6 +101,7 @@ export const ClubBasicInfoScreen = ({ formData, onFormDataChange, onNext, onPrev
 				onPrevious={onPrevious}
 				onNext={onNext}
 				isNextDisabled={!isComplete}
+				progress={progress}
 			/>
 		</SafeAreaView>
 	)
@@ -104,53 +124,37 @@ const styles = StyleSheet.create({
 		color: Colors.BODYTEXT_MAIN,
 	},
 	form: {
-		gap: vs(24),
+		gap: vs(28),
 	},
 	fieldWrapper: {
-		gap: vs(4),
+		gap: vs(8),
 	},
 	label: {
-		...typography.bodySMedium,
-		color: Colors.BODYTEXT_MAIN,
+		...typography.headerXLSemibold,
+		color: Colors.BODYTEXT_SUB,
 	},
-	helperText: {
+	helperDescription: {
 		...typography.bodySRegular,
-		color: Colors.BODYTEXT_DISABLED,
+		color: Colors.BODYTEXT_SUB,
 	},
-	errorText: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_DISABLED,
+	validationText: {
+		...typography.bodyMRegular,
+		color: Colors.POINTCOLOR,
 	},
 	imageUploadBox: {
+		width: s(150),
+		height: s(150),
 		borderWidth: 1,
 		borderColor: Colors.BODYTEXT_DISABLED,
-		borderStyle: 'dashed',
-		borderRadius: s(8),
-		height: vs(150),
+		borderRadius: s(12),
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: Colors.BACKGROUND_SUB,
-		marginVertical: vs(8),
-	},
-	placeholderContent: {
-		alignItems: 'center',
-		gap: vs(8),
+		backgroundColor: Colors.WHITE,
+		marginTop: vs(4),
 	},
 	uploadedImage: {
 		width: '100%',
 		height: '100%',
-		borderRadius: s(6),
-	},
-	imageButton: {
-		paddingVertical: vs(10),
-		paddingHorizontal: s(24),
-		backgroundColor: Colors.BUTTON_SELECTED,
-		borderRadius: s(8),
-		alignItems: 'flex-start',
-		marginVertical: vs(8),
-	},
-	imageButtonText: {
-		...typography.bodySMedium,
-		color: Colors.TEXT_BUTTON_SELECTED,
+		borderRadius: s(11),
 	},
 })

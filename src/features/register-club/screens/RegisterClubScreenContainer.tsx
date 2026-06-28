@@ -8,8 +8,10 @@ import { ClubBasicInfoScreen } from '@/features/register-club/screens/ClubBasicI
 import { CategorySelectionScreen } from '@/features/register-club/screens/CategorySelectionScreen'
 import { ClubAffiliationScreen } from '@/features/register-club/screens/ClubAffiliationScreen'
 import { ClubDetailsScreen } from '@/features/register-club/screens/ClubDetailsScreen'
+import { RegisterClubConfirmModal } from '@/features/register-club/components/RegisterClubConfirmModal'
 import { RegisterClubFormData, initialFormData } from '@/features/register-club/types'
 import { RegisterClubRequest } from '@/repositories/club'
+import { navigation } from '@/shared/utils/navigation'
 
 const mapFormDataToRequest = (formData: RegisterClubFormData): RegisterClubRequest => {
 	const clubData: Record<string, unknown> = {
@@ -45,24 +47,31 @@ export const RegisterClubScreenContainer = () => {
 	const [currentStep, setCurrentStep] = useState(0)
 	const [formData, setFormData] = useState<RegisterClubFormData>(initialFormData)
 	const [isLoading, setIsLoading] = useState(false)
+	const [showConfirm, setShowConfirm] = useState(false)
 	const { clubService } = useContext(serviceContext)
 	const { user } = useProfile()
 	const { openBottomSheet: openLoginSheet } = useLoginBottomSheet()
 
 	const handleFormDataChange = (data: Partial<RegisterClubFormData>) => {
-		setFormData((prev) => ({ ...prev, ...data }))
+		setFormData(prev => ({ ...prev, ...data }))
 	}
 
 	const handleNext = () => {
-		setCurrentStep((prev) => Math.min(prev + 1, 4))
+		setCurrentStep(prev => Math.min(prev + 1, 4))
 	}
 
 	const handlePrevious = () => {
-		setCurrentStep((prev) => Math.max(prev - 1, 0))
+		setCurrentStep(prev => Math.max(prev - 1, 0))
 	}
 
-	const handleComplete = async () => {
-		// Check if user is logged in
+	// 이전 on the first step exits the full-screen flow back to the MyPage tab.
+	const handleExit = () => {
+		setCurrentStep(0)
+		navigation.navigate('마이')
+	}
+
+	const handleOpenConfirm = () => {
+		// Check if user is logged in before showing the confirmation
 		if (!user) {
 			Toast.show({
 				type: 'error',
@@ -75,20 +84,17 @@ export const RegisterClubScreenContainer = () => {
 			openLoginSheet()
 			return
 		}
+		setShowConfirm(true)
+	}
 
+	const handleComplete = async () => {
 		try {
 			setIsLoading(true)
 			const request = mapFormDataToRequest(formData)
-			console.log('[REGISTER_CLUB] Request:', JSON.stringify(request, null, 2))
-			console.log('[REGISTER_CLUB] About to call registerClub API...')
 			const response = await clubService.registerClub(request)
-			console.log('[REGISTER_CLUB] Response:', JSON.stringify(response, null, 2))
-			console.log('[REGISTER_CLUB] Response type:', typeof response)
-			console.log('[REGISTER_CLUB] Response keys:', response ? Object.keys(response) : 'null')
-			console.log('[REGISTER_CLUB] Response.success:', (response as any)?.success)
 
-			const isSuccess = (response as any)?.success === true
-			const message = (response as any)?.message || '동아리 등록이 완료되었습니다!'
+			const isSuccess = response?.success === true
+			const message = response?.message || '동아리 등록이 완료되었습니다!'
 
 			if (isSuccess) {
 				Toast.show({
@@ -100,6 +106,7 @@ export const RegisterClubScreenContainer = () => {
 				})
 
 				// Reset form and go back to step 0
+				setShowConfirm(false)
 				setFormData(initialFormData)
 				setCurrentStep(0)
 			} else {
@@ -112,20 +119,12 @@ export const RegisterClubScreenContainer = () => {
 				})
 			}
 		} catch (error) {
-			console.error('[REGISTER_CLUB] Caught error:', error)
-			console.error('[REGISTER_CLUB] Error type:', typeof error)
-
 			let errorMessage = '동아리 등록 중 오류가 발생했습니다'
 
 			if (error instanceof Error) {
-				console.error('[REGISTER_CLUB] Error name:', error.name)
-				console.error('[REGISTER_CLUB] Error message:', error.message)
-				console.error('[REGISTER_CLUB] Error stack:', error.stack)
-
 				// Check if it's an Axios error with response data
-				const axiosError = error as any
-				if (axiosError?.response?.status === 401) {
-					console.error('[REGISTER_CLUB] Got 401 - checking response body:', axiosError?.response?.data)
+				const axiosError = error as {
+					response?: { status?: number; data?: { message?: string } }
 				}
 				if (axiosError?.response?.data?.message) {
 					errorMessage = axiosError.response.data.message
@@ -134,7 +133,6 @@ export const RegisterClubScreenContainer = () => {
 				}
 			}
 
-			console.error('[REGISTER_CLUB] Final error message:', errorMessage)
 			Toast.show({
 				type: 'error',
 				text1: errorMessage,
@@ -153,6 +151,7 @@ export const RegisterClubScreenContainer = () => {
 			formData={formData}
 			onFormDataChange={handleFormDataChange}
 			onNext={handleNext}
+			onPrevious={handleExit}
 		/>,
 		<ClubBasicInfoScreen
 			key="step1"
@@ -179,11 +178,26 @@ export const RegisterClubScreenContainer = () => {
 			key="step4"
 			formData={formData}
 			onFormDataChange={handleFormDataChange}
-			onComplete={handleComplete}
+			onComplete={handleOpenConfirm}
 			onPrevious={handlePrevious}
 			isLoading={isLoading}
 		/>,
 	]
 
-	return screens[currentStep]
+	// 6 stages total: the 5 form steps plus the final confirmation popup,
+	// so the bar is never fully filled while a form step is on screen.
+	const progress = (currentStep + 1) / (screens.length + 1)
+
+	return (
+		<>
+			{React.cloneElement(screens[currentStep], { progress })}
+			<RegisterClubConfirmModal
+				visible={showConfirm}
+				clubName={formData.clubName}
+				isLoading={isLoading}
+				onCancel={() => setShowConfirm(false)}
+				onConfirm={handleComplete}
+			/>
+		</>
+	)
 }

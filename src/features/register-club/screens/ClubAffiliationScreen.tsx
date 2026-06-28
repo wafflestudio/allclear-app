@@ -25,9 +25,16 @@ type Props = {
 	onFormDataChange: (data: Partial<RegisterClubFormData>) => void
 	onNext: () => void
 	onPrevious: () => void
+	progress?: number
 }
 
-export const ClubAffiliationScreen = ({ formData, onFormDataChange, onNext, onPrevious }: Props) => {
+export const ClubAffiliationScreen = ({
+	formData,
+	onFormDataChange,
+	onNext,
+	onPrevious,
+	progress,
+}: Props) => {
 	const [showDropdown, setShowDropdown] = useState(false)
 	const isComplete = formData.department.trim() && formData.shortIntro.trim()
 
@@ -46,63 +53,58 @@ export const ClubAffiliationScreen = ({ formData, onFormDataChange, onNext, onPr
 						{'\n'}
 						<Text>한줄소개를 완성해주세요</Text>
 					</Text>
-					<Text style={styles.helperText}>동아리 소개 최상단에 노출될 간단한 문구예요</Text>
+					<Text style={styles.subtitle}>동아리 소개 최상단에 노출될 간단한 문구예요</Text>
 				</View>
 
 				<View style={styles.form}>
-					{/* Department Dropdown */}
-					<View style={styles.fieldWrapper}>
+					{/* Department Dropdown + 소속 label */}
+					<View style={styles.affiliationRow}>
 						<Pressable
 							style={[styles.dropdown, showDropdown && styles.dropdownActive]}
-							onPress={() => setShowDropdown(!showDropdown)}
-						>
-							<Text style={styles.dropdownText}>
-								{formData.department || '단과대/학과'}
-							</Text>
+							onPress={() => setShowDropdown(!showDropdown)}>
+							<Text style={styles.dropdownText}>{formData.department || '단과대/학과'}</Text>
 							<MaterialIcons
 								name={showDropdown ? 'expand-less' : 'expand-more'}
 								size={20}
 								color={Colors.BODYTEXT_MAIN}
 							/>
 						</Pressable>
-
-						{showDropdown && (
-							<View style={styles.dropdownMenu}>
-								{DEPARTMENTS.map((dept) => (
-									<Pressable
-										key={dept}
-										style={[
-											styles.dropdownItem,
-											formData.department === dept && styles.dropdownItemSelected,
-										]}
-										onPress={() => handleSelectDepartment(dept)}
-									>
-										<Text
-											style={[
-												styles.dropdownItemText,
-												formData.department === dept && styles.dropdownItemTextSelected,
-											]}
-										>
-											{dept}
-										</Text>
-									</Pressable>
-								))}
-							</View>
-						)}
-						<Text style={styles.fieldLabel}>소속</Text>
+						<Text style={styles.affiliationLabel}>소속</Text>
 					</View>
 
+					{showDropdown && (
+						<View style={styles.dropdownMenu}>
+							{DEPARTMENTS.map(dept => (
+								<Pressable
+									key={dept}
+									style={[
+										styles.dropdownItem,
+										formData.department === dept && styles.dropdownItemSelected,
+									]}
+									onPress={() => handleSelectDepartment(dept)}>
+									<Text
+										style={[
+											styles.dropdownItemText,
+											formData.department === dept && styles.dropdownItemTextSelected,
+										]}>
+										{dept}
+									</Text>
+								</Pressable>
+							))}
+						</View>
+					)}
+
 					{/* Short Introduction Input */}
-					<View style={styles.fieldWrapper}>
-						<TextField
-							placeholder="동아리를 소개해 주세요"
-							value={formData.shortIntro}
-							onChangeText={(text) => onFormDataChange({ shortIntro: text })}
-							maxLength={100}
-						/>
-						<Text style={styles.charCounter}>
-							{formData.shortIntro.length} / 100
-						</Text>
+					<TextField
+						placeholder="웹/앱 개발 동아리, 경영전략학회"
+						value={formData.shortIntro}
+						onChangeText={text => onFormDataChange({ shortIntro: text })}
+						maxLength={100}
+					/>
+
+					<View style={styles.validationGroup}>
+						<Text style={styles.validationText}>소속을 선택해주세요</Text>
+						<Text style={styles.validationText}>동아리 주요 활동을 작성해주세요</Text>
 					</View>
 				</View>
 			</ScrollView>
@@ -111,6 +113,7 @@ export const ClubAffiliationScreen = ({ formData, onFormDataChange, onNext, onPr
 				onPrevious={onPrevious}
 				onNext={onNext}
 				isNextDisabled={!isComplete}
+				progress={progress}
 			/>
 		</SafeAreaView>
 	)
@@ -137,45 +140,50 @@ const styles = StyleSheet.create({
 		color: Colors.BUTTON_SELECTED,
 		fontWeight: '800',
 	},
-	helperText: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_DISABLED,
+	subtitle: {
+		...typography.bodyMRegular,
+		color: Colors.BODYTEXT_SUB,
 	},
 	form: {
-		gap: vs(24),
+		gap: vs(12),
 	},
-	fieldWrapper: {
-		gap: vs(8),
+	affiliationRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: s(16),
+	},
+	affiliationLabel: {
+		...typography.headerXLSemibold,
+		color: Colors.BODYTEXT_MAIN,
 	},
 	dropdown: {
+		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
-		paddingHorizontal: s(12),
-		paddingVertical: vs(12),
+		paddingHorizontal: s(16),
+		paddingVertical: vs(14),
 		borderWidth: 1,
 		borderColor: Colors.BODYTEXT_DISABLED,
-		borderRadius: 4,
+		borderRadius: 8,
 		backgroundColor: Colors.WHITE,
 	},
 	dropdownActive: {
 		borderColor: Colors.BUTTON_SELECTED,
 	},
 	dropdownText: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_MAIN,
+		...typography.bodyMRegular,
+		color: Colors.BODYTEXT_SUB,
 		flex: 1,
 	},
 	dropdownMenu: {
 		borderWidth: 1,
 		borderColor: Colors.BODYTEXT_DISABLED,
-		borderRadius: 4,
+		borderRadius: 8,
 		backgroundColor: Colors.WHITE,
-		marginTop: vs(-8),
-		paddingTop: vs(8),
 	},
 	dropdownItem: {
-		paddingHorizontal: s(12),
+		paddingHorizontal: s(16),
 		paddingVertical: vs(12),
 		borderBottomWidth: 1,
 		borderBottomColor: Colors.BACKGROUND_SUB,
@@ -184,20 +192,18 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.BACKGROUND_SUB,
 	},
 	dropdownItemText: {
-		...typography.bodySRegular,
+		...typography.bodyMRegular,
 		color: Colors.BODYTEXT_MAIN,
 	},
 	dropdownItemTextSelected: {
 		color: Colors.BUTTON_SELECTED,
 		fontWeight: '600',
 	},
-	fieldLabel: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_SUB,
+	validationGroup: {
+		gap: vs(8),
 	},
-	charCounter: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_DISABLED,
-		textAlign: 'right',
+	validationText: {
+		...typography.bodyMRegular,
+		color: Colors.POINTCOLOR,
 	},
 })

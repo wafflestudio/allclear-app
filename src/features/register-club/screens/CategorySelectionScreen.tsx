@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, Pressable, Dimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
@@ -8,20 +8,40 @@ import { FormNavigationButtons } from '@/features/register-club/components/FormN
 import { RegisterClubFormData } from '@/features/register-club/types'
 import { Category } from '@/entities/category'
 
-const CATEGORIES: Category['name'][] = ['학술', '종교', '공연', '봉사', '운동', '홍보', '취미', '문화', '진로']
+const CATEGORIES: Category['name'][] = [
+	'학술',
+	'종교',
+	'봉사',
+	'공연',
+	'운동',
+	'홍보',
+	'취미',
+	'문화',
+	'진로',
+]
+
+// Three square tiles per row, accounting for screen padding and inter-tile gaps.
+const TILE_SIZE = (Dimensions.get('window').width - s(20) * 2 - s(12) * 2) / 3
 
 type Props = {
 	formData: RegisterClubFormData
 	onFormDataChange: (data: Partial<RegisterClubFormData>) => void
 	onNext: () => void
 	onPrevious: () => void
+	progress?: number
 }
 
-export const CategorySelectionScreen = ({ formData, onFormDataChange, onNext, onPrevious }: Props) => {
+export const CategorySelectionScreen = ({
+	formData,
+	onFormDataChange,
+	onNext,
+	onPrevious,
+	progress,
+}: Props) => {
 	const toggleCategory = (category: Category['name']) => {
 		const isSelected = formData.selectedCategories.includes(category)
 		const newCategories = isSelected
-			? formData.selectedCategories.filter((c) => c !== category)
+			? formData.selectedCategories.filter(c => c !== category)
 			: [category] // Only allow one selection per design
 		onFormDataChange({ selectedCategories: newCategories })
 	}
@@ -41,23 +61,14 @@ export const CategorySelectionScreen = ({ formData, onFormDataChange, onNext, on
 				</View>
 
 				<View style={styles.categoryGrid}>
-					{CATEGORIES.map((category) => {
+					{CATEGORIES.map(category => {
 						const isSelected = formData.selectedCategories.includes(category)
 						return (
 							<Pressable
 								key={category}
-								style={[
-									styles.categoryBlock,
-									isSelected && styles.categoryBlockSelected,
-								]}
-								onPress={() => toggleCategory(category)}
-							>
-								<Text
-									style={[
-										styles.categoryText,
-										isSelected && styles.categoryTextSelected,
-									]}
-								>
+								style={[styles.categoryBlock, isSelected && styles.categoryBlockSelected]}
+								onPress={() => toggleCategory(category)}>
+								<Text style={[styles.categoryText, isSelected && styles.categoryTextSelected]}>
 									{category}
 								</Text>
 							</Pressable>
@@ -66,9 +77,7 @@ export const CategorySelectionScreen = ({ formData, onFormDataChange, onNext, on
 				</View>
 
 				<View style={styles.footer}>
-					<Text style={styles.helperText}>
-						가장 적절한 한 가지 카테고리를 선택해주세요
-					</Text>
+					<Text style={styles.helperText}>가장 적절한 한 가지 카테고리를 선택해주세요</Text>
 				</View>
 			</ScrollView>
 
@@ -76,6 +85,7 @@ export const CategorySelectionScreen = ({ formData, onFormDataChange, onNext, on
 				onPrevious={onPrevious}
 				onNext={onNext}
 				isNextDisabled={!isComplete}
+				progress={progress}
 			/>
 		</SafeAreaView>
 	)
@@ -105,16 +115,14 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		gap: s(12),
-		justifyContent: 'space-between',
 	},
 	categoryBlock: {
-		width: '31%',
-		paddingVertical: vs(20),
-		paddingHorizontal: s(8),
-		borderRadius: s(8),
+		width: TILE_SIZE,
+		height: TILE_SIZE,
+		borderRadius: s(12),
 		borderWidth: 1,
 		borderColor: Colors.BODYTEXT_DISABLED,
-		backgroundColor: Colors.BACKGROUND_SUB,
+		backgroundColor: Colors.WHITE,
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
@@ -126,13 +134,13 @@ const styles = StyleSheet.create({
 		marginTop: vs(16),
 	},
 	helperText: {
-		...typography.bodySRegular,
-		color: Colors.BODYTEXT_DISABLED,
-		textAlign: 'center',
+		...typography.bodyMRegular,
+		color: Colors.POINTCOLOR,
+		textAlign: 'left',
 	},
 	categoryText: {
 		...typography.bodyMMedium,
-		color: Colors.BODYTEXT_MAIN,
+		color: Colors.BODYTEXT_DISABLED,
 		textAlign: 'center',
 	},
 	categoryTextSelected: {
