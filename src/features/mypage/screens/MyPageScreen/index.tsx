@@ -4,7 +4,7 @@ import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { LOGIN_TOKEN } from '@/shared/constants/localStorage'
 import { SCREEN_TYPE } from '@/shared/constants/screen'
-import { useManageClubBottomSheet } from '@/shared/contexts/manageClubBottomSheet'
+import { useRegisterClubTypeBottomSheet } from '@/shared/contexts/registerClubTypeBottomSheet'
 import { useProfile } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { useUserVoiceBottomSheet } from '@/shared/contexts/userVoiceBottomSheetContext'
@@ -21,7 +21,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 const MyPageScreen = () => {
 	const { authService } = useContext(serviceContext)
 	const { openBottomSheet: openUserVoice } = useUserVoiceBottomSheet()
-	const { openBottomSheet: openManageClub } = useManageClubBottomSheet()
+	const { openBottomSheet: openRegisterClubType } = useRegisterClubTypeBottomSheet()
 	const queryClient = useQueryClient()
 	const { user, setUser } = useProfile()
 
@@ -109,7 +109,7 @@ const MyPageScreen = () => {
 
 				<Pressable
 					style={({ pressed }) => [styles.card, pressed && styles.pressed]}
-					onPress={openManageClub}>
+					onPress={openRegisterClubType}>
 					<View style={styles.managerRow}>
 						<View>
 							<Text style={styles.managerTitle}>동아리 운영진이신가요?</Text>

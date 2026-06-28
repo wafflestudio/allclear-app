@@ -16,7 +16,6 @@ import { navigation } from '@/shared/utils/navigation'
 import { SavedTab } from './SaveTab'
 import { SearchTab } from './SearchTab'
 import { typography } from '@/shared/constants/typography'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const Tab = createBottomTabNavigator()
 
@@ -36,19 +35,6 @@ const renderMyPageTabIcon = createTabBarIcon(
 	require('@/assets/icons/tab/mypage-default.png'),
 	require('@/assets/icons/tab/mypage-active.png'),
 )
-
-function renderRegisterClubIcon(): BottomTabNavigationOptions['tabBarIcon'] {
-	return function TabBarIcon({ focused }) {
-		return (
-			<Icon
-				name="add-circle-outline"
-				size={s(24)}
-				color={focused ? Colors.BUTTON_SELECTED : Colors.BUTTON_UNSELECTED}
-				style={{ marginTop: vs(10) }}
-			/>
-		)
-	}
-}
 
 function createTabBarIcon(
 	defaultSource: ImageSourcePropType,
@@ -112,18 +98,9 @@ export function TabNavigator() {
 				component={SearchTab}
 			/>
 			<Tab.Screen
-				options={{ tabBarIcon: renderRegisterClubIcon(), tabBarStyle: { display: 'none' } }}
+				options={{ tabBarButton: () => null, tabBarStyle: { display: 'none' } }}
 				name="등록"
 				component={RegisterClubTab}
-				// TODO: Re-enable login requirement after testing
-				// listeners={{
-				// 	tabPress: e => {
-				// 		if (!user) {
-				// 			e.preventDefault()
-				// 			openBottomSheet(() => navigation.navigate('등록'))
-				// 		}
-				// 	},
-				// }}
 			/>
 			<Tab.Screen
 				options={{ tabBarIcon: renderSavedTabIcon }}

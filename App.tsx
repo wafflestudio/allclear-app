@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { LoginBottomSheetProvider } from '@/shared/contexts/loginBottomSheetContext'
 import { ManageClubBottomSheetProvider } from '@/shared/contexts/manageClubBottomSheet'
+import { RegisterClubTypeBottomSheetProvider } from '@/shared/contexts/registerClubTypeBottomSheet'
 import { ProfileProvider } from '@/shared/contexts/profileContext'
 import { serviceContext } from '@/shared/contexts/serviceContext'
 import { UserVoiceBottomSheetProvider } from '@/shared/contexts/userVoiceBottomSheetContext'
@@ -100,11 +101,13 @@ function App(): React.JSX.Element {
 								<LoginBottomSheetProvider>
 									<UserVoiceBottomSheetProvider>
 										<ManageClubBottomSheetProvider>
-											<ForceUpdateGate>
-												<NavigationContainer ref={_navigationRef} linking={linking}>
-													<TabNavigator />
-												</NavigationContainer>
-											</ForceUpdateGate>
+											<RegisterClubTypeBottomSheetProvider>
+												<ForceUpdateGate>
+													<NavigationContainer ref={_navigationRef} linking={linking}>
+														<TabNavigator />
+													</NavigationContainer>
+												</ForceUpdateGate>
+											</RegisterClubTypeBottomSheetProvider>
 										</ManageClubBottomSheetProvider>
 									</UserVoiceBottomSheetProvider>
 								</LoginBottomSheetProvider>

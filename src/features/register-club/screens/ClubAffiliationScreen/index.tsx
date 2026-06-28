@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
 		color: Colors.BODYTEXT_MAIN,
 	},
 	dropdown: {
-		flex: 1,
+		width: '55%',
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	dropdownMenu: {
+		width: '55%',
 		borderWidth: 1,
 		borderColor: Colors.BODYTEXT_DISABLED,
 		borderRadius: 8,

@@ -1,8 +1,9 @@
-import React, { useContext, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Toast from 'react-native-toast-message'
-import { serviceContext } from '@/shared/contexts/serviceContext'
 import { useProfile } from '@/shared/contexts/profileContext'
 import { useLoginBottomSheet } from '@/shared/contexts/loginBottomSheetContext'
+import { useRegisterClubTypeBottomSheet } from '@/shared/contexts/registerClubTypeBottomSheet'
+import { useRegisterClub } from '@/features/register-club/hooks/useRegisterClub'
 import { ManagerInfoScreen } from '@/features/register-club/screens/ManagerInfoScreen'
 import { ClubBasicInfoScreen } from '@/features/register-club/screens/ClubBasicInfoScreen'
 import { CategorySelectionScreen } from '@/features/register-club/screens/CategorySelectionScreen'
@@ -10,13 +11,14 @@ import { ClubAffiliationScreen } from '@/features/register-club/screens/ClubAffi
 import { ClubDetailsScreen } from '@/features/register-club/screens/ClubDetailsScreen'
 import { RegisterClubConfirmModal } from '@/features/register-club/components/RegisterClubConfirmModal'
 import { RegisterClubFormData, initialFormData } from '@/features/register-club/types'
+import { normalizeUrl } from '@/features/register-club/validation'
 import { RegisterClubRequest } from '@/repositories/club'
 import { navigation } from '@/shared/utils/navigation'
 
 const mapFormDataToRequest = (formData: RegisterClubFormData): RegisterClubRequest => {
 	const clubData: Record<string, unknown> = {
 		name: formData.clubName,
-		type: '교내',
+		type: formData.clubType,
 		image_uri: formData.clubImage || '',
 		category: formData.selectedCategories[0] || '',
 		affiliation: formData.department,
@@ -24,11 +26,11 @@ const mapFormDataToRequest = (formData: RegisterClubFormData): RegisterClubReque
 		recruit_type: formData.recruitType,
 		min_activity_period: parseInt(formData.activityCycle, 10) || 0,
 		has_dongbang: formData.hasDongbang,
-		sns: formData.clubSNS,
+		sns: normalizeUrl(formData.clubSNS),
 		introduction: formData.clubDescription,
 	}
 
-	// Add dongbang_location only if has_dongbang is true
+	// Send dongbang_location (API key) only when the club has a dongbang
 	if (formData.hasDongbang && formData.dongbangLocation) {
 		clubData.dongbang_location = formData.dongbangLocation
 	}
@@ -46,11 +48,40 @@ const mapFormDataToRequest = (formData: RegisterClubFormData): RegisterClubReque
 export const RegisterClubScreenContainer = () => {
 	const [currentStep, setCurrentStep] = useState(0)
 	const [formData, setFormData] = useState<RegisterClubFormData>(initialFormData)
-	const [isLoading, setIsLoading] = useState(false)
 	const [showConfirm, setShowConfirm] = useState(false)
-	const { clubService } = useContext(serviceContext)
 	const { user } = useProfile()
 	const { openBottomSheet: openLoginSheet } = useLoginBottomSheet()
+	const { selectedKind } = useRegisterClubTypeBottomSheet()
+
+	const { mutate: registerClub, isLoading } = useRegisterClub({
+		onSuccess: message => {
+			Toast.show({
+				type: 'success',
+				text1: message,
+				position: 'top',
+				topOffset: 60,
+				visibilityTime: 2000,
+			})
+			setShowConfirm(false)
+			setFormData(initialFormData)
+			setCurrentStep(0)
+		},
+		onFailure: message => {
+			Toast.show({
+				type: 'error',
+				text1: message,
+				position: 'top',
+				topOffset: 60,
+				visibilityTime: 2000,
+			})
+		},
+	})
+
+	useEffect(() => {
+		if (selectedKind === '교내' || selectedKind === '교외') {
+			setFormData(prev => ({ ...prev, clubType: selectedKind }))
+		}
+	}, [selectedKind])
 
 	const handleFormDataChange = (data: Partial<RegisterClubFormData>) => {
 		setFormData(prev => ({ ...prev, ...data }))
@@ -87,62 +118,8 @@ export const RegisterClubScreenContainer = () => {
 		setShowConfirm(true)
 	}
 
-	const handleComplete = async () => {
-		try {
-			setIsLoading(true)
-			const request = mapFormDataToRequest(formData)
-			const response = await clubService.registerClub(request)
-
-			const isSuccess = response?.success === true
-			const message = response?.message || '동아리 등록이 완료되었습니다!'
-
-			if (isSuccess) {
-				Toast.show({
-					type: 'success',
-					text1: message,
-					position: 'top',
-					topOffset: 60,
-					visibilityTime: 2000,
-				})
-
-				// Reset form and go back to step 0
-				setShowConfirm(false)
-				setFormData(initialFormData)
-				setCurrentStep(0)
-			} else {
-				Toast.show({
-					type: 'error',
-					text1: message || '동아리 등록 중 오류가 발생했습니다',
-					position: 'top',
-					topOffset: 60,
-					visibilityTime: 2000,
-				})
-			}
-		} catch (error) {
-			let errorMessage = '동아리 등록 중 오류가 발생했습니다'
-
-			if (error instanceof Error) {
-				// Check if it's an Axios error with response data
-				const axiosError = error as {
-					response?: { status?: number; data?: { message?: string } }
-				}
-				if (axiosError?.response?.data?.message) {
-					errorMessage = axiosError.response.data.message
-				} else if (axiosError?.response?.status) {
-					errorMessage = `Error ${axiosError.response.status}: ${error.message}`
-				}
-			}
-
-			Toast.show({
-				type: 'error',
-				text1: errorMessage,
-				position: 'top',
-				topOffset: 60,
-				visibilityTime: 2000,
-			})
-		} finally {
-			setIsLoading(false)
-		}
+	const handleComplete = () => {
+		registerClub(mapFormDataToRequest(formData))
 	}
 
 	const screens = [

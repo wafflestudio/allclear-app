@@ -1,6 +1,8 @@
 import { Category } from '@/entities/category'
 
 export type RegisterClubFormData = {
+	clubType: '교내' | '교외'
+
 	// Page 1: Manager basic info
 	managerName: string
 	managerPhone: string
@@ -27,6 +29,7 @@ export type RegisterClubFormData = {
 }
 
 export const initialFormData: RegisterClubFormData = {
+	clubType: '교내',
 	managerName: '',
 	managerPhone: '',
 	studentId: '',

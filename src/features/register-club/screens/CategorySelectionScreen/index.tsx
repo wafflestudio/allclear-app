@@ -20,7 +20,6 @@ const CATEGORIES: Category['name'][] = [
 	'진로',
 ]
 
-// Three square tiles per row, accounting for screen padding and inter-tile gaps.
 const TILE_SIZE = (Dimensions.get('window').width - s(20) * 2 - s(12) * 2) / 3
 
 type Props = {
@@ -42,7 +41,7 @@ export const CategorySelectionScreen = ({
 		const isSelected = formData.selectedCategories.includes(category)
 		const newCategories = isSelected
 			? formData.selectedCategories.filter(c => c !== category)
-			: [category] // Only allow one selection per design
+			: [category]
 		onFormDataChange({ selectedCategories: newCategories })
 	}
 
