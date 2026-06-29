@@ -195,10 +195,7 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -264,6 +261,9 @@ dist
 .expo
 __generated__
 
+# CI bundle check output
+.bundle-check/
+
 ### ReactNative.Android Stack ###
 # Gradle files
 .gradle/
@@ -291,10 +291,11 @@ render.experimental.xml
 # Keystore files
 *.jks
 *.keystore
-!debug.keystore
+debug.keystore
 
 # Google Services (e.g. APIs or Firebase)
-!google-services.json
+google-services.json
+GoogleService-Info.plist
 
 # Android Profiling
 *.hprof

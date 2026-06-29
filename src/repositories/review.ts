@@ -1,6 +1,6 @@
-import { Club } from 'entities/club'
-import { ReviewKeyword, ReviewKeywordCategory } from 'entities/review'
-import { apiConnector } from 'utils/api'
+import { Club } from '@/entities/club'
+import { ReviewKeyword, ReviewKeywordCategory } from '@/entities/review'
+import { apiConnector } from '@/shared/utils/api'
 
 export type CreateClubReviewsRequest = {
 	uuid: Club['uuid']
@@ -32,21 +32,21 @@ export type ReviewRepository = {
 
 export const getReviewRepository = (): ReviewRepository => ({
 	createClubReviews: async req => {
-		await apiConnector.post(`/v1/clubs/${req.uuid}/reviews`, {
+		await apiConnector.post(`/v2/clubs/${req.uuid}/reviews`, {
 			rating: req.rating,
 			reviewKeywordIds: req.reviewKeywordIds,
 		})
 	},
 	listReviewKeywords: async () => {
 		const response = await apiConnector.get<ListReviewKeywordsResponse>(
-			'/v1/clubs/reviews/keywords',
+			'/v2/clubs/reviews/keywords',
 		)
 
 		return response
 	},
 	getMyClubReview: async req => {
 		const response = await apiConnector.get<GetMyClubReviewResponse>(
-			`/v1/clubs/${req.uuid}/reviews/me`,
+			`/v2/clubs/${req.uuid}/reviews/me`,
 		)
 
 		return response

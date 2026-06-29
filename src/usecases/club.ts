@@ -1,4 +1,4 @@
-import { Club } from 'entities/club'
+import { Club } from '@/entities/club'
 import {
 	ClubRepository,
 	CreateSavedClubRequest,
@@ -11,15 +11,16 @@ import {
 	ListManageClubsResponse,
 	ListMyClubsResponse,
 	ListPopularClubsResponse,
+	ListRandomRecommendationsResponse,
 	ListSavedClubsResponse,
 	RemoveSavedClubRequest,
 	RequestClubmanagerRequest,
 	SearchClubsRequest,
 	SearchClubsResponse,
-} from 'repositories/club'
+} from '@/repositories/club'
 
 export type ClubService = {
-	searchClubs: (req: SearchClubsRequest) => Promise<SearchClubsResponse>
+	searchClubs: (req: SearchClubsRequest, signal?: AbortSignal) => Promise<SearchClubsResponse>
 	listPopularClubs: () => Promise<ListPopularClubsResponse>
 	listLatestClubs: () => Promise<ListLatestClubsResponse>
 	listClubs: (req: ListClubsRequest) => Promise<ListClubsResponse>
@@ -31,6 +32,7 @@ export type ClubService = {
 	createSavedClub: (req: CreateSavedClubRequest) => Promise<void>
 	removeSavedClub: (req: RemoveSavedClubRequest) => Promise<void>
 	listMyClubs: () => Promise<ListMyClubsResponse>
+	listRandomRecommendations: () => Promise<ListRandomRecommendationsResponse>
 }
 
 type Deps = {
@@ -38,7 +40,7 @@ type Deps = {
 }
 
 export const getClubService = ({ repositories }: Deps): ClubService => ({
-	searchClubs: req => repositories[0].searchClubs(req),
+	searchClubs: (req, signal) => repositories[0].searchClubs(req, signal),
 	listPopularClubs: () => repositories[0].listPopularClubs(),
 	listLatestClubs: () => repositories[0].listLatestClubs(),
 	listClubs: req => repositories[0].listClubs(req),
@@ -50,4 +52,5 @@ export const getClubService = ({ repositories }: Deps): ClubService => ({
 	createSavedClub: req => repositories[0].createSavedClub(req),
 	removeSavedClub: req => repositories[0].removeSavedClub(req),
 	listMyClubs: () => repositories[0].listMyClubs(),
+	listRandomRecommendations: () => repositories[0].listRandomRecommendations(),
 })

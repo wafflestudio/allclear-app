@@ -1,4 +1,4 @@
-import { Category } from './category'
+import { Category } from '@/entities/category'
 
 export type Club = {
 	id: string
@@ -17,7 +17,6 @@ export type Club = {
 	membershipFee: string
 	tags: string[]
 	imageUri: string
-	blurHash: string | null
 	article: string
 	articleUploadedAt: string | null
 	// v240121
@@ -39,8 +38,5 @@ export type ClubRanking = {
 	ranking: number
 	clubId: Club['uuid']
 	clubName: Club['name']
-	clubFullName: Club['fullName']
-	totalReviews: number
-	rating: number
-	keywords: ReviewKeyword['title'][]
+	category: Club['category']
 }

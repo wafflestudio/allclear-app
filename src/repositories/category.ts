@@ -1,5 +1,5 @@
-import { Category } from 'entities/category'
-import { apiConnector } from 'utils/api'
+import { Category } from '@/entities/category'
+import { apiConnector } from '@/shared/utils/api'
 
 export type ListCategoriesResponse = {
 	categories: Category[]
@@ -12,7 +12,7 @@ export type CategoryRepository = {
 
 export const getCategoryRepository = (): CategoryRepository => ({
 	listCategories: async () => {
-		const response = await apiConnector.get<ListCategoriesResponse>('/v1/clubs/categories')
+		const response = await apiConnector.get<ListCategoriesResponse>('/v2/clubs/categories')
 
 		return response
 	},
