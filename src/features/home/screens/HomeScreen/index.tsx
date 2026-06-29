@@ -1,7 +1,6 @@
 import { RouteProp, useIsFocused } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Club } from '@/entities/club'
-import { Term } from '@/entities/term'
 import AnnouncementModal from '@/features/home/components/AnnouncementModal'
 import TermsAgreementModal from '@/features/home/components/TermsAgreementModal'
 import useHomeAnnouncements from '@/features/home/hooks/useHomeAnnouncements'
@@ -13,7 +12,7 @@ import useClickEventLog from '@/shared/hooks/useClickEventLog'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CategorySection from '@/features/home/components/CategorySection'
 import LatestClubsSection from '@/features/home/components/LatestClubsSection'
-import { View, Text, Image, StyleSheet, Linking } from 'react-native'
+import { View, Text, Image, StyleSheet } from 'react-native'
 import { s, vs } from '@/shared/utils/scale'
 import { typography } from '@/shared/constants/typography'
 
@@ -47,10 +46,6 @@ const HomeScreen = ({ navigation }: Props) => {
 		})
 	}
 
-	const handlePressViewTerm = (term: Term) => {
-		void Linking.openURL(term.contentUrl)
-	}
-
 	return (
 		<WithViewEventLog params={{ screen_name: 'home_screen' }}>
 			<SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
@@ -75,7 +70,6 @@ const HomeScreen = ({ navigation }: Props) => {
 						visible
 						terms={pendingTerms}
 						isSubmitting={isSubmitting}
-						onPressView={handlePressViewTerm}
 						onAgree={termUuids => handleAgreeTerms({ termUuids })}
 					/>
 				)}
