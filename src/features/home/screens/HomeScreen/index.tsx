@@ -1,10 +1,6 @@
-import { RouteProp, useIsFocused } from '@react-navigation/native'
+import { RouteProp } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Club } from '@/entities/club'
-import AnnouncementModal from '@/features/home/components/AnnouncementModal'
-import TermsAgreementModal from '@/features/home/components/TermsAgreementModal'
-import useHomeAnnouncements from '@/features/home/hooks/useHomeAnnouncements'
-import useHomePendingTerms from '@/features/home/hooks/useHomePendingTerms'
 import { Colors } from '@/shared/constants/colors'
 import { SCREEN_TYPE, StackParamList } from '@/shared/constants/screen'
 import WithViewEventLog from '@/shared/hocs/WithViewEventLog'
@@ -25,12 +21,7 @@ type Props = {
 }
 
 const HomeScreen = ({ navigation }: Props) => {
-	const isFocused = useIsFocused()
 	const { logClickEvent } = useClickEventLog()
-	const { currentAnnouncement, handleCloseAnnouncement, handleHideAnnouncement } =
-		useHomeAnnouncements()
-	const { pendingTerms, isSubmitting, shouldShowTermsModal, handleAgreeTerms } =
-		useHomePendingTerms()
 
 	const handleMoveToDetailPage = (club: Club) => {
 		logClickEvent({
@@ -65,24 +56,6 @@ const HomeScreen = ({ navigation }: Props) => {
 					</Text>
 					<LatestClubsSection openDetailPage={handleMoveToDetailPage} />
 				</View>
-				{isFocused && shouldShowTermsModal === true && (
-					<TermsAgreementModal
-						visible
-						terms={pendingTerms}
-						isSubmitting={isSubmitting}
-						onAgree={termUuids => handleAgreeTerms({ termUuids })}
-					/>
-				)}
-				{isFocused && shouldShowTermsModal === false && currentAnnouncement && (
-					<AnnouncementModal
-						visible
-						announcementUuid={currentAnnouncement.uuid}
-						title={currentAnnouncement.title}
-						description={currentAnnouncement.description}
-						onHide={handleHideAnnouncement}
-						onClose={handleCloseAnnouncement}
-					/>
-				)}
 			</SafeAreaView>
 		</WithViewEventLog>
 	)
