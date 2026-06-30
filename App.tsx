@@ -38,6 +38,7 @@ import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
 import ForceUpdateGate from '@/shared/components/ForceUpdateGate'
+import AppModalManager from '@/shared/components/AppModalManager'
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -104,6 +105,7 @@ function App(): React.JSX.Element {
 												<NavigationContainer ref={_navigationRef} linking={linking}>
 													<TabNavigator />
 												</NavigationContainer>
+												<AppModalManager />
 											</ForceUpdateGate>
 										</ManageClubBottomSheetProvider>
 									</UserVoiceBottomSheetProvider>
