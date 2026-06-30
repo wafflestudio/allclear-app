@@ -79,7 +79,7 @@ def resolveVersionCode = { propertyName, defaultValue ->
     return value != null ? value.toString().toInteger() : defaultValue
 }
 
-def appVersionCode = resolveVersionCode("VERSION_CODE", 30)
+def appVersionCode = resolveVersionCode("VERSION_CODE", 31)
 def hasReleaseSigningProps =
     hasProperty("ALLCLEAR_UPLOAD_STORE_FILE") &&
     hasProperty("ALLCLEAR_UPLOAD_KEY_ALIAS") &&
