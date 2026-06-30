@@ -18,7 +18,7 @@ import { Colors } from '@/shared/constants/colors'
 import { typography } from '@/shared/constants/typography'
 import { ms, s, vs } from '@/shared/utils/scale'
 import { Term } from '@/entities/term'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 type Props = {
 	visible: boolean
@@ -145,7 +145,16 @@ const TermsAgreementModal = ({ visible, terms, isSubmitting, onAgree }: Props) =
 				visible={!!viewingTerm}
 				animationType="slide"
 				onRequestClose={() => setViewingTerm(null)}>
-				<SafeAreaView style={styles.webviewContainer} edges={['top', 'left', 'right']}>
+				<View
+					style={[
+						styles.webviewContainer,
+						{
+							paddingTop: insets.top,
+							paddingBottom: insets.bottom,
+							paddingLeft: insets.left,
+							paddingRight: insets.right,
+						},
+					]}>
 					<BackHeader title={viewingTerm?.title ?? ''} onBack={() => setViewingTerm(null)} />
 					{viewingTerm && (
 						<WebView
@@ -155,7 +164,7 @@ const TermsAgreementModal = ({ visible, terms, isSubmitting, onAgree }: Props) =
 							overScrollMode="never"
 						/>
 					)}
-				</SafeAreaView>
+				</View>
 			</Modal>
 		</Modal>
 	)
